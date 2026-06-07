@@ -6,6 +6,7 @@ description: "Crop Multiple Images in FastStone Image Viewer easily with automat
 filename: "FastStoneCropScripts.ahk"
 categories: [Automation]
 subcategories: "FastStone"
+language: "AutoHotkey v2"
 --------------------------
 
 ```ahk
