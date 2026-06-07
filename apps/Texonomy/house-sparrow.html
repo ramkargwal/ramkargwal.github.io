@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>House Sparrow Taxonomy Explorer - Detailed</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================   BASIC========================= */
+*{margin:0; padding:0; box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{    font-family:'Poppins',sans-serif;    background:linear-gradient(to bottom right,#f0f8ff,#e6f2ff,#ffffff);    color:#1c2430; overflow-x:hidden;}
+
+/* =========================   HERO========================= */
+.hero{    display:flex; align-items:center;    justify-content:center; flex-direction:column;    text-align:center; padding:40px 20px;    position:relative; overflow:hidden;}
+.hero::before, .hero::after{    content:""; position:absolute;    border-radius:50%;}
+.hero::before{    width:700px; height:700px; top:-250px; left:-200px;    background:radial-gradient(circle,#4facfe44,transparent 70%);    animation:float1 8s ease-in-out infinite;}
+.hero::after{    width:600px; height:600px; bottom:-250px; right:-200px;    background:radial-gradient(circle,#00f2fe33,transparent 70%);    animation:float2 10s ease-in-out infinite;}
+@keyframes float1{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(30px);} }
+@keyframes float2{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(-30px);} }
+.hero h1{    font-size:70px; font-weight:700; z-index:2;    background:linear-gradient(to right,#0072ff,#00c6ff);    -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+.hero p{    margin-top:20px; font-size:20px; color:#5c6773;    max-width:1200px; line-height:1.8; z-index:2;}
+
+/* =========================   CONTAINER & CARDS========================= */
+.container{ width:95%; max-width:1250px; margin:auto; padding-bottom:80px; }
+.taxonomy-card{    background:white; margin-bottom:30px; border-radius:30px;    overflow:hidden; border:1px solid #dde8f5;    box-shadow:0 10px 30px rgba(0,0,0,0.05); transition:0.5s;}
+.taxonomy-card:hover{ transform:translateY(-6px); box-shadow:0 18px 40px rgba(0,0,0,0.08); }
+.taxonomy-header{    padding:25px; display:flex; align-items:center;    justify-content:space-between; cursor:pointer; transition:0.3s;}
+.taxonomy-header:hover{ background:#f4f9ff; }
+.left{ display:flex; align-items:center; gap:22px; }
+.left img{    width:95px; height:95px; border-radius:24px;    object-fit:cover; border:4px solid #eef5ff; transition:0.4s;}
+.taxonomy-card:hover .left img{ transform:scale(1.05) rotate(2deg); }
+.rank{ font-size:13px; text-transform:uppercase; letter-spacing:3px; color:#007BFF; font-weight:600; }
+.name{ font-size:34px; font-weight:700; margin-top:4px; }
+.scientific{ margin-top:7px; color:#637082; font-size:16px; }
+.arrow{ font-size:38px; color:#007BFF; transition:0.5s; }
+.taxonomy-card.active .arrow{ transform:rotate(180deg); }
+
+/* =========================   CONTENT & DETAILED DESC========================= */
+.content{ max-height:0; overflow:hidden; transition:max-height 0.8s ease; }
+.content-inner{ padding:35px; border-top:1px solid #edf3fa; }
+
+.detailed-desc {    background: #f8fbff;    padding: 25px;    border-radius: 20px;    border-left: 5px solid #007BFF;    margin-bottom: 35px;}
+.desc-item {    margin-bottom: 18px;}
+.desc-item:last-child {    margin-bottom: 0;}
+.desc-label {    display: block;    font-size: 17px;    font-weight: 600;    color: #0056b3;    margin-bottom: 5px;}
+.desc-text {    font-size: 16px;    line-height: 1.8;    color: #465260;}
+
+.section-title{ font-size:30px; margin-bottom:25px; color: #0056b3; }
+
+/* =========================   GRID & CREATURES========================= */
+.creatures{    display:grid; gap:25px;    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));}
+.creature{    background:#ffffff; border-radius:20px; overflow:hidden;    border:1px solid #e8eef7; transition:0.5s;}
+.creature:hover{ transform:translateY(-10px) scale(1.02); box-shadow:0 15px 30px rgba(0,0,0,0.08); }
+.creature img{ width:100%; height:160px; object-fit:cover; transition:0.5s; }
+.creature:hover img{ transform:scale(1.08); }
+.creature-body{ padding:15px; }
+.creature h3{ font-size:18px; margin-bottom:8px; color: #1c2430;}
+.creature p{ color:#66717d; line-height:1.5; font-size:14px; }
+
+/* =========================   UTILITIES========================= */
+.hidden{ opacity:0; transform:translateY(50px); transition:all 1s; }
+.show{ opacity:1; transform:translateY(0px); }
+footer{ padding:40px 20px; text-align:center; color:#607080; font-size:15px; }
+
+@media(max-width:800px){    .hero h1{font-size:44px;} .hero p{font-size:17px;}    .name{font-size:26px;} .left{align-items:flex-start;}    .left img{width:75px; height:75px;}    .taxonomy-header{padding:20px;} .content-inner{padding:25px;}}
+
+.image-wrap{position:relative;display:flex;flex-direction:column}
+.img-tools{position:static;display:flex;gap:6px;justify-content:center;padding:8px 0;background:#fff}
+.img-tool-btn{border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;background:rgba(255,255,255,.9)}
+
+</style>
+
+<style>
+.header-tools button,.img-tool-btn,.img-tools button{
+border:none!important;
+outline:none!important;
+background:transparent!important;
+box-shadow:none!important;
+padding:0!important;
+cursor:pointer;
+font-size:20px;
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+    <h1>House Sparrow Taxonomy</h1>
+    <p>चिड़िया (House Sparrow) की पूरी जैविक वर्गीकरण प्रणाली को गहराई से जानिए। हर स्तर पर क्लिक करें और वैज्ञानिक कारण (Reasoning) व उदाहरणों के साथ समझें कि इस पक्षी को उस स्तर में क्यों रखा गया है।</p>
+</section>
+
+<div class="container">
+
+<!-- DOMAIN -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/eukarya?lock=1" alt="Domain">
+            <div>
+                <div class="rank">Domain</div><div class="name">Eukarya</div>
+                <div class="scientific"><strong>जटिल कोशिका वाले जीव -> </strong>Eukarya में वे सभी जीव आते हैं जिनकी कोशिकाओं में स्पष्ट केंद्रक (nucleus) होता है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Domain में पृथ्वी के वे सभी जीव आते हैं जिनकी कोशिकाओं (cells) में एक स्पष्ट और झिल्लीदार केंद्रक (membrane-bound nucleus) होता है। इसमें पौधे, जानवर, कवक (fungi) और प्रोटिस्ट शामिल हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी कोशिकाओं की संरचना बहुत जटिल (complex cell structure) होती है। इनका आनुवंशिक पदार्थ यानी डीएनए (DNA) केंद्रक के अंदर सुरक्षित रहता है और इनकी कोशिकाओं में विभिन्न अंगक (organelles) होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: House Sparrow को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">House Sparrow का शरीर जटिल कोशिकाओं (eukaryotic cells) से बना है। इसकी हर कोशिका के अंदर स्पष्ट केंद्रक (nucleus) और अन्य कोशिका अंगक मौजूद होते हैं, इसीलिए इसे Eukarya Domain का हिस्सा माना जाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Eukarya के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow"><div class="creature-body"><h3>House Sparrow</h3><p>आस-पास चहचहाने वाली चिड़िया।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/human"><div class="creature-body"><h3>इंसान</h3><p>सबसे बुद्धिमान प्राणी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog"><div class="creature-body"><h3>कुत्ता</h3><p>वफादार और समझदार जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tree"><div class="creature-body"><h3>पेड़ (पौधे)</h3><p>प्रकाश संश्लेषण करने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mushroom"><div class="creature-body"><h3>मशरूम</h3><p>फंगस जगत का सदस्य।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel"><div class="creature-body"><h3>गिलहरी</h3><p>पेड़ों पर कूदने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/fish"><div class="creature-body"><h3>मछली</h3><p>पानी में रहने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog"><div class="creature-body"><h3>मेंढक</h3><p>उभयचर (Amphibian) जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/butterfly"><div class="creature-body"><h3>तितली</h3><p>रंगीन और सुंदर कीट।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/rose"><div class="creature-body"><h3>गुलाब</h3><p>फूलों वाला सुंदर पौधा।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- KINGDOM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/animal?lock=2" alt="Kingdom">
+            <div>
+                <div class="rank">Kingdom</div><div class="name">Animalia</div>
+                <div class="scientific"><strong>जंतु जगत -> </strong>Animalia Kingdom में वे जीव आते हैं जो अपना भोजन स्वयं नहीं बनाते।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Kingdom में सभी बहुकोशिकीय (multicellular) जंतु आते हैं। इस समूह के जीव अपना भोजन खुद नहीं बना सकते (पौधों की तरह) बल्कि भोजन के लिए दूसरे जीवों पर निर्भर रहते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">ये परपोषी (heterotrophic) होते हैं। इनकी कोशिकाओं के बाहर पौधों जैसी कठोर कोशिका भित्ति (cell wall) नहीं होती है। इस Kingdom के अधिकांश जीव अपने जीवन के किसी न किसी चरण में स्वेच्छा से गति (movement) कर सकते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: House Sparrow को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">House Sparrow एक बहुकोशिकीय जीव है जो अपना भोजन स्वयं नहीं बना सकती। यह भोजन के लिए बीज, अनाज और कीड़ों पर निर्भर होती है। इसमें उड़ने और चलने-फिरने की क्षमता है, अतः यह पूर्ण रूप से एक जंतु (Animal) है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Animalia के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow,eating"><div class="creature-body"><h3>House Sparrow</h3><p>बीज खाने वाला छोटा पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lion"><div class="creature-body"><h3>शेर</h3><p>जंगल का शक्तिशाली राजा।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant"><div class="creature-body"><h3>हाथी</h3><p>सबसे बड़ा स्थलीय जानवर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark"><div class="creature-body"><h3>शार्क</h3><p>समुद्र का खतरनाक शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle"><div class="creature-body"><h3>गरुड़ (Eagle)</h3><p>तेज़ नज़र वाला शिकारी पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/spider"><div class="creature-body"><h3>मकड़ी</h3><p>जाल बुनने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake"><div class="creature-body"><h3>सांप</h3><p>रेंगने वाला विषैला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dolphin"><div class="creature-body"><h3>डॉल्फिन</h3><p>समुद्री बुद्धिमान जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bear"><div class="creature-body"><h3>भालू</h3><p>विशालकाय जंगली जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/penguin"><div class="creature-body"><h3>पेंगुइन</h3><p>बर्फ में रहने वाला पक्षी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PHYLUM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/vertebrate?lock=3" alt="Phylum">
+            <div>
+                <div class="rank">Phylum</div><div class="name">Chordata</div>
+                <div class="scientific"><strong>रज्जुकी संघ -> </strong>Chordata समूह के जीवों में रीढ़ की हड्डी होती है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Phylum में वे जीव आते हैं जिनके शरीर में जीवन के किसी न किसी चरण में नोटोकॉर्ड (notochord) या रीढ़ की हड्डी मौजूद होती है। इनमें मछलियां, पक्षी, सरीसृप (reptiles) और स्तनधारी आते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इस समूह के जीवों में एक विकसित केंद्रीय तंत्रिका तंत्र (central nervous system), शरीर को सहारा देने वाली रीढ़ की हड्डी (vertebral column), और शरीर के पिछले हिस्से में पूंछ (post-anal tail) का होना प्रमुख लक्षण है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: House Sparrow को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">House Sparrow के शरीर में एक लचीली और मजबूत रीढ़ की हड्डी (backbone) होती है जो उसके नर्वस सिस्टम की रक्षा करती है और उड़ने के दौरान शरीर को सहारा देती है, इसीलिए इसे Chordata Phylum में रखा गया है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Chordata के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow,bird"><div class="creature-body"><h3>House Sparrow</h3><p>रीढ़ की हड्डी वाली छोटी चिड़िया।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog,animal"><div class="creature-body"><h3>कुत्ता</h3><p>रीढ़ की हड्डी वाला वफादार जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/monkey"><div class="creature-body"><h3>बंदर</h3><p>पेड़ों पर कूदने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/whale"><div class="creature-body"><h3>व्हेल</h3><p>समुद्र का विशाल जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle,bird"><div class="creature-body"><h3>चील</h3><p>आसमान का शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake,animal"><div class="creature-body"><h3>सांप</h3><p>अत्यधिक लचीली रीढ़ वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog,animal"><div class="creature-body"><h3>मेंढक</h3><p>जमीन और पानी दोनों में रहने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark,fish"><div class="creature-body"><h3>शार्क</h3><p>कार्टिलेज से बनी रीढ़ वाली मछली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/turtle"><div class="creature-body"><h3>कछुआ</h3><p>खोल (Shell) के अंदर रीढ़ वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/horse"><div class="creature-body"><h3>घोड़ा</h3><p>तेज़ दौड़ने वाला रीढ़धारी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CLASS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/bird?lock=4" alt="Class">
+            <div>
+                <div class="rank">Class</div><div class="name">Aves</div>
+                <div class="scientific"><strong>पक्षी वर्ग -> </strong>Aves Class के जीवों के शरीर पर पंख (feathers) होते हैं और वे अंडे देते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Class में वे सभी जीव आते हैं जिन्हें हम सामान्य भाषा में 'पक्षी' कहते हैं। ये गर्म खून (warm-blooded) वाले कशेरुकी (vertebrates) होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनका शरीर पंखों (feathers) से ढका होता है। इनमें दांत नहीं होते, बल्कि एक कठोर चोंच (beak) होती है। ये कठोर आवरण वाले अंडे देते हैं और इनके आगे के अंग (forelimbs) उड़ने के लिए पंखों (wings) में बदल चुके होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: House Sparrow को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">House Sparrow अंडे देती है, इसका शरीर feathers से ढका है, दांतों की जगह चोंच (beak) है और इसके पास उड़ने के लिए विकसित पंख (wings) हैं। इसलिए यह Aves Class का हिस्सा है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Aves के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow,feather"><div class="creature-body"><h3>House Sparrow</h3><p>पंखों वाली छोटी चिड़िया।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/pigeon"><div class="creature-body"><h3>कबूतर</h3><p>शांत स्वभाव वाला आम पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/parrot"><div class="creature-body"><h3>तोता</h3><p>बोलने में सक्षम रंगीन पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/ostrich"><div class="creature-body"><h3>शुतुरमुर्ग</h3><p>सबसे बड़ा और ना उड़ने वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/owl"><div class="creature-body"><h3>उल्लू</h3><p>रात में देखने वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/peacock"><div class="creature-body"><h3>मोर</h3><p>भारत का राष्ट्रीय पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/swan"><div class="creature-body"><h3>हंस (Swan)</h3><p>पानी में तैरने वाला सुंदर पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/woodpecker"><div class="creature-body"><h3>कठफोड़वा</h3><p>पेड़ों में छेद करने वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/crow"><div class="creature-body"><h3>कौआ</h3><p>अत्यंत बुद्धिमान काला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/penguin,ice"><div class="creature-body"><h3>पेंगुइन</h3><p>बर्फ में रहने वाला और तैरने वाला पक्षी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ORDER -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/perching%20bird?lock=5" alt="Order">
+            <div>
+                <div class="rank">Order</div><div class="name">Passeriformes</div>
+                <div class="scientific"><strong>Perching Birds -> </strong> Passeriformes समूह में पेड़ों की टहनियों पर बैठने वाले पक्षी आते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Order में ऐसे पक्षी आते हैं जिन्हें 'Perching Birds' (डालियों पर बैठने वाले पक्षी) कहा जाता है। यह पक्षियों का सबसे बड़ा Order है, जिसमें दुनिया के आधे से अधिक पक्षी शामिल हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनके पैरों की बनावट टहनियों को मजबूती से पकड़ने (perch) के लिए विशेष होती है। इनके पैरों में तीन उंगलियां आगे की ओर और एक उंगली पीछे की ओर होती है (anisodactyl arrangement)। इनमें से कई बहुत अच्छा गाते भी हैं (Songbirds)।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: House Sparrow को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">House Sparrow के पैरों में भी तीन उंगलियां आगे और एक पीछे की ओर होती है, जिससे यह पेड़ों की शाखाओं, तारों और ग्रिल्स पर आसानी से बैठ (perch) सकती है। इसी शारीरिक बनावट के कारण इसे Passeriformes में रखा गया है.</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Passeriformes के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow,perch"><div class="creature-body"><h3>House Sparrow</h3><p>डालियों पर बैठने वाली चिड़िया।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/robin,bird"><div class="creature-body"><h3>रॉबिन (Robin)</h3><p>सुरीला गीत गाने वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/starling"><div class="creature-body"><h3>मैना (Starling)</h3><p>झुंड में उड़ने वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/swallow,bird"><div class="creature-body"><h3>अबाबील (Swallow)</h3><p>हवा में कीड़े पकड़ने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/finch"><div class="creature-body"><h3>फिंच (Finch)</h3><p>रंगीन और छोटी चोंच वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/canary"><div class="creature-body"><h3>कैनरी (Canary)</h3><p>पीले रंग का सुरीला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/magpie"><div class="creature-body"><h3>मैगपाई (Magpie)</h3><p>काले-सफेद रंग का बुद्धिमान पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/jay,bird"><div class="creature-body"><h3>जे (Jay)</h3><p>शोर मचाने वाला रंगीन पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lark"><div class="creature-body"><h3>लार्क (Lark)</h3><p>जमीन पर घोंसला बनाने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/raven"><div class="creature-body"><h3>रेवेन (Raven)</h3><p>कौवे की प्रजाति का बड़ा पक्षी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAMILY -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/sparrow?lock=6" alt="Family">
+            <div>
+                <div class="rank">Family</div><div class="name">Passeridae</div>
+                <div class="scientific"><strong>Old World Sparrows -> </strong> Passeridae परिवार में पुरानी दुनिया (यूरोप, एशिया, अफ्रीका) की गौरैया आती हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Family में वे सभी पक्षी आते हैं जिन्हें 'Old World Sparrows' (पुरानी दुनिया की गौरैया) कहा जाता है। ये पक्षी मूल रूप से यूरोप, अफ्रीका और एशिया में पाए जाते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इस परिवार के पक्षियों का शरीर छोटा और गोल-मटोल होता है। इनके पंख आमतौर पर भूरे, काले और सफेद रंग के होते हैं। इनकी चोंच छोटी, मोटी और शंक्वाकार (conical) होती है जो बीज तोड़ने के लिए बहुत उपयुक्त है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: House Sparrow को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">House Sparrow का आकार छोटा है, इसके पंख भूरे-काले (brownish plumage) होते हैं और इसकी मोटी चोंच बीजों को छीलने और तोड़ने के लिए एकदम उपयुक्त है, जो Passeridae Family की मुख्य पहचान है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Passeridae के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/house,sparrow"><div class="creature-body"><h3>House Sparrow</h3><p>घरों के आस-पास रहने वाली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tree,sparrow"><div class="creature-body"><h3>Eurasian Tree Sparrow</h3><p>पेड़ों पर रहने वाली गौरैया।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/spanish,sparrow"><div class="creature-body"><h3>Spanish Sparrow</h3><p>स्पेन और आस-पास पाई जाने वाली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/deadsea,sparrow"><div class="creature-body"><h3>Dead Sea Sparrow</h3><p>मध्य पूर्व में मिलने वाली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cape,sparrow"><div class="creature-body"><h3>Cape Sparrow</h3><p>दक्षिण अफ्रीका की गौरैया।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/rufous,sparrow"><div class="creature-body"><h3>Rufous Sparrow</h3><p>लाल-भूरे रंग वाली गौरैया।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/golden,sparrow"><div class="creature-body"><h3>Golden Sparrow</h3><p>सुनहरे रंग की अफ़्रीकी प्रजाति।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/desert,sparrow"><div class="creature-body"><h3>Desert Sparrow</h3><p>रेगिस्तानी इलाकों की गौरैया।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/chestnut,sparrow"><div class="creature-body"><h3>Chestnut Sparrow</h3><p>गहरे भूरे रंग वाली प्रजाति।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sind,sparrow"><div class="creature-body"><h3>Sind Sparrow</h3><p>सिंधु नदी घाटी के आस-पास की प्रजाति।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- GENUS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/passer?lock=7" alt="Genus">
+            <div>
+                <div class="rank">Genus</div><div class="name">Passer</div>
+                <div class="scientific"><strong>True Sparrows -> </strong> Passer वंश में 'सच्ची गौरैया' शामिल हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">Passer Genus में मुख्य रूप से उन्हें रखा जाता है जिन्हें 'सच्ची गौरैया' (True sparrows) कहा जाता है। ये अक्सर इंसानी बस्तियों के आस-पास रहना पसंद करती हैं और खुले घास के मैदानों या झाड़ियों में पाई जाती हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इस वंश के पक्षी मुख्य रूप से बीज खाने वाले (granivorous) होते हैं, लेकिन प्रजनन के मौसम में ये कीड़े भी खाते हैं। ये अक्सर झुंड में रहते हैं और इमारतों की दरारों या पेड़ों के कोटरों में घोंसला बनाते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: House Sparrow को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">यह पक्षी इंसानी घरों (human habitations) के आस-पास अत्यधिक घुला-मिला रहता है। इसका घोंसला बनाने का तरीका, बीज खाने की आदतें, और इसका जेनेटिक ढांचा इसे Passer वंश का बनाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Passer Genus की कुछ मुख्य प्रजातियां और विशेषताएं</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/house,sparrow,male"><div class="creature-body"><h3>House Sparrow (P. domesticus)</h3><p>सबसे आम घरेलू प्रजाति।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tree,sparrow,bird"><div class="creature-body"><h3>Tree Sparrow (P. montanus)</h3><p>गाल पर काले धब्बे वाली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/somali,sparrow"><div class="creature-body"><h3>Somali Sparrow (P. castanopterus)</h3><p>सोमालिया में पाई जाने वाली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/iago,sparrow"><div class="creature-body"><h3>Iago Sparrow (P. iagoensis)</h3><p>केप वर्डे द्वीपों की प्रजाति।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow,flock"><div class="creature-body"><h3>Flocking Behavior</h3><p>झुंड में रहने की प्रवृत्ति।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow,nest"><div class="creature-body"><h3>Cavity Nesting</h3><p>दरारों और छेदों में घोंसला निर्माण।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow,seed"><div class="creature-body"><h3>Seed Diet</h3><p>मुख्य रूप से बीज और अनाज का आहार।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow,dust"><div class="creature-body"><h3>Dust Bathing</h3><p>मिट्टी में नहाकर परजीवी दूर करना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow,singing"><div class="creature-body"><h3>Chirping Calls</h3><p>लगातार 'चीं-चीं' की आवाज करना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow,urban"><div class="creature-body"><h3>Human Proximity</h3><p>इंसानों के बेहद करीब रहना।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SPECIES -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/house%20sparrow?lock=8" alt="Species">
+            <div>
+                <div class="rank">Species</div><div class="name">Passer domesticus</div>
+                <div class="scientific"><strong>House Sparrow -> </strong> यह हमारे आस-पास सबसे ज्यादा पाई जाने वाली आम घरेलू चिड़िया है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">यह वर्गीकरण का अंतिम और सबसे सटीक स्तर है। इसमें विशेष रूप से 'House Sparrow' (आम घरेलू गौरैया) आती है, जो विश्व भर में इंसानों के साथ सहजीवन बिताती है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी मुख्य विशेषता नर और मादा का अलग-अलग दिखना (Sexual dimorphism) है। नर गौरैया के गले और छाती पर एक स्पष्ट काला धब्बा (black bib) होता है, जबकि मादा मुख्य रूप से हल्के भूरे रंग की होती है। ये बहुत मिलनसार होती हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: इस चिड़िया को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">शहरी वातावरण में रहने की विशेष क्षमता, नर के गले पर काला धब्बा, इसका विशिष्ट 'चीं-चीं' का स्वर, और इसकी अपनी एक अलग डीएनए संरचना इसे विज्ञान में <strong>'Passer domesticus'</strong> के रूप में एक विशिष्ट प्रजाति बनाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Passer domesticus (House Sparrow) की 10 खास बातें</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow,urban"><div class="creature-body"><h3>Urban Adaptation</h3><p>शहरों और गांवों में रहने की आदी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow,male"><div class="creature-body"><h3>Black Bib</h3><p>नर गौरैया के गले पर काला निशान।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow,dust,bath"><div class="creature-body"><h3>Dust Bathing</h3><p>पंखों को साफ रखने के लिए धूल में नहाना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow,sound"><div class="creature-body"><h3>Chirping Sound</h3><p>इनकी जानी-पहचानी 'चीं-चीं' की आवाज़।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow,eating,seed"><div class="creature-body"><h3>Seed Cracking</h3><p>मजबूत चोंच से बीज तोड़कर खाना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow,female"><div class="creature-body"><h3>Sexual Dimorphism</h3><p>नर और मादा का रूप अलग होना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow,group"><div class="creature-body"><h3>Flocking Behavior</h3><p>अक्सर छोटे झुंडों (Flocks) में रहना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/world,map"><div class="creature-body"><h3>Global Distribution</h3><p>दुनिया के लगभग हर कोने में मौजूद।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow,crevice"><div class="creature-body"><h3>Cavity Nests</h3><p>घरों की छतों और मीटर बॉक्स में घोंसला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow,winter"><div class="creature-body"><h3>Non-migratory</h3><p>ये पक्षी मौसम बदलने पर प्रवास (migrate) नहीं करते।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<footer>Beautiful Detailed Taxonomy Explorer (Bird Edition)</footer>
+
+<!-- =========================   JAVASCRIPT========================= -->
+<script>
+const cards = document.querySelectorAll(".taxonomy-card");
+cards.forEach(card=>{
+    const header = card.querySelector(".taxonomy-header");
+    header.addEventListener("click",()=>{
+        card.classList.toggle("active");
+        const content = card.querySelector(".content");
+        if(content.style.maxHeight){
+            content.style.maxHeight = null;
+        }else{
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    });
+});
+
+const observer = new IntersectionObserver((entries)=>{
+    entries.forEach((entry)=>{
+        if(entry.isIntersecting){
+            entry.target.classList.add("show");
+        }
+    });
+});
+const hiddenElements = document.querySelectorAll(".hidden");
+hiddenElements.forEach((el)=>observer.observe(el));
+
+document.querySelectorAll('.creature img').forEach(img=>{
+ const wrap=document.createElement('div');
+ wrap.className='image-wrap';
+ img.parentNode.insertBefore(wrap,img);
+ wrap.appendChild(img);
+
+ const tools=document.createElement('div');
+ tools.className='img-tools';
+
+ const r=document.createElement('button');
+ r.className='img-tool-btn';
+ r.innerHTML='🔄';
+
+ const s=document.createElement('button');
+ s.className='img-tool-btn';
+ s.innerHTML='🌐';
+
+ tools.appendChild(r);
+ tools.appendChild(s);
+ wrap.appendChild(tools);
+
+ const original=(img.src.split('/300/')[1]||'animal').split('?')[0];
+
+ r.onclick=(e)=>{
+   e.stopPropagation();
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+Date.now();
+ };
+
+ s.onclick=(e)=>{
+   e.stopPropagation();
+   window.open('https://commons.wikimedia.org/w/index.php?search='+encodeURIComponent(original),'_blank');
+ };
+
+ img.onerror=()=>{
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+(Date.now()+1);
+ };
+});
+
+
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('img').forEach((img,i)=>{
+   if(img.src.includes('loremflickr.com')){
+      const base=img.src.split('?')[0];
+      img.src=base+'?lock='+(Date.now()+i);
+   }
+ });
+});
+</script>
+
+
+<script>
+document.querySelectorAll('img').forEach(img=>{
+  img.onerror=function(){
+    this.onerror=null;
+    this.src='https://loremflickr.com/400/300/sparrow?lock='+Date.now();
+  };
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.image-wrap').forEach(w=>{
+   const tools=w.querySelector('.img-tools');
+   const card=w.closest('.creature');
+   const title=card ? card.querySelector('.creature-body h3') : null;
+   if(tools && title){
+      title.insertAdjacentElement('afterend', tools);
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.padding='0';
+      tools.style.background='transparent';
+      tools.style.verticalAlign='middle';
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const title=card.querySelector('.creature-body h3');
+   const tools=card.querySelector('.img-tools');
+   if(title && tools){
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.verticalAlign='middle';
+      tools.style.background='transparent';
+      tools.style.padding='0';
+      tools.style.position='static';
+
+      title.appendChild(tools);
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.taxonomy-header .left img').forEach(img=>{
+   if(img.parentElement.querySelector('.header-tools')) return;
+
+   const tools=document.createElement('div');
+   tools.className='header-tools';
+   tools.style.display='flex';
+   tools.style.justifyContent='center';
+   tools.style.gap='6px';
+   tools.style.marginTop='4px';
+
+   const r=document.createElement('button');
+   r.textContent='🔄';
+
+   const g=document.createElement('button');
+   g.textContent='🌐';
+
+   r.onclick=(e)=>{
+      e.stopPropagation();
+      img.src=img.src.split('?')[0]+'?v='+Date.now();
+   };
+
+   g.onclick=(e)=>{
+      e.stopPropagation();
+      const q=img.alt || 'animal';
+      window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+
+   const wrap=document.createElement('div');
+   wrap.style.display='flex';
+   wrap.style.flexDirection='column';
+   wrap.style.alignItems='center';
+
+   img.parentNode.insertBefore(wrap,img);
+   wrap.appendChild(img);
+   wrap.appendChild(tools);
+   tools.appendChild(r);
+   tools.appendChild(g);
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+
+document.querySelectorAll('.header-tools button:last-child').forEach(btn=>{
+ btn.onclick=(e)=>{
+  e.stopPropagation();
+  const card=btn.closest('.taxonomy-card');
+  const q=[
+   card?.querySelector('.rank')?.innerText||'',
+   card?.querySelector('.name')?.innerText||'',
+   card?.querySelector('.scientific')?.innerText||''
+  ].join(' ');
+  window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+ };
+});
+
+document.querySelectorAll('.creature').forEach(card=>{
+ const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+ if(globe){
+   globe.onclick=(e)=>{
+    e.stopPropagation();
+    const q=(card.querySelector('h3')?.innerText||'')+' '+(card.querySelector('p')?.innerText||'');
+    window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+ }
+});
+
+});
+</script>
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+   if(!globe) return;
+
+   globe.onclick=(e)=>{
+     e.stopPropagation();
+
+     const titleNode = card.querySelector('h3');
+     let title='';
+     if(titleNode){
+       title=(titleNode.childNodes[0]?.textContent || titleNode.textContent || '').trim();
+       title=title.replace('🔄','').replace('🌐','').trim();
+     }
+
+     const desc=(card.querySelector('p')?.innerText || '').trim();
+
+     const taxonomyCard=card.closest('.taxonomy-card');
+     const rank=(taxonomyCard?.querySelector('.rank')?.innerText || '').trim();
+     const taxonomyName=(taxonomyCard?.querySelector('.name')?.innerText || '').trim();
+
+     const query=(rank+' '+taxonomyName+' '+title+' '+desc).replace(/\s+/g,' ').trim();
+
+     window.open(
+       'https://www.google.com/search?tbm=isch&q='+encodeURIComponent(query),
+       '_blank'
+     );
+   };
+ });
+});
+</script>
+
+</body>
+</html>

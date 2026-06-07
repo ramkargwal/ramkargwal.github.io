@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Langur Taxonomy Explorer - Detailed</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================   BASIC========================= */
+*{margin:0; padding:0; box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{    font-family:'Poppins',sans-serif;    background:linear-gradient(to bottom right,#fff8fb,#eef5ff,#ffffff);    color:#1c2430; overflow-x:hidden;}
+
+/* =========================   HERO========================= */
+.hero{    display:flex; align-items:center;    justify-content:center; flex-direction:column;    text-align:center; padding:40px 20px;    position:relative; overflow:hidden;}
+.hero::before, .hero::after{    content:""; position:absolute;    border-radius:50%;}
+.hero::before{    width:700px; height:700px; top:-250px; left:-200px;    background:radial-gradient(circle,#8fd3ff55,transparent 70%);    animation:float1 8s ease-in-out infinite;}
+.hero::after{    width:600px; height:600px; bottom:-250px; right:-200px;    background:radial-gradient(circle,#bca7ff44,transparent 70%);    animation:float2 10s ease-in-out infinite;}
+@keyframes float1{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(30px);} }
+@keyframes float2{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(-30px);} }
+.hero h1{    font-size:70px; font-weight:700; z-index:2;    background:linear-gradient(to right,#34495e,#7f8c8d);    -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+.hero p{    margin-top:20px; font-size:20px; color:#5c6773;    max-width:1200px; line-height:1.8; z-index:2;}
+
+/* =========================   CONTAINER & CARDS========================= */
+.container{ width:95%; max-width:1250px; margin:auto; padding-bottom:80px; }
+.taxonomy-card{    background:white; margin-bottom:30px; border-radius:30px;    overflow:hidden; border:1px solid #dde8f5;    box-shadow:0 10px 30px rgba(0,0,0,0.05); transition:0.5s;}
+.taxonomy-card:hover{ transform:translateY(-6px); box-shadow:0 18px 40px rgba(0,0,0,0.08); }
+.taxonomy-header{    padding:25px; display:flex; align-items:center;    justify-content:space-between; cursor:pointer; transition:0.3s;}
+.taxonomy-header:hover{ background:#f7fbff; }
+.left{ display:flex; align-items:center; gap:22px; }
+.left img{    width:95px; height:95px; border-radius:24px;    object-fit:cover; border:4px solid #eef5ff; transition:0.4s;}
+.taxonomy-card:hover .left img{ transform:scale(1.05) rotate(2deg); }
+.rank{ font-size:13px; text-transform:uppercase; letter-spacing:3px; color:#34495e; font-weight:600; }
+.name{ font-size:34px; font-weight:700; margin-top:4px; }
+.scientific{ margin-top:7px; color:#637082; font-size:16px; }
+.arrow{ font-size:38px; color:#34495e; transition:0.5s; }
+.taxonomy-card.active .arrow{ transform:rotate(180deg); }
+
+/* =========================   CONTENT & DETAILED DESC========================= */
+.content{ max-height:0; overflow:hidden; transition:max-height 0.8s ease; }
+.content-inner{ padding:35px; border-top:1px solid #edf3fa; }
+
+.detailed-desc {    background: #fdfdff;    padding: 25px;    border-radius: 20px;    border-left: 5px solid #34495e;    margin-bottom: 35px;}
+.desc-item {    margin-bottom: 18px;}
+.desc-item:last-child {    margin-bottom: 0;}
+.desc-label {    display: block;    font-size: 17px;    font-weight: 600;    color: #2c3e50;    margin-bottom: 5px;}
+.desc-text {    font-size: 16px;    line-height: 1.8;    color: #465260;}
+
+.section-title{ font-size:30px; margin-bottom:25px; color:#2c3e50; }
+
+/* =========================   GRID & CREATURES========================= */
+.creatures{    display:grid; gap:25px;    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));}
+.creature{    background:#ffffff; border-radius:20px; overflow:hidden;    border:1px solid #e8eef7; transition:0.5s;}
+.creature:hover{ transform:translateY(-10px) scale(1.02); box-shadow:0 15px 30px rgba(0,0,0,0.08); }
+.creature img{ width:100%; height:160px; object-fit:cover; transition:0.5s; }
+.creature:hover img{ transform:scale(1.08); }
+.creature-body{ padding:15px; }
+.creature h3{ font-size:18px; margin-bottom:8px; color: #1c2430;}
+.creature p{ color:#66717d; line-height:1.5; font-size:14px; }
+
+/* =========================   UTILITIES========================= */
+.hidden{ opacity:0; transform:translateY(50px); transition:all 1s; }
+.show{ opacity:1; transform:translateY(0px); }
+footer{ padding:40px 20px; text-align:center; color:#607080; font-size:15px; }
+
+@media(max-width:800px){    .hero h1{font-size:44px;} .hero p{font-size:17px;}    .name{font-size:26px;} .left{align-items:flex-start;}    .left img{width:75px; height:75px;}    .taxonomy-header{padding:20px;} .content-inner{padding:25px;}}
+
+.image-wrap{position:relative;display:flex;flex-direction:column}
+.img-tools{position:static;display:flex;gap:6px;justify-content:center;padding:8px 0;background:#fff}
+.img-tool-btn{border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;background:rgba(255,255,255,.9)}
+
+</style>
+
+<style>
+.header-tools button,.img-tool-btn,.img-tools button{
+border:none!important;
+outline:none!important;
+background:transparent!important;
+box-shadow:none!important;
+padding:0!important;
+cursor:pointer;
+font-size:20px;
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+    <h1>Langur Taxonomy</h1>
+    <p>Langur (लंगूर) की पूरी biological classification प्रणाली को गहराई से जानिए। हर Level पर क्लिक करें और scientific reasoning व Examples के साथ समझें कि Langur को उस Level में क्यों रखा गया है।</p>
+</section>
+
+<div class="container">
+
+<!-- DOMAIN -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/eukarya?lock=1" alt="Domain">
+            <div>
+                <div class="rank">Domain</div><div class="name">Eukarya</div>
+                <div class="scientific"><strong>Eukaryotic Organisms -> </strong>Eukarya में वे सभी जीव आते हैं जिनकी cells में स्पष्ट nucleus होता है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस Level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Domain में पृथ्वी के वे सभी जीव आते हैं जिनकी cells में एक स्पष्ट और membrane-bound nucleus होता है। इसमें plants, animals, fungi और protists शामिल हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस Level की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी cell structure बहुत complex होती है। इनका genetic material यानी DNA, nucleus के अंदर सुरक्षित रहता है और इनकी cells में विभिन्न organelles होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Langur को इसी Level में क्यों रखा गया है?</span>
+                    <p class="desc-text">Langur का शरीर eukaryotic cells से बना है। इसकी हर cell के अंदर स्पष्ट nucleus और अन्य cell organelles मौजूद होते हैं, इसीलिए इसे Eukarya Domain का हिस्सा माना जाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Eukarya के 10 Examples</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/langur"><div class="creature-body"><h3>Langur</h3><p>लंबे tail वाला बंदर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/human"><div class="creature-body"><h3>Human</h3><p>सबसे बुद्धिमान Primate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog"><div class="creature-body"><h3>Dog</h3><p>वफादार mammal जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tree"><div class="creature-body"><h3>Tree (Plants)</h3><p>Photosynthesis करने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mushroom"><div class="creature-body"><h3>Mushroom</h3><p>Fungi kingdom का सदस्य।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bird"><div class="creature-body"><h3>Bird</h3><p>आसमान में उड़ने वाले vertebrates.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/fish"><div class="creature-body"><h3>Fish</h3><p>Aquatic जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog"><div class="creature-body"><h3>Frog</h3><p>Amphibian जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/butterfly"><div class="creature-body"><h3>Butterfly</h3><p>सुंदर Invertebrate कीट।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/rose"><div class="creature-body"><h3>Rose</h3><p>Flowering plant.</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- KINGDOM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/animal?lock=2" alt="Kingdom">
+            <div>
+                <div class="rank">Kingdom</div><div class="name">Animalia</div>
+                <div class="scientific"><strong>Multicellular Animals -> </strong>Animalia Kingdom में वे जीव आते हैं जो अपना भोजन स्वयं नहीं बनाते।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस Level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Kingdom में सभी multicellular animals आते हैं। इस समूह के जीव अपना भोजन खुद नहीं बना सकते बल्कि भोजन के लिए दूसरे organisms पर निर्भर रहते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस Level की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">ये heterotrophic होते हैं। इनकी cells के बाहर पौधों जैसी कठोर cell wall नहीं होती है। इस Kingdom के अधिकांश जीव अपने जीवन के किसी न किसी चरण में स्वेच्छा से locomotion कर सकते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Langur को इसी Level में क्यों रखा गया है?</span>
+                    <p class="desc-text">Langur एक multicellular organism है जो अपना भोजन स्वयं नहीं बना सकता। यह भोजन के लिए leaves, fruits और seeds पर निर्भर होता है। इसमें locomotion की क्षमता है, अतः यह पूर्ण रूप से एक Animal है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Animalia के 10 Examples</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/langur,monkey"><div class="creature-body"><h3>Langur</h3><p>Herbivorous बंदर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lion"><div class="creature-body"><h3>Lion</h3><p>Apex predator.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant"><div class="creature-body"><h3>Elephant</h3><p>विशालकाय herbivore.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark"><div class="creature-body"><h3>Shark</h3><p>Marine predator.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle"><div class="creature-body"><h3>Eagle</h3><p>तेज़ नज़र वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/spider"><div class="creature-body"><h3>Spider</h3><p>Arachnid जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake"><div class="creature-body"><h3>Snake</h3><p>Reptile जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dolphin"><div class="creature-body"><h3>Dolphin</h3><p>Marine mammal.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bear"><div class="creature-body"><h3>Bear</h3><p>Omnivorous जानवर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/penguin"><div class="creature-body"><h3>Penguin</h3><p>Flightless bird.</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PHYLUM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/vertebrate?lock=3" alt="Phylum">
+            <div>
+                <div class="rank">Phylum</div><div class="name">Chordata</div>
+                <div class="scientific"><strong>Chordates -> </strong>Chordata समूह के जीवों में backbone या notochord होती है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस Level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Phylum में वे जीव आते हैं जिनके शरीर में जीवन के किसी न किसी चरण में notochord या backbone (vertebral column) मौजूद होती है। इनमें fishes, birds, reptiles और mammals आते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस Level की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इस समूह के जीवों में एक विकसित central nervous system, शरीर को सहारा देने वाली backbone, और शरीर के पिछले हिस्से में post-anal tail का होना प्रमुख लक्षण है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Langur को इसी Level में क्यों रखा गया है?</span>
+                    <p class="desc-text">Langur के शरीर में एक लचीली और मजबूत backbone होती है जो उसके nervous system की रक्षा करती है। इसके अलावा, संतुलन बनाने के लिए इसके पास एक लंबी tail होती है, इसीलिए इसे Chordata Phylum में रखा गया।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Chordata के 10 Examples</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/langur,tree"><div class="creature-body"><h3>Langur</h3><p>लचीली backbone वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog,animal"><div class="creature-body"><h3>Dog</h3><p>Backbone वाला mammal.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/monkey"><div class="creature-body"><h3>Monkey</h3><p>पेड़ों पर रहने वाला Primate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/whale"><div class="creature-body"><h3>Whale</h3><p>Marine vertebrate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle,bird"><div class="creature-body"><h3>Eagle</h3><p>आसमान का predator.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake,animal"><div class="creature-body"><h3>Snake</h3><p>लचीली spine वाला reptile.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog,animal"><div class="creature-body"><h3>Frog</h3><p>Amphibian vertebrate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark,fish"><div class="creature-body"><h3>Shark</h3><p>Cartilaginous fish.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/turtle"><div class="creature-body"><h3>Turtle</h3><p>Shell के अंदर backbone.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/horse"><div class="creature-body"><h3>Horse</h3><p>तेज़ दौड़ने वाला vertebrate.</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CLASS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/mammal?lock=4" alt="Class">
+            <div>
+                <div class="rank">Class</div><div class="name">Mammalia</div>
+                <div class="scientific"><strong>Mammals -> </strong>Mammalia Class के जीव अपने बच्चों को जन्म देते हैं और दूध पिलाते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस Level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Class में वे सभी जीव आते हैं जो अंडे देने के बजाय सीधे बच्चों को जन्म देते हैं और उन्हें अपना दूध (milk) पिलाकर पालते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस Level की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी females में mammary glands होती हैं जिनसे नवजात के पोषण के लिए दूध निकलता है। इनके शरीर पर hair या fur पाए जाते हैं, और ये warm-blooded जीव होते हैं जो अपने शरीर का तापमान (body temperature) नियंत्रित रख सकते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Langur को इसी Level में क्यों रखा गया है?</span>
+                    <p class="desc-text">Female Langur बच्चों को जन्म देती है और उन्हें अपना दूध पिलाकर (nursing) पालती है। इसके पूरे शरीर पर fur होते हैं और यह एक warm-blooded जानवर है, इसलिए यह एक Mammal है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Mammalia के 10 Examples</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/langur,fur"><div class="creature-body"><h3>Langur</h3><p>Fur वाला primate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tiger"><div class="creature-body"><h3>Tiger</h3><p>राष्ट्रीय Mammal.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,wild"><div class="creature-body"><h3>Elephant</h3><p>सबसे बड़ा terrestrial mammal.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/whale,ocean"><div class="creature-body"><h3>Blue Whale</h3><p>Marine mammal.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/human,face"><div class="creature-body"><h3>Human</h3><p>Social mammal.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bat"><div class="creature-body"><h3>Bat</h3><p>उड़ने वाला एकमात्र mammal.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/kangaroo"><div class="creature-body"><h3>Kangaroo</h3><p>Marsupial mammal.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bear,wild"><div class="creature-body"><h3>Bear</h3><p>घने fur वाला mammal.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dolphin,sea"><div class="creature-body"><h3>Dolphin</h3><p>Intelligent marine mammal.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cow"><div class="creature-body"><h3>Cow</h3><p>Domestic herbivore.</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ORDER -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/primate?lock=5" alt="Order">
+            <div>
+                <div class="rank">Order</div><div class="name">Primates</div>
+                <div class="scientific"><strong>Primates -> </strong>Primates समूह में वे जीव आते हैं जिनके brain बड़े होते हैं और दृष्टि 3D होती है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस Level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Order में humans, apes, और monkeys जैसे जीव आते हैं। ये जीव मुख्य रूप से पेड़ों (arboreal) या ज़मीन (terrestrial) पर रहने के लिए अनुकूलित होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस Level की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी आँखें चेहरे के सामने होती हैं जिससे इन्हें binocular vision (3D दृष्टि) मिलती है। इनके हाथों में opposable thumbs होते हैं जो पेड़ों की डालियों को पकड़ने में मदद करते हैं, और इनका brain शरीर के आकार के अनुपात में बड़ा और complex होता है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Langur को इसी Level में क्यों रखा गया है?</span>
+                    <p class="desc-text">Langur की आँखें सामने होती हैं, जो सटीक दूरी का अनुमान लगाने में मदद करती हैं। इसके हाथों में पेड़ों पर चढ़ने और चीज़ों को पकड़ने के लिए opposable thumbs होते हैं, इसीलिए यह Primates Order का हिस्सा है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Primates के 10 Examples</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/langur,monkey"><div class="creature-body"><h3>Langur</h3><p>भारतीय उपमहाद्वीप का primate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/human"><div class="creature-body"><h3>Human</h3><p>Bipedal primate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/chimpanzee"><div class="creature-body"><h3>Chimpanzee</h3><p>इंसान का करीबी ape.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/gorilla"><div class="creature-body"><h3>Gorilla</h3><p>सबसे बड़ा ape.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/orangutan"><div class="creature-body"><h3>Orangutan</h3><p>Arboreal ape.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/baboon"><div class="creature-body"><h3>Baboon</h3><p>Terrestrial primate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/macaque"><div class="creature-body"><h3>Macaque</h3><p>भारत में आम monkey.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lemur"><div class="creature-body"><h3>Lemur</h3><p>Madagascar का primate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/loris"><div class="creature-body"><h3>Loris</h3><p>Nocturnal primate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/gibbon"><div class="creature-body"><h3>Gibbon</h3><p>Lesser ape.</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAMILY -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/monkey?lock=6" alt="Family">
+            <div>
+                <div class="rank">Family</div><div class="name">Cercopithecidae</div>
+                <div class="scientific"><strong>Old World Monkeys -> </strong>Cercopithecidae Family में Africa और Asia के बंदर आते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस Level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Family में Asia और Africa में पाए जाने वाले सभी Old World monkeys शामिल हैं, जैसे कि macaques, baboons, और langurs।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस Level की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इन बंदरों की tail होती है, लेकिन वे उससे पेड़ों की डालियों को पकड़ नहीं सकते (non-prehensile tail)। इनके nostrils नीचे की ओर खुले होते हैं (downward-pointing), और ये अपने भोजन को चबाने के लिए विशेष molars का इस्तेमाल करते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Langur को इसी Level में क्यों रखा गया है?</span>
+                    <p class="desc-text">Langur Asia में पाया जाने वाला बंदर है। इसकी लंबी tail संतुलन बनाने के काम आती है, लेकिन यह non-prehensile होती है। इसकी शारीरिक संरचना इसे Cercopithecidae Family का सदस्य बनाती है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Cercopithecidae के 10 Examples</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/graylangur"><div class="creature-body"><h3>Gray Langur</h3><p>Leaf-eating monkey.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/rhesus"><div class="creature-body"><h3>Rhesus Macaque</h3><p>लाल मुँह वाला monkey.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/nilgiri,langur"><div class="creature-body"><h3>Nilgiri Langur</h3><p>दक्षिण भारत का काला langur.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mandrill"><div class="creature-body"><h3>Mandrill</h3><p>Colorful चेहरे वाला बंदर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/proboscis"><div class="creature-body"><h3>Proboscis Monkey</h3><p>लंबी nose वाला monkey.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/colobus"><div class="creature-body"><h3>Colobus</h3><p>African Old World monkey.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/liontailed"><div class="creature-body"><h3>Lion-tailed Macaque</h3><p>Endangered species.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snowmonkey"><div class="creature-body"><h3>Snow Monkey</h3><p>Japan के ठंडे इलाकों में रहने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/vervet"><div class="creature-body"><h3>Vervet Monkey</h3><p>African monkey.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/douc"><div class="creature-body"><h3>Douc Langur</h3><p>रंगीन बालों वाला Asian langur.</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- GENUS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/langur?lock=7" alt="Genus">
+            <div>
+                <div class="rank">Genus</div><div class="name">Semnopithecus</div>
+                <div class="scientific"><strong>Gray Langurs -> </strong>Semnopithecus Genus में मुख्य रूप से Indian subcontinent के Langurs शामिल हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस Level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Genus में वे सभी Langurs आते हैं जिन्हें आमतौर पर 'Hanuman Langurs' या Gray Langurs कहा जाता है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस Level की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनके शरीर का रंग मुख्य रूप से grey या yellowish-brown होता है, और चेहरा तथा कान बिल्कुल काले (black) होते हैं। इनकी tail इनके शरीर से भी लंबी होती है जो कूदते समय बेहतरीन balance प्रदान करती है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Langur को इसी Level में क्यों रखा गया है?</span>
+                    <p class="desc-text">भारत में देखे जाने वाले Langur का काला चेहरा, grey शरीर, और विशिष्ट छलांग लगाने की क्षमता (leaping ability) इसे Semnopithecus Genus का हिस्सा बनाती है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Semnopithecus के कुछ मुख्य प्रकार और विशेषताएं</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/northern,langur"><div class="creature-body"><h3>Northern Plains Gray Langur</h3><p>उत्तर भारत का आम langur.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tarai,langur"><div class="creature-body"><h3>Tarai Gray Langur</h3><p>Himalayas की तलहटी में।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/blackfooted,langur"><div class="creature-body"><h3>Black-footed Gray Langur</h3><p>Western Ghats का langur.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/kashmir,langur"><div class="creature-body"><h3>Kashmir Gray Langur</h3><p>ठंडे पहाड़ी इलाकों में रहने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/langur,tail"><div class="creature-body"><h3>Long Tail</h3><p>शरीर से बड़ी tail जो balance बनाती है।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/langur,eating"><div class="creature-body"><h3>Herbivorous Diet</h3><p>Folivorous (पत्तियाँ खाने वाला)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/langur,troop"><div class="creature-body"><h3>Troop Living</h3><p>बड़े groups में रहते हैं।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/langur,jumping"><div class="creature-body"><h3>Leaping</h3><p>15 feet तक लंबी छलांग।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/langur,calling"><div class="creature-body"><h3>Alarm Call</h3><p>Predators को देखकर warning देना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/langur,city"><div class="creature-body"><h3>Urban Adaptation</h3><p>Human settlements के आस-पास रहना।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SPECIES -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/gray%20langur?lock=8" alt="Species">
+            <div>
+                <div class="rank">Species</div><div class="name">Semnopithecus entellus</div>
+                <div class="scientific"><strong>Northern Plains Gray Langur -> </strong>यह भारत में सबसे आम तौर पर देखा जाने वाला Langur है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस Level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">यह Taxonomy का अंतिम और सबसे सटीक स्तर है। इसमें विशेष रूप से 'Northern Plains Gray Langur' को रखा गया है, जो मुख्य रूप से उत्तर और मध्य भारत में बहुत आम है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस Level की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनका शरीर हल्के grey रंग का होता है। ये अपने हाथों का इस्तेमाल मुख्य रूप से पेड़ों पर चढ़ने और खाना खाने के लिए करते हैं। यह Species ज़मीन पर चलने (quadrupedalism) और इंसानी आबादी के बीच रहने के लिए अनुकूलित (adapted) हो चुकी है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: इस Langur को इसी Level में क्यों रखा गया है?</span>
+                    <p class="desc-text">इसके specific genetic makeup और उत्तर भारत में इसका विस्तृत निवास क्षेत्र (habitat) इसे विज्ञान में <strong>Semnopithecus entellus</strong> के रूप में एक अलग Species बनाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Semnopithecus entellus की 10 खास बातें</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/langur,face"><div class="creature-body"><h3>Black Face</h3><p>गहरा काला और hairless चेहरा।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/langur,old"><div class="creature-body"><h3>Lifespan</h3><p>Wild में 20 years तक जीवन।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/langur,leaves"><div class="creature-body"><h3>Folivorous</h3><p>Diet का मुख्य हिस्सा leaves हैं।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/hanuman,langur"><div class="creature-body"><h3>Mythological Link</h3><p>भारत में Sacred माना जाता है।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/langur,morning"><div class="creature-body"><h3>Morning Whoop Calls</h3><p>Vocalization द्वारा communication.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/langur,aggression"><div class="creature-body"><h3>Infanticide</h3><p>Dominance के लिए aggressive behavior.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/langur,grooming"><div class="creature-body"><h3>Grooming</h3><p>Social bonding का हिस्सा।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/langur,walking"><div class="creature-body"><h3>Terrestrial & Arboreal</h3><p>ज़मीन और पेड़ों दोनों पर active.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/langur,stomach"><div class="creature-body"><h3>Multi-chambered Stomach</h3><p>Leaves को digest करने के लिए।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/langur,family"><div class="creature-body"><h3>Matrilineal Groups</h3><p>Females अपने जन्म वाले group में रहती हैं।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<footer>Beautiful Detailed Taxonomy Explorer (Langur Edition)</footer>
+
+<!-- =========================   JAVASCRIPT========================= -->
+<script>
+const cards = document.querySelectorAll(".taxonomy-card");
+cards.forEach(card=>{
+    const header = card.querySelector(".taxonomy-header");
+    header.addEventListener("click",()=>{
+        card.classList.toggle("active");
+        const content = card.querySelector(".content");
+        if(content.style.maxHeight){
+            content.style.maxHeight = null;
+        }else{
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    });
+});
+
+const observer = new IntersectionObserver((entries)=>{
+    entries.forEach((entry)=>{
+        if(entry.isIntersecting){
+            entry.target.classList.add("show");
+        }
+    });
+});
+const hiddenElements = document.querySelectorAll(".hidden");
+hiddenElements.forEach((el)=>observer.observe(el));
+
+document.querySelectorAll('.creature img').forEach(img=>{
+ const wrap=document.createElement('div');
+ wrap.className='image-wrap';
+ img.parentNode.insertBefore(wrap,img);
+ wrap.appendChild(img);
+
+ const tools=document.createElement('div');
+ tools.className='img-tools';
+
+ const r=document.createElement('button');
+ r.className='img-tool-btn';
+ r.innerHTML='🔄';
+
+ const s=document.createElement('button');
+ s.className='img-tool-btn';
+ s.innerHTML='🌐';
+
+ tools.appendChild(r);
+ tools.appendChild(s);
+ wrap.appendChild(tools);
+
+ const original=(img.src.split('/300/')[1]||'animal').split('?')[0];
+
+ r.onclick=(e)=>{
+   e.stopPropagation();
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+Date.now();
+ };
+
+ s.onclick=(e)=>{
+   e.stopPropagation();
+   window.open('https://commons.wikimedia.org/w/index.php?search='+encodeURIComponent(original),'_blank');
+ };
+
+ img.onerror=()=>{
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+(Date.now()+1);
+ };
+});
+
+
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('img').forEach((img,i)=>{
+   if(img.src.includes('loremflickr.com')){
+      const base=img.src.split('?')[0];
+      img.src=base+'?lock='+(Date.now()+i);
+   }
+ });
+});
+</script>
+
+
+<script>
+document.querySelectorAll('img').forEach(img=>{
+  img.onerror=function(){
+    this.onerror=null;
+    this.src='https://loremflickr.com/400/300/langur?lock='+Date.now();
+  };
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.image-wrap').forEach(w=>{
+   const tools=w.querySelector('.img-tools');
+   const card=w.closest('.creature');
+   const title=card ? card.querySelector('.creature-body h3') : null;
+   if(tools && title){
+      title.insertAdjacentElement('afterend', tools);
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.padding='0';
+      tools.style.background='transparent';
+      tools.style.verticalAlign='middle';
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const title=card.querySelector('.creature-body h3');
+   const tools=card.querySelector('.img-tools');
+   if(title && tools){
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.verticalAlign='middle';
+      tools.style.background='transparent';
+      tools.style.padding='0';
+      tools.style.position='static';
+
+      title.appendChild(tools);
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.taxonomy-header .left img').forEach(img=>{
+   if(img.parentElement.querySelector('.header-tools')) return;
+
+   const tools=document.createElement('div');
+   tools.className='header-tools';
+   tools.style.display='flex';
+   tools.style.justifyContent='center';
+   tools.style.gap='6px';
+   tools.style.marginTop='4px';
+
+   const r=document.createElement('button');
+   r.textContent='🔄';
+
+   const g=document.createElement('button');
+   g.textContent='🌐';
+
+   r.onclick=(e)=>{
+      e.stopPropagation();
+      img.src=img.src.split('?')[0]+'?v='+Date.now();
+   };
+
+   g.onclick=(e)=>{
+      e.stopPropagation();
+      const q=img.alt || 'animal';
+      window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+
+   const wrap=document.createElement('div');
+   wrap.style.display='flex';
+   wrap.style.flexDirection='column';
+   wrap.style.alignItems='center';
+
+   img.parentNode.insertBefore(wrap,img);
+   wrap.appendChild(img);
+   wrap.appendChild(tools);
+   tools.appendChild(r);
+   tools.appendChild(g);
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+
+document.querySelectorAll('.header-tools button:last-child').forEach(btn=>{
+ btn.onclick=(e)=>{
+  e.stopPropagation();
+  const card=btn.closest('.taxonomy-card');
+  const q=[
+   card?.querySelector('.rank')?.innerText||'',
+   card?.querySelector('.name')?.innerText||'',
+   card?.querySelector('.scientific')?.innerText||''
+  ].join(' ');
+  window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+ };
+});
+
+document.querySelectorAll('.creature').forEach(card=>{
+ const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+ if(globe){
+   globe.onclick=(e)=>{
+    e.stopPropagation();
+    const q=(card.querySelector('h3')?.innerText||'')+' '+(card.querySelector('p')?.innerText||'');
+    window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+ }
+});
+
+});
+</script>
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+   if(!globe) return;
+
+   globe.onclick=(e)=>{
+     e.stopPropagation();
+
+     const titleNode = card.querySelector('h3');
+     let title='';
+     if(titleNode){
+       title=(titleNode.childNodes[0]?.textContent || titleNode.textContent || '').trim();
+       title=title.replace('🔄','').replace('🌐','').trim();
+     }
+
+     const desc=(card.querySelector('p')?.innerText || '').trim();
+
+     const taxonomyCard=card.closest('.taxonomy-card');
+     const rank=(taxonomyCard?.querySelector('.rank')?.innerText || '').trim();
+     const taxonomyName=(taxonomyCard?.querySelector('.name')?.innerText || '').trim();
+
+     const query=(rank+' '+taxonomyName+' '+title+' '+desc).replace(/\s+/g,' ').trim();
+
+     window.open(
+       'https://www.google.com/search?tbm=isch&q='+encodeURIComponent(query),
+       '_blank'
+     );
+   };
+ });
+});
+</script>
+
+</body>
+</html>

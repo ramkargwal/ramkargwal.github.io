@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Butterfly Taxonomy Explorer - Detailed</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================   BASIC========================= */
+*{margin:0; padding:0; box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{    font-family:'Poppins',sans-serif;    background:linear-gradient(to bottom right,#fbf8ff,#f2eeff,#ffffff);    color:#1c2430; overflow-x:hidden;}
+
+/* =========================   HERO========================= */
+.hero{    display:flex; align-items:center;    justify-content:center; flex-direction:column;    text-align:center; padding:40px 20px;    position:relative; overflow:hidden;}
+.hero::before, .hero::after{    content:""; position:absolute;    border-radius:50%;}
+.hero::before{    width:700px; height:700px; top:-250px; left:-200px;    background:radial-gradient(circle,#bca7ff55,transparent 70%);    animation:float1 8s ease-in-out infinite;}
+.hero::after{    width:600px; height:600px; bottom:-250px; right:-200px;    background:radial-gradient(circle,#8fd3ff44,transparent 70%);    animation:float2 10s ease-in-out infinite;}
+@keyframes float1{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(30px);} }
+@keyframes float2{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(-30px);} }
+.hero h1{    font-size:70px; font-weight:700; z-index:2;    background:linear-gradient(to right,#673ab7,#03a9f4);    -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+.hero p{    margin-top:20px; font-size:20px; color:#5c6773;    max-width:1200px; line-height:1.8; z-index:2;}
+
+/* =========================   CONTAINER & CARDS========================= */
+.container{ width:95%; max-width:1250px; margin:auto; padding-bottom:80px; }
+.taxonomy-card{    background:white; margin-bottom:30px; border-radius:30px;    overflow:hidden; border:1px solid #d1c4e9;    box-shadow:0 10px 30px rgba(0,0,0,0.05); transition:0.5s;}
+.taxonomy-card:hover{ transform:translateY(-6px); box-shadow:0 18px 40px rgba(0,0,0,0.08); }
+.taxonomy-header{    padding:25px; display:flex; align-items:center;    justify-content:space-between; cursor:pointer; transition:0.3s;}
+.taxonomy-header:hover{ background:#f3e5f5; }
+.left{ display:flex; align-items:center; gap:22px; }
+.left img{    width:95px; height:95px; border-radius:24px;    object-fit:cover; border:4px solid #ede7f6; transition:0.4s;}
+.taxonomy-card:hover .left img{ transform:scale(1.05) rotate(2deg); }
+.rank{ font-size:13px; text-transform:uppercase; letter-spacing:3px; color:#673ab7; font-weight:600; }
+.name{ font-size:34px; font-weight:700; margin-top:4px; }
+.scientific{ margin-top:7px; color:#637082; font-size:16px; }
+.arrow{ font-size:38px; color:#673ab7; transition:0.5s; }
+.taxonomy-card.active .arrow{ transform:rotate(180deg); }
+
+/* =========================   CONTENT & DETAILED DESC========================= */
+.content{ max-height:0; overflow:hidden; transition:max-height 0.8s ease; }
+.content-inner{ padding:35px; border-top:1px solid #ede7f6; }
+
+.detailed-desc {    background: #fdfdff;    padding: 25px;    border-radius: 20px;    border-left: 5px solid #673ab7;    margin-bottom: 35px;}
+.desc-item {    margin-bottom: 18px;}
+.desc-item:last-child {    margin-bottom: 0;}
+.desc-label {    display: block;    font-size: 17px;    font-weight: 600;    color: #4527a0;    margin-bottom: 5px;}
+.desc-text {    font-size: 16px;    line-height: 1.8;    color: #465260;}
+
+.section-title{ font-size:30px; margin-bottom:25px; color:#4527a0; }
+
+/* =========================   GRID & CREATURES========================= */
+.creatures{    display:grid; gap:25px;    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));}
+.creature{    background:#ffffff; border-radius:20px; overflow:hidden;    border:1px solid #e8eef7; transition:0.5s;}
+.creature:hover{ transform:translateY(-10px) scale(1.02); box-shadow:0 15px 30px rgba(0,0,0,0.08); }
+.creature img{ width:100%; height:160px; object-fit:cover; transition:0.5s; }
+.creature:hover img{ transform:scale(1.08); }
+.creature-body{ padding:15px; }
+.creature h3{ font-size:18px; margin-bottom:8px; color: #1c2430;}
+.creature p{ color:#66717d; line-height:1.5; font-size:14px; }
+
+/* =========================   UTILITIES========================= */
+.hidden{ opacity:0; transform:translateY(50px); transition:all 1s; }
+.show{ opacity:1; transform:translateY(0px); }
+footer{ padding:40px 20px; text-align:center; color:#607080; font-size:15px; }
+
+@media(max-width:800px){    .hero h1{font-size:44px;} .hero p{font-size:17px;}    .name{font-size:26px;} .left{align-items:flex-start;}    .left img{width:75px; height:75px;}    .taxonomy-header{padding:20px;} .content-inner{padding:25px;}}
+
+.image-wrap{position:relative;display:flex;flex-direction:column}
+.img-tools{position:static;display:flex;gap:6px;justify-content:center;padding:8px 0;background:#fff}
+.img-tool-btn{border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;background:rgba(255,255,255,.9)}
+
+</style>
+
+<style>
+.header-tools button,.img-tool-btn,.img-tools button{
+border:none!important;
+outline:none!important;
+background:transparent!important;
+box-shadow:none!important;
+padding:0!important;
+cursor:pointer;
+font-size:20px;
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+    <h1>Butterfly Taxonomy</h1>
+    <p>Butterfly (तितली) की पूरी जैविक वर्गीकरण प्रणाली को गहराई से जानिए। हर स्तर पर क्लिक करें और वैज्ञानिक कारण (Reasoning) व उदाहरणों के साथ समझें कि Butterfly को उस स्तर में क्यों रखा गया है।</p>
+</section>
+
+<div class="container">
+
+<!-- DOMAIN -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/eukarya?lock=1" alt="Domain">
+            <div>
+                <div class="rank">Domain</div><div class="name">Eukarya</div>
+                <div class="scientific"><strong>जटिल कोशिका वाले जीव -> </strong>Eukarya में वे सभी जीव आते हैं जिनकी कोशिकाओं में स्पष्ट केंद्रक (Nucleus) होता है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Domain में पृथ्वी के वे सभी जीव आते हैं जिनकी कोशिकाओं (Cells) में एक स्पष्ट और झिल्लीदार केंद्रक (Membrane-bound nucleus) होता है। इसमें Plants, Animals, Fungi और Protists शामिल हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी कोशिकाओं की संरचना बहुत जटिल (Complex cell structure) होती है। इनका आनुवंशिक पदार्थ यानी DNA केंद्रक के अंदर सुरक्षित रहता है और इनकी कोशिकाओं में विभिन्न Organelles (अंगक) होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Butterfly को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">Butterfly का शरीर जटिल कोशिकाओं (Eukaryotic cells) से बना है। इसकी हर कोशिका के अंदर स्पष्ट Nucleus और अन्य Organelles मौजूद होते हैं, इसीलिए इसे Eukarya Domain का हिस्सा माना जाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Eukarya के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/butterfly"><div class="creature-body"><h3>Butterfly</h3><p>सुंदर पंखों वाला कीट।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/human"><div class="creature-body"><h3>Human</h3><p>सबसे बुद्धिमान प्राणी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog"><div class="creature-body"><h3>Dog</h3><p>वफादार और समझदार जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tree"><div class="creature-body"><h3>Tree</h3><p>Photosynthesis करने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mushroom"><div class="creature-body"><h3>Mushroom</h3><p>Fungi जगत का सदस्य।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bird"><div class="creature-body"><h3>Bird</h3><p>आसमान में उड़ने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/fish"><div class="creature-body"><h3>Fish</h3><p>पानी में रहने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog"><div class="creature-body"><h3>Frog</h3><p>Amphibian जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bee"><div class="creature-body"><h3>Bee</h3><p>पराग (Pollen) इकट्ठा करने वाला कीट।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/rose"><div class="creature-body"><h3>Rose</h3><p>फूलों वाला सुंदर पौधा।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- KINGDOM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/animal?lock=2" alt="Kingdom">
+            <div>
+                <div class="rank">Kingdom</div><div class="name">Animalia</div>
+                <div class="scientific"><strong>जंतु जगत -> </strong>Animalia Kingdom में वे जीव आते हैं जो अपना भोजन स्वयं नहीं बनाते।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Kingdom में सभी बहुकोशिकीय (Multicellular) जंतु आते हैं। इस समूह के जीव अपना भोजन खुद नहीं बना सकते (पौधों की तरह) बल्कि भोजन के लिए दूसरे जीवों या पौधों पर निर्भर रहते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">ये Heterotrophic होते हैं। इनकी कोशिकाओं के बाहर पौधों जैसी कठोर Cell wall नहीं होती है। इस जगत के अधिकांश जीव अपने जीवन के किसी न किसी चरण में स्वेच्छा से गति (Movement) कर सकते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Butterfly को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">Butterfly एक बहुकोशिकीय जीव है जो अपना भोजन स्वयं नहीं बना सकती। यह भोजन (Nectar) के लिए फूलों पर निर्भर होती है। इसमें उड़ने और चलने की क्षमता है, अतः यह पूर्ण रूप से एक Animal है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Animalia के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/butterfly,flower"><div class="creature-body"><h3>Butterfly</h3><p>हवा में उड़ने वाला जंतु।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lion"><div class="creature-body"><h3>Lion</h3><p>जंगल का शक्तिशाली राजा।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant"><div class="creature-body"><h3>Elephant</h3><p>सबसे बड़ा स्थलीय जानवर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark"><div class="creature-body"><h3>Shark</h3><p>समुद्र का खतरनाक शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle"><div class="creature-body"><h3>Eagle</h3><p>तेज़ नज़र वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/spider"><div class="creature-body"><h3>Spider</h3><p>जाल बुनने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake"><div class="creature-body"><h3>Snake</h3><p>रेंगने वाला विषैला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dolphin"><div class="creature-body"><h3>Dolphin</h3><p>समुद्री बुद्धिमान जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bear"><div class="creature-body"><h3>Bear</h3><p>विशालकाय जंगली जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/penguin"><div class="creature-body"><h3>Penguin</h3><p>बर्फ में रहने वाला पक्षी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PHYLUM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/arthropod?lock=3" alt="Phylum">
+            <div>
+                <div class="rank">Phylum</div><div class="name">Arthropoda</div>
+                <div class="scientific"><strong>आर्थ्रोपोडा -> </strong>Arthropoda समूह के जीवों में Jointed appendages और Exoskeleton होता है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Phylum में वे जीव आते हैं जिनका शरीर खंडित (Segmented) होता है और उनके पैरों में जोड़ (Joints) होते हैं। इनमें Insects, Spiders, और Crustaceans शामिल हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी मुख्य characteristics में एक कठोर Exoskeleton (जो Chitin का बना होता है) और द्विपक्षीय सममिति (Bilateral symmetry) शामिल है। समय-समय पर ये अपना पुराना Exoskeleton उतार देते हैं, जिसे Molting कहते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Butterfly को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">Butterfly का शरीर खंडित (Segmented) होता है, इसमें Jointed legs होते हैं और इसके शरीर के बाहर एक कठोर Chitin का Exoskeleton होता है, इसलिए इसे Arthropoda में रखा गया है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Arthropoda के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/butterfly,wings"><div class="creature-body"><h3>Butterfly</h3><p>Jointed legs वाला कीट।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/spider,web"><div class="creature-body"><h3>Spider</h3><p>आठ पैरों वाला Arthropod।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/crab"><div class="creature-body"><h3>Crab</h3><p>समुद्री Crustacean।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/scorpion"><div class="creature-body"><h3>Scorpion</h3><p>जहरीला डंक मारने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/ant"><div class="creature-body"><h3>Ant</h3><p>सामाजिक कीट (Insect)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bee,honey"><div class="creature-body"><h3>Bee</h3><p>शहद बनाने वाला Arthropod।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/centipede"><div class="creature-body"><h3>Centipede</h3><p>अनेक पैरों वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/millipede"><div class="creature-body"><h3>Millipede</h3><p>शाकाहारी बहुपादी जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lobster"><div class="creature-body"><h3>Lobster</h3><p>कठोर Exoskeleton वाला जलीय जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mosquito"><div class="creature-body"><h3>Mosquito</h3><p>उड़ने वाला रक्त चूसक कीट।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CLASS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/insect?lock=4" alt="Class">
+            <div>
+                <div class="rank">Class</div><div class="name">Insecta</div>
+                <div class="scientific"><strong>इन्सेक्टा -> </strong>Insecta वर्ग के जीवों के छह पैर और शरीर के तीन मुख्य भाग होते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Class में वे सभी Arthropods आते हैं जिनके शरीर को तीन भागों में बांटा जा सकता है: Head (सिर), Thorax (वक्ष), और Abdomen (उदर)।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">वयस्क Insecta के पास आमतौर पर तीन जोड़ी पैर (Total six legs), एक जोड़ी Antennae, और अक्सर एक या दो जोड़ी Wings (पंख) होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Butterfly को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">Butterfly के छह पैर (Six legs), दो Antennae, और शरीर के तीन स्पष्ट भाग (Head, Thorax, Abdomen) होते हैं। इसके पंख (Wings) Thorax से जुड़े होते हैं, इसलिए यह Insecta Class का हिस्सा है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Insecta के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/butterfly,insect"><div class="creature-body"><h3>Butterfly</h3><p>सुंदर पंखों वाला Insect।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/beetle"><div class="creature-body"><h3>Beetle</h3><p>कठोर पंखों वाला कीट।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/ant,insect"><div class="creature-body"><h3>Ant</h3><p>छह पैरों वाला मेहनती कीट।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bee,insect"><div class="creature-body"><h3>Bee</h3><p>छत्ते में रहने वाला Insect।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/housefly"><div class="creature-body"><h3>Housefly</h3><p>आम घरेलू मक्खी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/grasshopper"><div class="creature-body"><h3>Grasshopper</h3><p>लंबी छलांग लगाने वाला कीट।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cockroach"><div class="creature-body"><h3>Cockroach</h3><p>प्राचीन Insecta सदस्य।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dragonfly"><div class="creature-body"><h3>Dragonfly</h3><p>चार पंखों वाला कुशल शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/moth"><div class="creature-body"><h3>Moth</h3><p>रात में उड़ने वाला कीट।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/praying,mantis"><div class="creature-body"><h3>Praying Mantis</h3><p>शिकारी Insect।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ORDER -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/lepidoptera?lock=5" alt="Order">
+            <div>
+                <div class="rank">Order</div><div class="name">Lepidoptera</div>
+                <div class="scientific"><strong>लेपिडोप्टेरा -> </strong> Lepidoptera समूह में शल्क वाले पंखों (Scale-winged) वाले जीव आते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Order में Butterflies और Moths (पतंगे) आते हैं। "Lepidoptera" का अर्थ है 'Scaled wings' (शल्कों वाले पंख)।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनके पंखों और शरीर पर हजारों सूक्ष्म शल्क (Scales) होते हैं जो इन्हें रंग और पैटर्न देते हैं। इनमें तरल भोजन (Nectar) पीने के लिए एक विशेष coiled Proboscis (ट्यूब जैसी जीभ) होती है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Butterfly को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">Butterfly के पंख सूक्ष्म Scales से ढके होते हैं और इसमें फूलों का रस (Nectar) चूसने के लिए Proboscis होता है, इसलिए इसे Lepidoptera Order में रखा गया है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Lepidoptera के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/monarch,butterfly"><div class="creature-body"><h3>Monarch Butterfly</h3><p>प्रसिद्ध प्रवासी तितली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/swallowtail,butterfly"><div class="creature-body"><h3>Swallowtail Butterfly</h3><p>पूंछ वाले पंखों वाली तितली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/silk,moth"><div class="creature-body"><h3>Silk Moth</h3><p>रेशम का उत्पादन करने वाला Moth।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/luna,moth"><div class="creature-body"><h3>Luna Moth</h3><p>हल्के हरे रंग का सुंदर Moth।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/hawk,moth"><div class="creature-body"><h3>Hawk Moth</h3><p>तेज़ गति से उड़ने वाला Moth।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/blue,morpho"><div class="creature-body"><h3>Blue Morpho</h3><p>चमकदार नीले पंखों वाली तितली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/painted,lady,butterfly"><div class="creature-body"><h3>Painted Lady</h3><p>दुनिया भर में पाई जाने वाली तितली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/skipper,butterfly"><div class="creature-body"><h3>Skipper Butterfly</h3><p>Moth और Butterfly के बीच की कड़ी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cabbage,white,butterfly"><div class="creature-body"><h3>Cabbage White</h3><p>आम सफेद तितली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/atlas,moth"><div class="creature-body"><h3>Atlas Moth</h3><p>दुनिया के सबसे बड़े Moths में से एक।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAMILY -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/nymphalidae?lock=6" alt="Family">
+            <div>
+                <div class="rank">Family</div><div class="name">Nymphalidae</div>
+                <div class="scientific"><strong>निम्फालिडी -> </strong> Nymphalidae परिवार में 'Brush-footed butterflies' आती हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Family में तितलियों की सबसे बड़ी प्रजातियां शामिल हैं। इन्हें आमतौर पर Brush-footed butterflies कहा जाता है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इस परिवार की मुख्य characteristic यह है कि इनके आगे के दो पैर (Front legs) बहुत छोटे होते हैं और चलने के काम नहीं आते। वे बालों (Brush) जैसे दिखते हैं, जिनका उपयोग स्वाद चखने (Taste) के लिए किया जाता है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Butterfly को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">Monarch Butterfly और अन्य Brush-footed तितलियों के भी आगे के दो पैर सिकुड़े हुए (Reduced) होते हैं, जिनका उपयोग वे चलने के लिए नहीं करतीं। इसलिए इसे Nymphalidae Family का सदस्य माना जाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Nymphalidae के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/monarch,nymphalidae"><div class="creature-body"><h3>Monarch</h3><p>प्रसिद्ध Nymphalidae सदस्य।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/painted,lady"><div class="creature-body"><h3>Painted Lady</h3><p>व्यापक रूप से फैली हुई तितली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/blue,morpho,butterfly"><div class="creature-body"><h3>Blue Morpho</h3><p>चमकदार Nymphalidae तितली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/fritillary,butterfly"><div class="creature-body"><h3>Fritillary</h3><p>नारंगी और काले पैटर्न वाली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/emperor,butterfly"><div class="creature-body"><h3>Emperor Butterfly</h3><p>पेड़ों की ऊंचाई पर रहने वाली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/admiral,butterfly"><div class="creature-body"><h3>Red Admiral</h3><p>काले और लाल रंग की तितली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tortoiseshell,butterfly"><div class="creature-body"><h3>Tortoiseshell</h3><p>कछुए के खोल जैसे पैटर्न वाली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/comma,butterfly"><div class="creature-body"><h3>Comma Butterfly</h3><p>सूखे पत्ते जैसी दिखने वाली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/buckeye,butterfly"><div class="creature-body"><h3>Buckeye</h3><p>पंखों पर आंखों जैसे (Eyespot) निशान।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/heliconian"><div class="creature-body"><h3>Heliconian</h3><p>लंबे और संकरे पंखों वाली तितली।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- GENUS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/danaus?lock=7" alt="Genus">
+            <div>
+                <div class="rank">Genus</div><div class="name">Danaus</div>
+                <div class="scientific"><strong>डैनौस -> </strong> Danaus वंश में 'Milkweed butterflies' (मिल्कवीड तितलियां) आती हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Genus में वे तितलियां आती हैं जिनके लार्वा (Caterpillars) मुख्य रूप से Milkweed (मिल्कवीड) पौधों को खाते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">Milkweed पौधे के जहरीले तत्वों (Toxins) को ये तितलियां अपने शरीर में जमा कर लेती हैं, जिससे ये शिकारियों (Predators) के लिए जहरीली या बेस्वाद हो जाती हैं। इनके पंख अक्सर चमकीले नारंगी, काले और सफेद रंग के (Warning colors) होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Butterfly को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">Monarch Butterfly का Caterpillar Milkweed खाता है और शिकारियों से बचने के लिए जहरीले रसायनों का उपयोग करता है। इसलिए इसे Danaus Genus में रखा गया है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Danaus के कुछ मुख्य प्रकार और विशेषताएं</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/monarch,danaus"><div class="creature-body"><h3>Monarch Butterfly</h3><p>उत्तरी अमेरिका की प्रसिद्ध तितली (D. plexippus)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/queen,butterfly"><div class="creature-body"><h3>Queen Butterfly</h3><p>गहरे भूरे-नारंगी रंग की तितली (D. gilippus)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/soldier,butterfly"><div class="creature-body"><h3>Soldier Butterfly</h3><p>Monarch जैसी दिखने वाली तितली (D. eresimus)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/plain,tiger,butterfly"><div class="creature-body"><h3>Plain Tiger</h3><p>एशिया और अफ्रीका की आम तितली (D. chrysippus)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/striped,tiger,butterfly"><div class="creature-body"><h3>Striped Tiger</h3><p>धारीदार पंखों वाली तितली (D. genutia)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/white,tiger,butterfly"><div class="creature-body"><h3>White Tiger Butterfly</h3><p>सफेद और काले रंग का पैटर्न (D. melanippus)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/yellow,glassy,tiger"><div class="creature-body"><h3>Yellow Glassy Tiger</h3><p>पारदर्शी पीले पंखों वाली (D. affinis)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/caterpillar,milkweed"><div class="creature-body"><h3>Milkweed Diet</h3><p>लार्वा केवल Milkweed के पत्ते खाते हैं।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/butterfly,toxicity"><div class="creature-body"><h3>Toxicity (विषाक्तता)</h3><p>शिकारियों के लिए जहरीली और बेस्वाद।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/butterfly,warning,colors"><div class="creature-body"><h3>Warning Colors</h3><p>चमकीले रंग शिकारियों को दूर रखने के लिए।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SPECIES -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/danaus%20plexippus?lock=8" alt="Species">
+            <div>
+                <div class="rank">Species</div><div class="name">Danaus plexippus</div>
+                <div class="scientific"><strong>मोनार्क तितली (Monarch Butterfly) -> </strong> यह दुनिया की सबसे प्रसिद्ध और लंबी यात्रा (Migration) करने वाली तितली है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">यह वर्गीकरण का अंतिम और सबसे सटीक स्तर है। Danaus plexippus विशेष रूप से वह Monarch Butterfly है जो उत्तरी अमेरिका में बड़े पैमाने पर पाई जाती है और अपने आकर्षक नारंगी-काले पंखों के लिए जानी जाती है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">यह Species अपने आश्चर्यजनक वार्षिक प्रवास (Annual Migration) के लिए प्रसिद्ध है। सर्दियों से बचने के लिए लाखों Monarch तितलियां कनाडा और अमेरिका से उड़कर हज़ारों किलोमीटर दूर मेक्सिको (Mexico) जाती हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: इस Butterfly को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">इसके विशिष्ट नारंगी-काले पंखों का पैटर्न, Milkweed पौधे पर पूर्ण निर्भरता, और हजारों किलोमीटर के Migration (प्रवास) के अद्भुत व्यवहार के कारण इसे विज्ञान में <strong>'Danaus plexippus'</strong> Species के रूप में वर्गीकृत किया गया है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Danaus plexippus (Monarch Butterfly) की 10 खास बातें</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/monarch,migration"><div class="creature-body"><h3>Migration (प्रवास)</h3><p>सर्दियों में 4000+ किलोमीटर की लंबी यात्रा।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/monarch,caterpillar"><div class="creature-body"><h3>Milkweed Diet</h3><p>कैटरपिलर केवल मिल्कवीड पौधे पर जीवित रहते हैं।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/monarch,chrysalis"><div class="creature-body"><h3>Chrysalis (प्यूपा)</h3><p>हरे रंग का सुंदर प्यूपा जिसमें सोने जैसी धारियां होती हैं।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/monarch,metamorphosis"><div class="creature-body"><h3>Metamorphosis</h3><p>अंडा, कैटरपिलर, प्यूपा और वयस्क में पूर्ण रूपांतरण।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/monarch,wings"><div class="creature-body"><h3>Four Wings</h3><p>उड़ने के लिए चार मजबूत और सुंदर पंख।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/monarch,proboscis"><div class="creature-body"><h3>Coiled Proboscis</h3><p>फूलों का रस पीने के लिए ट्यूब जैसी संरचना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/monarch,eyes"><div class="creature-body"><h3>Compound Eyes</h3><p>हजारों छोटे लेंस वाली जटिल आंखें।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/monarch,antennae"><div class="creature-body"><h3>Antennae</h3><p>गंध सूंघने और संतुलन के लिए सेंसर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/monarch,male"><div class="creature-body"><h3>Scent Glands</h3><p>नर तितली के पिछले पंखों पर विशेष काले धब्बे (Glands)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/monarch,warning"><div class="creature-body"><h3>Warning Colors</h3><p>चमकीला नारंगी रंग शिकारियों को चेतावनी देता है कि यह जहरीली है।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<footer>Beautiful Detailed Taxonomy Explorer (Butterfly Edition)</footer>
+
+<!-- =========================   JAVASCRIPT========================= -->
+<script>
+const cards = document.querySelectorAll(".taxonomy-card");
+cards.forEach(card=>{
+    const header = card.querySelector(".taxonomy-header");
+    header.addEventListener("click",()=>{
+        card.classList.toggle("active");
+        const content = card.querySelector(".content");
+        if(content.style.maxHeight){
+            content.style.maxHeight = null;
+        }else{
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    });
+});
+
+const observer = new IntersectionObserver((entries)=>{
+    entries.forEach((entry)=>{
+        if(entry.isIntersecting){
+            entry.target.classList.add("show");
+        }
+    });
+});
+const hiddenElements = document.querySelectorAll(".hidden");
+hiddenElements.forEach((el)=>observer.observe(el));
+
+document.querySelectorAll('.creature img').forEach(img=>{
+ const wrap=document.createElement('div');
+ wrap.className='image-wrap';
+ img.parentNode.insertBefore(wrap,img);
+ wrap.appendChild(img);
+
+ const tools=document.createElement('div');
+ tools.className='img-tools';
+
+ const r=document.createElement('button');
+ r.className='img-tool-btn';
+ r.innerHTML='🔄';
+
+ const s=document.createElement('button');
+ s.className='img-tool-btn';
+ s.innerHTML='🌐';
+
+ tools.appendChild(r);
+ tools.appendChild(s);
+ wrap.appendChild(tools);
+
+ const original=(img.src.split('/300/')[1]||'animal').split('?')[0];
+
+ r.onclick=(e)=>{
+   e.stopPropagation();
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+Date.now();
+ };
+
+ s.onclick=(e)=>{
+   e.stopPropagation();
+   window.open('https://commons.wikimedia.org/w/index.php?search='+encodeURIComponent(original),'_blank');
+ };
+
+ img.onerror=()=>{
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+(Date.now()+1);
+ };
+});
+
+
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('img').forEach((img,i)=>{
+   if(img.src.includes('loremflickr.com')){
+      const base=img.src.split('?')[0];
+      img.src=base+'?lock='+(Date.now()+i);
+   }
+ });
+});
+</script>
+
+
+<script>
+document.querySelectorAll('img').forEach(img=>{
+  img.onerror=function(){
+    this.onerror=null;
+    this.src='https://loremflickr.com/400/300/butterfly?lock='+Date.now();
+  };
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.image-wrap').forEach(w=>{
+   const tools=w.querySelector('.img-tools');
+   const card=w.closest('.creature');
+   const title=card ? card.querySelector('.creature-body h3') : null;
+   if(tools && title){
+      title.insertAdjacentElement('afterend', tools);
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.padding='0';
+      tools.style.background='transparent';
+      tools.style.verticalAlign='middle';
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const title=card.querySelector('.creature-body h3');
+   const tools=card.querySelector('.img-tools');
+   if(title && tools){
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.verticalAlign='middle';
+      tools.style.background='transparent';
+      tools.style.padding='0';
+      tools.style.position='static';
+
+      title.appendChild(tools);
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.taxonomy-header .left img').forEach(img=>{
+   if(img.parentElement.querySelector('.header-tools')) return;
+
+   const tools=document.createElement('div');
+   tools.className='header-tools';
+   tools.style.display='flex';
+   tools.style.justifyContent='center';
+   tools.style.gap='6px';
+   tools.style.marginTop='4px';
+
+   const r=document.createElement('button');
+   r.textContent='🔄';
+
+   const g=document.createElement('button');
+   g.textContent='🌐';
+
+   r.onclick=(e)=>{
+      e.stopPropagation();
+      img.src=img.src.split('?')[0]+'?v='+Date.now();
+   };
+
+   g.onclick=(e)=>{
+      e.stopPropagation();
+      const q=img.alt || 'animal';
+      window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+
+   const wrap=document.createElement('div');
+   wrap.style.display='flex';
+   wrap.style.flexDirection='column';
+   wrap.style.alignItems='center';
+
+   img.parentNode.insertBefore(wrap,img);
+   wrap.appendChild(img);
+   wrap.appendChild(tools);
+   tools.appendChild(r);
+   tools.appendChild(g);
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+
+document.querySelectorAll('.header-tools button:last-child').forEach(btn=>{
+ btn.onclick=(e)=>{
+  e.stopPropagation();
+  const card=btn.closest('.taxonomy-card');
+  const q=[
+   card?.querySelector('.rank')?.innerText||'',
+   card?.querySelector('.name')?.innerText||'',
+   card?.querySelector('.scientific')?.innerText||''
+  ].join(' ');
+  window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+ };
+});
+
+document.querySelectorAll('.creature').forEach(card=>{
+ const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+ if(globe){
+   globe.onclick=(e)=>{
+    e.stopPropagation();
+    const q=(card.querySelector('h3')?.innerText||'')+' '+(card.querySelector('p')?.innerText||'');
+    window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+ }
+});
+
+});
+</script>
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+   if(!globe) return;
+
+   globe.onclick=(e)=>{
+     e.stopPropagation();
+
+     const titleNode = card.querySelector('h3');
+     let title='';
+     if(titleNode){
+       title=(titleNode.childNodes[0]?.textContent || titleNode.textContent || '').trim();
+       title=title.replace('🔄','').replace('🌐','').trim();
+     }
+
+     const desc=(card.querySelector('p')?.innerText || '').trim();
+
+     const taxonomyCard=card.closest('.taxonomy-card');
+     const rank=(taxonomyCard?.querySelector('.rank')?.innerText || '').trim();
+     const taxonomyName=(taxonomyCard?.querySelector('.name')?.innerText || '').trim();
+
+     const query=(rank+' '+taxonomyName+' '+title+' '+desc).replace(/\s+/g,' ').trim();
+
+     window.open(
+       'https://www.google.com/search?tbm=isch&q='+encodeURIComponent(query),
+       '_blank'
+     );
+   };
+ });
+});
+</script>
+
+</body>
+</html>

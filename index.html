@@ -1,0 +1,263 @@
+---
+layout: default
+title: Home
+---
+
+<style>
+  /* --- SUPER PARENT BACKGROUND FIX --- */
+  *:has(> .posts-container), 
+  .posts-container, 
+  .main-content, 
+  .wrapper, 
+  .page-content, 
+  .home, 
+  article {
+    background-color: transparent !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* --- MAIN LAYOUT CSS --- */
+  .posts-container {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .post-card {
+    background: #ffffff !important;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05) !important;
+    border: 2px solid rgba(226, 232, 240, 0.6) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1) !important;
+  }
+
+  .post-image-wrapper {
+    width: 100%;
+    height: 340px;
+    overflow: hidden;
+  }
+
+  .post-image {
+    width: 100%;
+    height: 100%;
+    background-color: #e2e8f0;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .post-card:hover .post-image {
+    transform: scale(1.05);
+  }
+
+  .post-content {
+    padding: 2.5rem;
+  }
+
+  .category-tag {
+    background: rgba(99, 102, 241, 0.1);
+    color: #8b5cf6;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    display: inline-block;
+    margin-bottom: 1.2rem;
+  }
+
+  .post-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+    letter-spacing: -0.5px;
+  }
+
+  .post-title a {
+    text-decoration: none;
+    color: #0f172a;
+    transition: all 0.3s ease;
+  }
+
+  .post-title a:hover {
+    color: #8b5cf6;
+  }
+
+  .post-excerpt {
+    color: #64748b;
+    margin-bottom: 2rem;
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-size: 0.9rem;
+    color: #94a3b8;
+    font-weight: 600;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 1.5rem;
+  }
+
+  /* --- PAGINATION CSS --- */
+  .pagination {
+    display: flex;
+    gap: 0.75rem;
+    margin: 4rem 0;
+    align-items: center;
+  }
+
+  .pagination span,
+  .pagination a {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #64748b;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .pagination .active {
+    background: #8b5cf6;
+    color: white;
+    border-color: #8b5cf6;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
+  }
+
+  .pagination a:hover {
+    border-color: #8b5cf6;
+    color: #8b5cf6;
+    transform: translateY(-2px);
+  }
+
+  .pagination .nav-btn {
+    width: auto;
+    padding: 0 1.5rem;
+  }
+</style>
+
+<div class="posts-container" id="posts-container">
+  
+  {% for post in site.posts %}
+  <article class="post-card" data-title="{{ post.title | downcase }}" data-excerpt="{{ post.description | default: post.excerpt | strip_html | downcase }}">
+    <div class="post-image-wrapper">
+      <div class="post-image" 
+           style="background-image: url('{{ post.image | default: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80' | relative_url }}');">
+      </div>
+    </div>
+    
+    <div class="post-content">
+      {% if post.categories.size > 0 %}
+        <span class="category-tag">{{ post.categories | first }}</span>
+      {% endif %}
+      
+      <h2 class="post-title">
+        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+      </h2>
+      
+      <p class="post-excerpt">
+        {{ post.description | default: post.excerpt | strip_html | truncatewords: 35 }}
+      </p>
+      
+      <div class="post-meta">
+        <span>By <strong>Sudarshan</strong></span>
+        <span>{{ post.date | date: "%B %d, %Y" }}</span>
+      </div>
+    </div>
+  </article>
+  {% endfor %}
+
+  <div class="pagination" id="pagination-controls"></div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.querySelector(".search-box");
+    const postCards = Array.from(document.querySelectorAll(".post-card"));
+    const paginationContainer = document.getElementById("pagination-controls");
+    
+    const postsPerPage = 2; // एक पेज पर 2 पोस्ट दिखेंगे
+    let currentPage = 1;
+    let filteredCards = [...postCards]; 
+
+    function displayPage(page) {
+      currentPage = page;
+      const startIndex = (page - 1) * postsPerPage;
+      const endIndex = startIndex + postsPerPage;
+
+      postCards.forEach(card => card.style.display = "none");
+
+      filteredCards.slice(startIndex, endIndex).forEach(card => {
+        card.style.display = "";
+      });
+
+      renderPaginationButtons();
+    }
+
+    function renderPaginationButtons() {
+      paginationContainer.innerHTML = "";
+      const totalPages = Math.ceil(filteredCards.length / postsPerPage);
+
+      if (totalPages <= 1) return; 
+
+      if (currentPage > 1) {
+        const prevBtn = document.createElement("a");
+        prevBtn.className = "nav-btn";
+        prevBtn.innerText = "Prev";
+        prevBtn.addEventListener("click", () => displayPage(currentPage - 1));
+        paginationContainer.appendChild(prevBtn);
+      }
+
+      for (let i = 1; i <= totalPages; i++) {
+        const pageBtn = document.createElement("a");
+        pageBtn.innerText = i;
+        if (i === currentPage) pageBtn.className = "active";
+        pageBtn.addEventListener("click", () => displayPage(i));
+        paginationContainer.appendChild(pageBtn);
+      }
+
+      if (currentPage < totalPages) {
+        const nextBtn = document.createElement("a");
+        nextBtn.className = "nav-btn";
+        nextBtn.innerText = "Next";
+        nextBtn.addEventListener("click", () => displayPage(currentPage + 1));
+        paginationContainer.appendChild(nextBtn);
+      }
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener("keyup", function(e) {
+        const searchTerm = e.target.value.toLowerCase().trim();
+
+        filteredCards = postCards.filter(card => {
+          const title = card.getAttribute("data-title");
+          const excerpt = card.getAttribute("data-excerpt");
+          return title.includes(searchTerm) || excerpt.includes(searchTerm);
+        });
+
+        displayPage(1);
+      });
+    }
+
+    displayPage(1);
+  });
+</script>

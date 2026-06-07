@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Indian Elephant Taxonomy Explorer - Detailed</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================   BASIC========================= */
+*{margin:0; padding:0; box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{    font-family:'Poppins',sans-serif;    background:linear-gradient(to bottom right,#f0f4f1,#e1e8e3,#ffffff);    color:#1c2430; overflow-x:hidden;}
+
+/* =========================   HERO========================= */
+.hero{    display:flex; align-items:center;    justify-content:center; flex-direction:column;    text-align:center; padding:40px 20px;    position:relative; overflow:hidden;}
+.hero::before, .hero::after{    content:""; position:absolute;    border-radius:50%;}
+.hero::before{    width:700px; height:700px; top:-250px; left:-200px;    background:radial-gradient(circle,#9ab0aa55,transparent 70%);    animation:float1 8s ease-in-out infinite;}
+.hero::after{    width:600px; height:600px; bottom:-250px; right:-200px;    background:radial-gradient(circle,#b8c9c544,transparent 70%);    animation:float2 10s ease-in-out infinite;}
+@keyframes float1{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(30px);} }
+@keyframes float2{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(-30px);} }
+.hero h1{    font-size:70px; font-weight:700; z-index:2;    background:linear-gradient(to right,#465c58,#8fa39e);    -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+.hero p{    margin-top:20px; font-size:20px; color:#5c6773;    max-width:1200px; line-height:1.8; z-index:2;}
+
+/* =========================   CONTAINER & CARDS========================= */
+.container{ width:95%; max-width:1250px; margin:auto; padding-bottom:80px; }
+.taxonomy-card{    background:white; margin-bottom:30px; border-radius:30px;    overflow:hidden; border:1px solid #dde8f5;    box-shadow:0 10px 30px rgba(0,0,0,0.05); transition:0.5s;}
+.taxonomy-card:hover{ transform:translateY(-6px); box-shadow:0 18px 40px rgba(0,0,0,0.08); }
+.taxonomy-header{    padding:25px; display:flex; align-items:center;    justify-content:space-between; cursor:pointer; transition:0.3s;}
+.taxonomy-header:hover{ background:#f5f8f6; }
+.left{ display:flex; align-items:center; gap:22px; }
+.left img{    width:95px; height:95px; border-radius:24px;    object-fit:cover; border:4px solid #e1e8e3; transition:0.4s;}
+.taxonomy-card:hover .left img{ transform:scale(1.05) rotate(2deg); }
+.rank{ font-size:13px; text-transform:uppercase; letter-spacing:3px; color:#465c58; font-weight:600; }
+.name{ font-size:34px; font-weight:700; margin-top:4px; }
+.scientific{ margin-top:7px; color:#637082; font-size:16px; }
+.arrow{ font-size:38px; color:#465c58; transition:0.5s; }
+.taxonomy-card.active .arrow{ transform:rotate(180deg); }
+
+/* =========================   CONTENT & DETAILED DESC========================= */
+.content{ max-height:0; overflow:hidden; transition:max-height 0.8s ease; }
+.content-inner{ padding:35px; border-top:1px solid #edf3fa; }
+
+.detailed-desc {    background: #fdfdff;    padding: 25px;    border-radius: 20px;    border-left: 5px solid #465c58;    margin-bottom: 35px;}
+.desc-item {    margin-bottom: 18px;}
+.desc-item:last-child {    margin-bottom: 0;}
+.desc-label {    display: block;    font-size: 17px;    font-weight: 600;    color: #354a46;    margin-bottom: 5px;}
+.desc-text {    font-size: 16px;    line-height: 1.8;    color: #465260;}
+
+.section-title{ font-size:30px; margin-bottom:25px; color:#354a46; }
+
+/* =========================   GRID & CREATURES========================= */
+.creatures{    display:grid; gap:25px;    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));}
+.creature{    background:#ffffff; border-radius:20px; overflow:hidden;    border:1px solid #e8eef7; transition:0.5s;}
+.creature:hover{ transform:translateY(-10px) scale(1.02); box-shadow:0 15px 30px rgba(0,0,0,0.08); }
+.creature img{ width:100%; height:160px; object-fit:cover; transition:0.5s; }
+.creature:hover img{ transform:scale(1.08); }
+.creature-body{ padding:15px; }
+.creature h3{ font-size:18px; margin-bottom:8px; color: #1c2430;}
+.creature p{ color:#66717d; line-height:1.5; font-size:14px; }
+
+/* =========================   UTILITIES========================= */
+.hidden{ opacity:0; transform:translateY(50px); transition:all 1s; }
+.show{ opacity:1; transform:translateY(0px); }
+footer{ padding:40px 20px; text-align:center; color:#607080; font-size:15px; }
+
+@media(max-width:800px){    .hero h1{font-size:44px;} .hero p{font-size:17px;}    .name{font-size:26px;} .left{align-items:flex-start;}    .left img{width:75px; height:75px;}    .taxonomy-header{padding:20px;} .content-inner{padding:25px;}}
+
+.image-wrap{position:relative;display:flex;flex-direction:column}
+.img-tools{position:static;display:flex;gap:6px;justify-content:center;padding:8px 0;background:#fff}
+.img-tool-btn{border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;background:rgba(255,255,255,.9)}
+
+</style>
+
+<style>
+.header-tools button,.img-tool-btn,.img-tools button{
+border:none!important;
+outline:none!important;
+background:transparent!important;
+box-shadow:none!important;
+padding:0!important;
+cursor:pointer;
+font-size:20px;
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+    <h1>Indian Elephant Taxonomy</h1>
+    <p>भारतीय हाथी (Indian Elephant) की पूरी जैविक वर्गीकरण प्रणाली (Taxonomy) को गहराई से जानिए। हर स्तर (Level) पर क्लिक करें और वैज्ञानिक कारण (Reasoning) व उदाहरणों के साथ समझें कि हाथी को उस स्तर में क्यों रखा गया है।</p>
+</section>
+
+<div class="container">
+
+<!-- DOMAIN -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/eukarya?lock=1" alt="Domain">
+            <div>
+                <div class="rank">Domain</div><div class="name">Eukarya</div>
+                <div class="scientific"><strong>जटिल कोशिका वाले जीव -> </strong>Eukarya में वे सभी जीव आते हैं जिनकी कोशिकाओं में स्पष्ट केंद्रक (nucleus) होता है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस डोमेन में पृथ्वी के वे सभी जीव आते हैं जिनकी कोशिकाओं (cells) में एक स्पष्ट और झिल्लीदार केंद्रक (membrane-bound nucleus) होता है। इसमें पौधे, जानवर, कवक (fungi) और प्रोटिस्ट शामिल हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी कोशिकाओं की संरचना बहुत जटिल (complex cell structure) होती है। इनका आनुवंशिक पदार्थ यानी डीएनए (DNA) केंद्रक के अंदर सुरक्षित रहता है और इनकी कोशिकाओं में विभिन्न अंगक (organelles) होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: भारतीय हाथी को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">हाथी का विशाल शरीर जटिल कोशिकाओं (eukaryotic cells) से बना है। इसकी हर कोशिका के अंदर स्पष्ट केंद्रक (nucleus) और अन्य कोशिका अंगक (organelles) मौजूद होते हैं, इसीलिए इसे Eukarya डोमेन का हिस्सा माना जाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Eukarya के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant"><div class="creature-body"><h3>हाथी (Elephant)</h3><p>विशालकाय स्थलीय जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/human"><div class="creature-body"><h3>इंसान (Human)</h3><p>सबसे बुद्धिमान प्राणी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog"><div class="creature-body"><h3>कुत्ता (Dog)</h3><p>वफादार और समझदार जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tree"><div class="creature-body"><h3>पेड़ (Tree)</h3><p>प्रकाश संश्लेषण (photosynthesis) करने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mushroom"><div class="creature-body"><h3>मशरूम (Mushroom)</h3><p>कवक (Fungi) जगत का सदस्य।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bird"><div class="creature-body"><h3>पक्षी (Bird)</h3><p>आसमान में उड़ने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/fish"><div class="creature-body"><h3>मछली (Fish)</h3><p>पानी में रहने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog"><div class="creature-body"><h3>मेंढक (Frog)</h3><p>उभयचर (Amphibian) जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/butterfly"><div class="creature-body"><h3>तितली (Butterfly)</h3><p>रंगीन और सुंदर कीट (Insect)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/rose"><div class="creature-body"><h3>गुलाब (Rose)</h3><p>फूलों वाला सुंदर पौधा।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- KINGDOM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/animal?lock=2" alt="Kingdom">
+            <div>
+                <div class="rank">Kingdom</div><div class="name">Animalia</div>
+                <div class="scientific"><strong>जंतु जगत -> </strong>Animalia kingdom में वे जीव आते हैं जो अपना भोजन स्वयं नहीं बनाते।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस जगत में सभी बहुकोशिकीय (multicellular) जंतु आते हैं। इस समूह के जीव अपना भोजन खुद नहीं बना सकते (पौधों की तरह) बल्कि भोजन के लिए दूसरे जीवों या वनस्पतियों पर निर्भर रहते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">ये परपोषी (heterotrophic) होते हैं। इनकी कोशिकाओं के बाहर पौधों जैसी कठोर कोशिका भित्ति (cell wall) नहीं होती है। इस जगत के अधिकांश जीव अपने जीवन के किसी न किसी चरण में स्वेच्छा से गति (movement) कर सकते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: भारतीय हाथी को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">हाथी एक बहुकोशिकीय जीव (multicellular organism) है जो अपना भोजन स्वयं नहीं बना सकता। यह भोजन के लिए घास, पेड़ की छाल, पत्तियों और फलों पर निर्भर होता है। इसमें चलने-फिरने की क्षमता है, अतः यह पूर्ण रूप से एक जंतु (Animal) है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Animalia के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,wild"><div class="creature-body"><h3>हाथी (Elephant)</h3><p>सबसे बड़ा स्थलीय जानवर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lion"><div class="creature-body"><h3>शेर (Lion)</h3><p>जंगल का शक्तिशाली राजा।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tiger"><div class="creature-body"><h3>बाघ (Tiger)</h3><p>भारत का राष्ट्रीय जंतु।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark"><div class="creature-body"><h3>शार्क (Shark)</h3><p>समुद्र का खतरनाक शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle"><div class="creature-body"><h3>गरुड़ (Eagle)</h3><p>तेज़ नज़र वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/spider"><div class="creature-body"><h3>मकड़ी (Spider)</h3><p>जाल बुनने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake"><div class="creature-body"><h3>सांप (Snake)</h3><p>रेंगने वाला विषैला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dolphin"><div class="creature-body"><h3>डॉल्फिन (Dolphin)</h3><p>समुद्री बुद्धिमान जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bear"><div class="creature-body"><h3>भालू (Bear)</h3><p>विशालकाय जंगली जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/penguin"><div class="creature-body"><h3>पेंगुइन (Penguin)</h3><p>बर्फ में रहने वाला पक्षी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PHYLUM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/vertebrate?lock=3" alt="Phylum">
+            <div>
+                <div class="rank">Phylum</div><div class="name">Chordata</div>
+                <div class="scientific"><strong>रज्जुकी संघ -> </strong>Chordata समूह के जीवों में रीढ़ की हड्डी (vertebral column) होती है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस संघ में वे जीव आते हैं जिनके शरीर में जीवन के किसी न किसी चरण में नोटोकॉर्ड (notochord) या रीढ़ की हड्डी मौजूद होती है। इनमें मछलियां, पक्षी, सरीसृप (reptiles) और स्तनधारी (mammals) आते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इस समूह के जीवों में एक विकसित केंद्रीय तंत्रिका तंत्र (central nervous system), शरीर को सहारा देने वाली रीढ़ की हड्डी (vertebral column), और शरीर के पिछले हिस्से में पूंछ (post-anal tail) का होना प्रमुख लक्षण है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: भारतीय हाथी को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">हाथी के शरीर में एक बहुत मजबूत रीढ़ की हड्डी (backbone) होती है जो उसके विशाल शरीर को सहारा देती है और उसके नर्वस सिस्टम की रक्षा करती है। इसके अलावा, इसके पास एक पूंछ (tail) भी होती है, इसीलिए इसे Chordata संघ में रखा गया है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Chordata के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,back"><div class="creature-body"><h3>हाथी (Elephant)</h3><p>मजबूत रीढ़ की हड्डी वाला विशाल जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog,animal"><div class="creature-body"><h3>कुत्ता (Dog)</h3><p>रीढ़ की हड्डी वाला वफादार जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/monkey"><div class="creature-body"><h3>बंदर (Monkey)</h3><p>पेड़ों पर कूदने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/whale"><div class="creature-body"><h3>व्हेल (Whale)</h3><p>समुद्र का विशाल जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle,bird"><div class="creature-body"><h3>चील (Eagle)</h3><p>आसमान का शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake,animal"><div class="creature-body"><h3>सांप (Snake)</h3><p>अत्यधिक लचीली रीढ़ वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog,animal"><div class="creature-body"><h3>मेंढक (Frog)</h3><p>जमीन और पानी दोनों में रहने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark,fish"><div class="creature-body"><h3>शार्क (Shark)</h3><p>कार्टिलेज से बनी रीढ़ वाली मछली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/turtle"><div class="creature-body"><h3>कछुआ (Turtle)</h3><p>खोल (Shell) के अंदर रीढ़ वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/horse"><div class="creature-body"><h3>घोड़ा (Horse)</h3><p>तेज़ दौड़ने वाला रीढ़धारी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CLASS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/mammal?lock=4" alt="Class">
+            <div>
+                <div class="rank">Class</div><div class="name">Mammalia</div>
+                <div class="scientific"><strong>स्तनधारी वर्ग -> </strong>Mammalia वर्ग के जीव अपने बच्चों को दूध पिलाते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस वर्ग में वे सभी जीव आते हैं जो अंडे देने के बजाय सीधे बच्चों को जन्म देते हैं (कुछ अपवादों को छोड़कर) और उन्हें अपना दूध पिलाकर पालते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">मादाओं में स्तन ग्रंथियां (mammary glands) होती हैं जिनसे नवजात के पोषण के लिए दूध (milk) निकलता है। इनके शरीर पर बाल या रोएं (hair) पाए जाते हैं, और ये गर्म खून वाले (warm-blooded) जीव होते हैं जो अपने शरीर का तापमान नियंत्रित रख सकते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: भारतीय हाथी को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">मादा हाथी (Cow) सीधे एक बछड़े (Calf) को जन्म देती है और उसे अपना दूध पिलाकर पालती है। हालांकि हाथी के शरीर पर बाल बहुत कम होते हैं, लेकिन जन्म के समय उन पर बाल (hair) मौजूद होते हैं। यह एक गर्म खून वाला (warm-blooded) जानवर है, इसलिए यह एक स्तनधारी (Mammal) है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Mammalia के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,calf"><div class="creature-body"><h3>हाथी (Elephant)</h3><p>सबसे लंबे गर्भकाल (gestation) वाला स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tiger"><div class="creature-body"><h3>बाघ (Tiger)</h3><p>भारत का राष्ट्रीय स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel"><div class="creature-body"><h3>गिलहरी (Squirrel)</h3><p>बालों वाली छोटी स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/whale,ocean"><div class="creature-body"><h3>ब्लू व्हेल (Blue Whale)</h3><p>पानी में रहने वाली सबसे बड़ी स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/human,face"><div class="creature-body"><h3>इंसान (Human)</h3><p>सामाजिक स्तनधारी प्राणी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bat"><div class="creature-body"><h3>चमगादड़ (Bat)</h3><p>उड़ने वाला एकमात्र स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/kangaroo"><div class="creature-body"><h3>कंगारू (Kangaroo)</h3><p>पाउच (Pouch) वाला स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bear,wild"><div class="creature-body"><h3>भालू (Bear)</h3><p>घने बालों वाला स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dolphin,sea"><div class="creature-body"><h3>डॉल्फिन (Dolphin)</h3><p>समुद्री बुद्धिमान स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cow"><div class="creature-body"><h3>गाय (Cow)</h3><p>दूध देने वाली घरेलू स्तनधारी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ORDER -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/elephant,trunk?lock=5" alt="Order">
+            <div>
+                <div class="rank">Order</div><div class="name">Proboscidea</div>
+                <div class="scientific"><strong>सूंड वाले स्तनधारी -> </strong>Proboscidea समूह में लंबी सूंड (trunk) और दांतों (tusks) वाले जीव आते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस गण (Order) में ऐसे जीव आते हैं जिनकी नाक और ऊपरी होंठ जुड़कर एक लंबी, लचीली और मांसल सूंड (proboscis/trunk) बनाते हैं। वर्तमान में केवल हाथी ही इस समूह के जीवित सदस्य हैं, बाकी सभी (जैसे मैमथ) विलुप्त (extinct) हो चुके हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी सबसे बड़ी पहचान इनकी लंबी सूंड (trunk) है। इसके अलावा, इनके पास विशेष रूप से रूपांतरित दांत (modified incisors) होते हैं जिन्हें टस्क (tusks) कहा जाता है। इनका शरीर बहुत विशाल होता है और हड्डियां अत्यधिक मजबूत होती हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: भारतीय हाथी को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">भारतीय हाथी की एक लंबी और बहुउद्देशीय सूंड (trunk) होती है जिसका उपयोग वह सांस लेने, पानी पीने, भोजन उठाने और सामाजिक संवाद के लिए करता है। इसी अद्वितीय सूंड (proboscis) के कारण इसे Proboscidea गण में रखा गया है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Proboscidea के 10 उदाहरण (जीवित व विलुप्त)</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/indian,elephant"><div class="creature-body"><h3>भारतीय हाथी</h3><p>एशियाई हाथी की एक प्रजाति।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/african,bush,elephant"><div class="creature-body"><h3>अफ्रीकी बुश हाथी</h3><p>सबसे बड़ा जीवित स्थलीय जानवर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/african,forest,elephant"><div class="creature-body"><h3>अफ्रीकी वन हाथी</h3><p>जंगलों में रहने वाला अफ्रीकी हाथी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/woolly,mammoth"><div class="creature-body"><h3>वूली मैमथ (Mammoth)</h3><p>बर्फ युग का विलुप्त सूंड वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mastodon"><div class="creature-body"><h3>मैस्टोडन (Mastodon)</h3><p>प्राचीन काल का विलुप्त स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/stegodon"><div class="creature-body"><h3>स्टेगोडन (Stegodon)</h3><p>लंबे टस्क वाला विलुप्त जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/palaeoloxodon"><div class="creature-body"><h3>पेलियोलॉक्सोडन</h3><p>प्राचीन विशालकाय हाथी (विलुप्त)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/deinotherium"><div class="creature-body"><h3>डीनोथेरियम</h3><p>नीचे की ओर टस्क वाला विलुप्त जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/gomphothere"><div class="creature-body"><h3>गोम्फोथेरे</h3><p>चार टस्क वाला प्राचीन जीव (विलुप्त)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/moeritherium"><div class="creature-body"><h3>मोएरीथेरियम</h3><p>सुअर जैसा प्रारंभिक Proboscidean.</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAMILY -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/elephant,herd?lock=6" alt="Family">
+            <div>
+                <div class="rank">Family</div><div class="name">Elephantidae</div>
+                <div class="scientific"><strong>हाथी परिवार -> </strong>Elephantidae परिवार में सभी आधुनिक हाथी और उनके करीबी विलुप्त रिश्तेदार आते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस परिवार में पृथ्वी के सबसे बड़े जीवित स्थलीय जानवर (terrestrial animals) शामिल हैं। इसमें एशियाई हाथी (Elephas), अफ्रीकी हाथी (Loxodonta) और विलुप्त हो चुके मैमथ (Mammuthus) आते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनके खंभे जैसे मजबूत पैर, बड़े कान, एक अत्यधिक विकसित मस्तिष्क (highly developed brain), और बेहद जटिल सामाजिक संरचना (social structure) होती है। ये झुंड (herd) में रहना पसंद करते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: भारतीय हाथी को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">भारतीय हाथी का विशाल आकार, खंभे जैसे मजबूत पैर, जटिल सामाजिक व्यवहार (social behavior) और विशिष्ट टस्क (tusks) उसे पूर्ण रूप से Elephantidae परिवार का सदस्य बनाते हैं।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Elephantidae के 10 उदाहरण व विशेषताएँ</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/indian,elephant,wild"><div class="creature-body"><h3>भारतीय हाथी</h3><p>Elephas वंश का प्रमुख सदस्य।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/srilankan,elephant"><div class="creature-body"><h3>श्रीलंकाई हाथी</h3><p>एशियाई हाथी की सबसे बड़ी उप-प्रजाति।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sumatran,elephant"><div class="creature-body"><h3>सुमात्रन हाथी</h3><p>इंडोनेशिया में पाई जाने वाली छोटी प्रजाति।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/borneo,elephant"><div class="creature-body"><h3>बोर्नियो पिग्मी हाथी</h3><p>सबसे छोटा एशियाई हाथी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/african,elephant"><div class="creature-body"><h3>अफ्रीकी बुश हाथी</h3><p>Loxodonta वंश का सदस्य।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/forest,elephant"><div class="creature-body"><h3>अफ्रीकी वन हाथी</h3><p>अफ्रीका के जंगलों का निवासी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mammoth"><div class="creature-body"><h3>वूली मैमथ</h3><p>विलुप्त (Extinct) Elephantidae सदस्य।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/columbian,mammoth"><div class="creature-body"><h3>कोलंबियन मैमथ</h3><p>उत्तरी अमेरिका का विशाल विलुप्त हाथी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/pygmy,elephant"><div class="creature-body"><h3>पिग्मी हाथी</h3><p>द्वीपों पर पाए जाने वाले छोटे हाथी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/straight,tusked,elephant"><div class="creature-body"><h3>स्ट्रेट-टस्क हाथी</h3><p>सीधे टस्क वाला प्राचीन हाथी (विलुप्त)।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- GENUS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/asian,elephant?lock=7" alt="Genus">
+            <div>
+                <div class="rank">Genus</div><div class="name">Elephas</div>
+                <div class="scientific"><strong>एशियाई हाथी -> </strong>Elephas वंश में एशियाई हाथियों की प्रजातियां और उप-प्रजातियां शामिल हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस वंश (Genus) में मुख्य रूप से एशियाई क्षेत्र (Asian region) के हाथी आते हैं, जो अफ्रीकी हाथियों (Loxodonta) से शारीरिक बनावट और व्यवहार में काफी अलग होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनके कान अफ्रीकी हाथियों की तुलना में छोटे होते हैं, पीठ गोल या उत्तल (convex back) होती है, माथे पर दो स्पष्ट गुंबद (twin-domed head) होते हैं, और सूंड के सिरे पर पकड़ने के लिए केवल एक 'उंगली' (finger-like projection) होती है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: भारतीय हाथी को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">भारतीय हाथी के छोटे कान, गोल पीठ, दो गुंबद वाला माथा और सूंड पर केवल एक 'उंगली' (finger) होती है, जो इसे अफ्रीकी हाथियों (Loxodonta) से बिल्कुल अलग कर Elephas वंश (Genus) में रखती है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Elephas की कुछ मुख्य विशेषताएँ और प्रकार</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/indian,elephant,jungle"><div class="creature-body"><h3>भारतीय हाथी</h3><p>मुख्य भूमि (Mainland) का एशियाई हाथी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/srilanka,elephant"><div class="creature-body"><h3>श्रीलंकाई हाथी</h3><p>त्वचा पर सबसे ज्यादा गुलाबी धब्बे (Depigmentation)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sumatra,elephant"><div class="creature-body"><h3>सुमात्रन हाथी</h3><p>हल्के रंग की उप-प्रजाति।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/borneo,elephant,wild"><div class="creature-body"><h3>बोर्नियो हाथी</h3><p>अपेक्षाकृत लंबी पूंछ वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,ears"><div class="creature-body"><h3>छोटे कान (Small Ears)</h3><p>अफ्रीकी हाथियों की तुलना में काफी छोटे कान।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,back"><div class="creature-body"><h3>उत्तल पीठ (Convex Back)</h3><p>पीठ बीच से उठी हुई या गोल होती है।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,trunk,finger"><div class="creature-body"><h3>एक उंगली (Single Finger)</h3><p>सूंड के सिरे पर केवल एक मांसल उभार।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,head"><div class="creature-body"><h3>ट्विन-डोम (Twin-domed Head)</h3><p>माथे पर दो स्पष्ट उभार (domes) होते हैं।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,skin"><div class="creature-body"><h3>पिगमेंटेशन (Depigmentation)</h3><p>उम्र के साथ कान और चेहरे पर गुलाबी धब्बे।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,toes"><div class="creature-body"><h3>पैर के नाखून (Toes)</h3><p>आगे 5 और पीछे 4 नाखून होते हैं।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SPECIES -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/indian%20elephant?lock=8" alt="Species">
+            <div>
+                <div class="rank">Species</div><div class="name">Elephas maximus</div>
+                <div class="scientific"><strong>एशियाई हाथी (Indian subspecies: E. m. indicus) -> </strong> यह भारत और आस-पास के देशों में पाया जाने वाला विशाल हाथी है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">यह वर्गीकरण का अंतिम और सटीक स्तर है। Elephas maximus (एशियाई हाथी) की भारत में मुख्य रूप से पाई जाने वाली उप-प्रजाति (subspecies) को Indian Elephant (Elephas maximus indicus) कहा जाता है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">भारत के जंगलों और घास के मैदानों में पाए जाने वाले ये हाथी बहुत बुद्धिमान (intelligent) और सामाजिक (social) होते हैं। इनमें आमतौर पर केवल नर हाथियों के ही बड़े और बाहर निकले हुए टस्क (tusks) होते हैं, जबकि मादाओं में ये बहुत छोटे या अनुपस्थित होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: इस हाथी को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">इसके विशिष्ट भौगोलिक निवास (भारतीय उपमहाद्वीप), शारीरिक आकार, और इसके जेनेटिक (genetic) लक्षणों के आधार पर विज्ञान में इसे <strong>'Elephas maximus'</strong> प्रजाति (और indicus उप-प्रजाति) के रूप में वर्गीकृत किया गया है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Elephas maximus indicus (भारतीय हाथी) की 10 खास बातें</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,matriarch"><div class="creature-body"><h3>मातृसत्तात्मक (Matriarchal)</h3><p>झुंड का नेतृत्व सबसे उम्रदराज मादा करती है।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,eating"><div class="creature-body"><h3>शाकाहारी (Herbivorous)</h3><p>प्रतिदिन 150 किलो तक घास, पत्तियां और छाल खाते हैं।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,brain"><div class="creature-body"><h3>विशाल मस्तिष्क (Large Brain)</h3><p>सभी स्थलीय जानवरों में सबसे बड़ा दिमाग।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,mud"><div class="creature-body"><h3>मिट्टी का स्नान (Mud Bathing)</h3><p>त्वचा को धूप और कीड़ों से बचाने के लिए।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,communication"><div class="creature-body"><h3>इन्फ्रासोनिक (Infrasonic)</h3><p>इंसानी कानों से परे कम आवृत्ति (frequency) पर संचार।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,forest"><div class="creature-body"><h3>इकोसिस्टम इंजीनियर</h3><p>जंगलों में रास्ते बनाना और बीजों का फैलाव करना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,tusks"><div class="creature-body"><h3>टस्क (Tusks)</h3><p>मुख्य रूप से नरों में पाए जाते हैं, जो बचाव और खुदाई के काम आते हैं।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,memory"><div class="creature-body"><h3>स्मरण शक्ति (Excellent Memory)</h3><p>पानी के स्रोतों और रास्तों को सालों तक याद रखते हैं।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,old"><div class="creature-body"><h3>लंबा जीवनकाल (Lifespan)</h3><p>जंगल में 60 से 70 वर्ष तक जी सकते हैं।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,endangered"><div class="creature-body"><h3>संकटग्रस्त (Endangered)</h3><p>आवास की कमी के कारण यह एक संकटग्रस्त प्रजाति है।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<footer>Beautiful Detailed Taxonomy Explorer (Indian Elephant Edition)</footer>
+
+<!-- =========================   JAVASCRIPT========================= -->
+<script>
+const cards = document.querySelectorAll(".taxonomy-card");
+cards.forEach(card=>{
+    const header = card.querySelector(".taxonomy-header");
+    header.addEventListener("click",()=>{
+        card.classList.toggle("active");
+        const content = card.querySelector(".content");
+        if(content.style.maxHeight){
+            content.style.maxHeight = null;
+        }else{
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    });
+});
+
+const observer = new IntersectionObserver((entries)=>{
+    entries.forEach((entry)=>{
+        if(entry.isIntersecting){
+            entry.target.classList.add("show");
+        }
+    });
+});
+const hiddenElements = document.querySelectorAll(".hidden");
+hiddenElements.forEach((el)=>observer.observe(el));
+
+document.querySelectorAll('.creature img').forEach(img=>{
+ const wrap=document.createElement('div');
+ wrap.className='image-wrap';
+ img.parentNode.insertBefore(wrap,img);
+ wrap.appendChild(img);
+
+ const tools=document.createElement('div');
+ tools.className='img-tools';
+
+ const r=document.createElement('button');
+ r.className='img-tool-btn';
+ r.innerHTML='🔄';
+
+ const s=document.createElement('button');
+ s.className='img-tool-btn';
+ s.innerHTML='🌐';
+
+ tools.appendChild(r);
+ tools.appendChild(s);
+ wrap.appendChild(tools);
+
+ const original=(img.src.split('/300/')[1]||'animal').split('?')[0];
+
+ r.onclick=(e)=>{
+   e.stopPropagation();
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+Date.now();
+ };
+
+ s.onclick=(e)=>{
+   e.stopPropagation();
+   window.open('https://commons.wikimedia.org/w/index.php?search='+encodeURIComponent(original),'_blank');
+ };
+
+ img.onerror=()=>{
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+(Date.now()+1);
+ };
+});
+
+
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('img').forEach((img,i)=>{
+   if(img.src.includes('loremflickr.com')){
+      const base=img.src.split('?')[0];
+      img.src=base+'?lock='+(Date.now()+i);
+   }
+ });
+});
+</script>
+
+
+<script>
+document.querySelectorAll('img').forEach(img=>{
+  img.onerror=function(){
+    this.onerror=null;
+    this.src='https://loremflickr.com/400/300/elephant?lock='+Date.now();
+  };
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.image-wrap').forEach(w=>{
+   const tools=w.querySelector('.img-tools');
+   const card=w.closest('.creature');
+   const title=card ? card.querySelector('.creature-body h3') : null;
+   if(tools && title){
+      title.insertAdjacentElement('afterend', tools);
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.padding='0';
+      tools.style.background='transparent';
+      tools.style.verticalAlign='middle';
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const title=card.querySelector('.creature-body h3');
+   const tools=card.querySelector('.img-tools');
+   if(title && tools){
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.verticalAlign='middle';
+      tools.style.background='transparent';
+      tools.style.padding='0';
+      tools.style.position='static';
+
+      title.appendChild(tools);
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.taxonomy-header .left img').forEach(img=>{
+   if(img.parentElement.querySelector('.header-tools')) return;
+
+   const tools=document.createElement('div');
+   tools.className='header-tools';
+   tools.style.display='flex';
+   tools.style.justifyContent='center';
+   tools.style.gap='6px';
+   tools.style.marginTop='4px';
+
+   const r=document.createElement('button');
+   r.textContent='🔄';
+
+   const g=document.createElement('button');
+   g.textContent='🌐';
+
+   r.onclick=(e)=>{
+      e.stopPropagation();
+      img.src=img.src.split('?')[0]+'?v='+Date.now();
+   };
+
+   g.onclick=(e)=>{
+      e.stopPropagation();
+      const q=img.alt || 'animal';
+      window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+
+   const wrap=document.createElement('div');
+   wrap.style.display='flex';
+   wrap.style.flexDirection='column';
+   wrap.style.alignItems='center';
+
+   img.parentNode.insertBefore(wrap,img);
+   wrap.appendChild(img);
+   wrap.appendChild(tools);
+   tools.appendChild(r);
+   tools.appendChild(g);
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+
+document.querySelectorAll('.header-tools button:last-child').forEach(btn=>{
+ btn.onclick=(e)=>{
+  e.stopPropagation();
+  const card=btn.closest('.taxonomy-card');
+  const q=[
+   card?.querySelector('.rank')?.innerText||'',
+   card?.querySelector('.name')?.innerText||'',
+   card?.querySelector('.scientific')?.innerText||''
+  ].join(' ');
+  window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+ };
+});
+
+document.querySelectorAll('.creature').forEach(card=>{
+ const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+ if(globe){
+   globe.onclick=(e)=>{
+    e.stopPropagation();
+    const q=(card.querySelector('h3')?.innerText||'')+' '+(card.querySelector('p')?.innerText||'');
+    window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+ }
+});
+
+});
+</script>
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+   if(!globe) return;
+
+   globe.onclick=(e)=>{
+     e.stopPropagation();
+
+     const titleNode = card.querySelector('h3');
+     let title='';
+     if(titleNode){
+       title=(titleNode.childNodes[0]?.textContent || titleNode.textContent || '').trim();
+       title=title.replace('🔄','').replace('🌐','').trim();
+     }
+
+     const desc=(card.querySelector('p')?.innerText || '').trim();
+
+     const taxonomyCard=card.closest('.taxonomy-card');
+     const rank=(taxonomyCard?.querySelector('.rank')?.innerText || '').trim();
+     const taxonomyName=(taxonomyCard?.querySelector('.name')?.innerText || '').trim();
+
+     const query=(rank+' '+taxonomyName+' '+title+' '+desc).replace(/\s+/g,' ').trim();
+
+     window.open(
+       'https://www.google.com/search?tbm=isch&q='+encodeURIComponent(query),
+       '_blank'
+     );
+   };
+ });
+});
+</script>
+
+</body>
+</html>

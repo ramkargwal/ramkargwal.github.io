@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Purple Sunbird Taxonomy Explorer - Detailed</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================   BASIC========================= */
+*{margin:0; padding:0; box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{    font-family:'Poppins',sans-serif;    background:linear-gradient(to bottom right,#f8f5ff,#f3e8ff,#ffffff);    color:#1c2430; overflow-x:hidden;}
+
+/* =========================   HERO========================= */
+.hero{    display:flex; align-items:center;    justify-content:center; flex-direction:column;    text-align:center; padding:40px 20px;    position:relative; overflow:hidden;}
+.hero::before, .hero::after{    content:""; position:absolute;    border-radius:50%;}
+.hero::before{    width:700px; height:700px; top:-250px; left:-200px;    background:radial-gradient(circle,#a855f755,transparent 70%);    animation:float1 8s ease-in-out infinite;}
+.hero::after{    width:600px; height:600px; bottom:-250px; right:-200px;    background:radial-gradient(circle,#ec489944,transparent 70%);    animation:float2 10s ease-in-out infinite;}
+@keyframes float1{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(30px);} }
+@keyframes float2{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(-30px);} }
+.hero h1{    font-size:70px; font-weight:700; z-index:2;    background:linear-gradient(to right,#7e22ce,#db2777);    -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+.hero p{    margin-top:20px; font-size:20px; color:#5c6773;    max-width:1200px; line-height:1.8; z-index:2;}
+
+/* =========================   CONTAINER & CARDS========================= */
+.container{ width:95%; max-width:1250px; margin:auto; padding-bottom:80px; }
+.taxonomy-card{    background:white; margin-bottom:30px; border-radius:30px;    overflow:hidden; border:1px solid #dde8f5;    box-shadow:0 10px 30px rgba(0,0,0,0.05); transition:0.5s;}
+.taxonomy-card:hover{ transform:translateY(-6px); box-shadow:0 18px 40px rgba(0,0,0,0.08); }
+.taxonomy-header{    padding:25px; display:flex; align-items:center;    justify-content:space-between; cursor:pointer; transition:0.3s;}
+.taxonomy-header:hover{ background:#f7fbff; }
+.left{ display:flex; align-items:center; gap:22px; }
+.left img{    width:95px; height:95px; border-radius:24px;    object-fit:cover; border:4px solid #f3e8ff; transition:0.4s;}
+.taxonomy-card:hover .left img{ transform:scale(1.05) rotate(2deg); }
+.rank{ font-size:13px; text-transform:uppercase; letter-spacing:3px; color:#7e22ce; font-weight:600; }
+.name{ font-size:34px; font-weight:700; margin-top:4px; }
+.scientific{ margin-top:7px; color:#637082; font-size:16px; }
+.arrow{ font-size:38px; color:#7e22ce; transition:0.5s; }
+.taxonomy-card.active .arrow{ transform:rotate(180deg); }
+
+/* =========================   CONTENT & DETAILED DESC========================= */
+.content{ max-height:0; overflow:hidden; transition:max-height 0.8s ease; }
+.content-inner{ padding:35px; border-top:1px solid #edf3fa; }
+
+.detailed-desc {    background: #fdfdff;    padding: 25px;    border-radius: 20px;    border-left: 5px solid #7e22ce;    margin-bottom: 35px;}
+.desc-item {    margin-bottom: 18px;}
+.desc-item:last-child {    margin-bottom: 0;}
+.desc-label {    display: block;    font-size: 17px;    font-weight: 600;    color: #581c87;    margin-bottom: 5px;}
+.desc-text {    font-size: 16px;    line-height: 1.8;    color: #465260;}
+
+.section-title{ font-size:30px; margin-bottom:25px; color:#581c87; }
+
+/* =========================   GRID & CREATURES========================= */
+.creatures{    display:grid; gap:25px;    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));}
+.creature{    background:#ffffff; border-radius:20px; overflow:hidden;    border:1px solid #e8eef7; transition:0.5s;}
+.creature:hover{ transform:translateY(-10px) scale(1.02); box-shadow:0 15px 30px rgba(0,0,0,0.08); }
+.creature img{ width:100%; height:160px; object-fit:cover; transition:0.5s; }
+.creature:hover img{ transform:scale(1.08); }
+.creature-body{ padding:15px; }
+.creature h3{ font-size:18px; margin-bottom:8px; color: #1c2430;}
+.creature p{ color:#66717d; line-height:1.5; font-size:14px; }
+
+/* =========================   UTILITIES========================= */
+.hidden{ opacity:0; transform:translateY(50px); transition:all 1s; }
+.show{ opacity:1; transform:translateY(0px); }
+footer{ padding:40px 20px; text-align:center; color:#607080; font-size:15px; }
+
+@media(max-width:800px){    .hero h1{font-size:44px;} .hero p{font-size:17px;}    .name{font-size:26px;} .left{align-items:flex-start;}    .left img{width:75px; height:75px;}    .taxonomy-header{padding:20px;} .content-inner{padding:25px;}}
+
+.image-wrap{position:relative;display:flex;flex-direction:column}
+.img-tools{position:static;display:flex;gap:6px;justify-content:center;padding:8px 0;background:#fff}
+.img-tool-btn{border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;background:rgba(255,255,255,.9)}
+
+</style>
+
+<style>
+.header-tools button,.img-tool-btn,.img-tools button{
+border:none!important;
+outline:none!important;
+background:transparent!important;
+box-shadow:none!important;
+padding:0!important;
+cursor:pointer;
+font-size:20px;
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+    <h1>Purple Sunbird Taxonomy</h1>
+    <p>Explore the complete biological classification system of the Purple Sunbird. Click on each level to understand the scientific reasoning and examples of why the Purple Sunbird is placed in that specific category.</p>
+</section>
+
+<div class="container">
+
+<!-- DOMAIN -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/eukarya?lock=1" alt="Domain">
+            <div>
+                <div class="rank">Domain</div><div class="name">Eukarya</div>
+                <div class="scientific"><strong>Complex Cellular Organisms -> </strong>Eukarya includes all organisms whose cells have a distinct nucleus.</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">What types of organisms belong in this level?</span>
+                    <p class="desc-text">This domain includes all organisms on Earth whose cells contain a distinct, membrane-bound nucleus. This encompasses plants, animals, fungi, and protists.</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">What are the main characteristics of this level?</span>
+                    <p class="desc-text">These organisms have a highly complex cell structure. Their genetic material (DNA) is safely enclosed within the nucleus, and their cells contain various specialized organelles.</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Why is the Purple Sunbird in this level?</span>
+                    <p class="desc-text">The Purple Sunbird is composed of eukaryotic cells. Every single cell in its body possesses a distinct nucleus and membrane-bound organelles, making it a definitive member of the Eukarya domain.</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">10 Examples of Eukarya</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/sunbird"><div class="creature-body"><h3>Purple Sunbird</h3><p>An agile nectar-feeding bird.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/human"><div class="creature-body"><h3>Human</h3><p>A highly intelligent primate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog"><div class="creature-body"><h3>Dog</h3><p>A loyal and smart companion.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tree"><div class="creature-body"><h3>Tree (Plants)</h3><p>Photosynthesizing organisms.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mushroom"><div class="creature-body"><h3>Mushroom</h3><p>A member of the Fungi kingdom.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bird"><div class="creature-body"><h3>Bird</h3><p>Feathered, flying animals.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/fish"><div class="creature-body"><h3>Fish</h3><p>Aquatic, gill-bearing animals.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog"><div class="creature-body"><h3>Frog</h3><p>Amphibious creatures.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/butterfly"><div class="creature-body"><h3>Butterfly</h3><p>Colorful flying insects.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/rose"><div class="creature-body"><h3>Rose</h3><p>Beautiful flowering plants.</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- KINGDOM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/animal?lock=2" alt="Kingdom">
+            <div>
+                <div class="rank">Kingdom</div><div class="name">Animalia</div>
+                <div class="scientific"><strong>Animal Kingdom -> </strong>Animalia includes organisms that do not synthesize their own food.</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">What types of organisms belong in this level?</span>
+                    <p class="desc-text">This kingdom contains all multicellular animals. Organisms in this group cannot produce their own food (unlike plants) and must rely on consuming other living things for energy.</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">What are the main characteristics of this level?</span>
+                    <p class="desc-text">They are heterotrophic (consumers). Their cells lack rigid cell walls, which are found in plants. The vast majority of animals are capable of voluntary motion at some stage of their life cycle.</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Why is the Purple Sunbird in this level?</span>
+                    <p class="desc-text">The Purple Sunbird is a multicellular organism that cannot perform photosynthesis. It actively forages for nectar and insects to survive and moves voluntarily through flight, confirming it as an Animal.</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">10 Examples of Animalia</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/sunbird,nectar"><div class="creature-body"><h3>Purple Sunbird</h3><p>A fast-flying nectar gatherer.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lion"><div class="creature-body"><h3>Lion</h3><p>The powerful king of the jungle.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant"><div class="creature-body"><h3>Elephant</h3><p>The largest terrestrial animal.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark"><div class="creature-body"><h3>Shark</h3><p>A dangerous oceanic predator.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle"><div class="creature-body"><h3>Eagle</h3><p>A bird of prey with keen eyesight.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/spider"><div class="creature-body"><h3>Spider</h3><p>A web-spinning arachnid.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake"><div class="creature-body"><h3>Snake</h3><p>A slithering, limbless reptile.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dolphin"><div class="creature-body"><h3>Dolphin</h3><p>A highly intelligent marine mammal.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bear"><div class="creature-body"><h3>Bear</h3><p>A large, strong forest dweller.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/penguin"><div class="creature-body"><h3>Penguin</h3><p>A flightless, cold-climate bird.</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PHYLUM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/vertebrate?lock=3" alt="Phylum">
+            <div>
+                <div class="rank">Phylum</div><div class="name">Chordata</div>
+                <div class="scientific"><strong>Chordates -> </strong>Chordata consists of animals that possess a notochord or backbone.</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">What types of organisms belong in this level?</span>
+                    <p class="desc-text">This phylum contains organisms that develop a notochord or a rigid spinal column during their life. It includes all vertebrates such as fishes, amphibians, reptiles, birds, and mammals.</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">What are the main characteristics of this level?</span>
+                    <p class="desc-text">Chordates feature a complex central nervous system, a supporting structural backbone (vertebral column in vertebrates), and typically a post-anal tail at some developmental stage.</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Why is the Purple Sunbird in this level?</span>
+                    <p class="desc-text">The Purple Sunbird possesses a well-developed internal skeleton made of bone, centered around a spinal column that houses and protects its spinal cord, firmly placing it in Phylum Chordata.</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">10 Examples of Chordata</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/sunbird,bird"><div class="creature-body"><h3>Purple Sunbird</h3><p>A winged vertebrate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog,animal"><div class="creature-body"><h3>Dog</h3><p>A loyal vertebrate companion.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/monkey"><div class="creature-body"><h3>Monkey</h3><p>An agile, tree-climbing chordate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/whale"><div class="creature-body"><h3>Whale</h3><p>A massive marine vertebrate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle,bird"><div class="creature-body"><h3>Eagle</h3><p>A predatory flying vertebrate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake,animal"><div class="creature-body"><h3>Snake</h3><p>A highly flexible vertebrate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog,animal"><div class="creature-body"><h3>Frog</h3><p>An amphibious vertebrate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark,fish"><div class="creature-body"><h3>Shark</h3><p>A cartilaginous vertebrate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/turtle"><div class="creature-body"><h3>Turtle</h3><p>A shelled vertebrate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/horse"><div class="creature-body"><h3>Horse</h3><p>A fast-running vertebrate.</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CLASS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/bird,flying?lock=4" alt="Class">
+            <div>
+                <div class="rank">Class</div><div class="name">Aves</div>
+                <div class="scientific"><strong>Birds -> </strong>Class Aves includes warm-blooded, egg-laying vertebrates with feathers.</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">What types of organisms belong in this level?</span>
+                    <p class="desc-text">This class includes all species of birds. They are characterized by having feathers, toothless beaked jaws, and the ability to lay hard-shelled eggs.</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">What are the main characteristics of this level?</span>
+                    <p class="desc-text">Birds possess forelimbs modified into wings (even flightless ones), a four-chambered heart, a lightweight but strong skeleton, and an exceptionally high metabolic rate to support flight.</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Why is the Purple Sunbird in this level?</span>
+                    <p class="desc-text">The Purple Sunbird has feathers covering its body, forelimbs evolved into wings allowing for rapid flight, a beak lacking teeth, and it reproduces by laying hard-shelled eggs. It is a true Bird.</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">10 Examples of Aves</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/sunbird,flying"><div class="creature-body"><h3>Purple Sunbird</h3><p>A tiny, iridescent bird.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/ostrich"><div class="creature-body"><h3>Ostrich</h3><p>The largest flightless bird.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/penguin,ice"><div class="creature-body"><h3>Penguin</h3><p>A swimming, flightless bird.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/parrot"><div class="creature-body"><h3>Parrot</h3><p>An intelligent, colorful bird.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/owl"><div class="creature-body"><h3>Owl</h3><p>A nocturnal bird of prey.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow"><div class="creature-body"><h3>Sparrow</h3><p>A common small songbird.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/peacock"><div class="creature-body"><h3>Peacock</h3><p>Known for its magnificent tail feathers.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/crow"><div class="creature-body"><h3>Crow</h3><p>A highly adaptable, intelligent bird.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/hummingbird"><div class="creature-body"><h3>Hummingbird</h3><p>A hovering nectar feeder of the Americas.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/swan"><div class="creature-body"><h3>Swan</h3><p>A large, graceful waterfowl.</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ORDER -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/passerine?lock=5" alt="Order">
+            <div>
+                <div class="rank">Order</div><div class="name">Passeriformes</div>
+                <div class="scientific"><strong>Perching Birds -> </strong>Passeriformes have toes adapted specifically for grasping branches.</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">What types of organisms belong in this level?</span>
+                    <p class="desc-text">This is the largest order of birds, commonly referred to as perching birds or songbirds. It includes more than half of all bird species worldwide.</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">What are the main characteristics of this level?</span>
+                    <p class="desc-text">They are distinguished by their "anisodactyl" foot arrangement: three toes pointing forward and one pointing backward. This specialized structure automatically locks their tendons, allowing them to sleep on branches without falling.</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Why is the Purple Sunbird in this level?</span>
+                    <p class="desc-text">The Purple Sunbird possesses the classic anisodactyl toe arrangement that allows it to easily perch on thin twigs while foraging for nectar, thus classifying it as a passerine bird.</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">10 Examples of Passeriformes</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/sunbird,perch"><div class="creature-body"><h3>Purple Sunbird</h3><p>A perching nectar specialist.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/raven"><div class="creature-body"><h3>Raven</h3><p>A large, black passerine.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/robin,bird"><div class="creature-body"><h3>Robin</h3><p>A common, red-breasted songbird.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/finch"><div class="creature-body"><h3>Finch</h3><p>A small bird with a stout beak.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/magpie"><div class="creature-body"><h3>Magpie</h3><p>An intelligent, black-and-white bird.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/jay,bird"><div class="creature-body"><h3>Jay</h3><p>A colorful, noisy forest bird.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/starling"><div class="creature-body"><h3>Starling</h3><p>A highly gregarious flocking bird.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/swallow,bird"><div class="creature-body"><h3>Swallow</h3><p>An aerial feeder with pointed wings.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/canary"><div class="creature-body"><h3>Canary</h3><p>A bright yellow, melodic singer.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow,bird"><div class="creature-body"><h3>House Sparrow</h3><p>A bird fully adapted to human cities.</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAMILY -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/nectariniidae?lock=6" alt="Family">
+            <div>
+                <div class="rank">Family</div><div class="name">Nectariniidae</div>
+                <div class="scientific"><strong>Sunbirds & Spiderhunters -> </strong>The Nectariniidae family includes very small, nectar-feeding passerine birds.</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">What types of organisms belong in this level?</span>
+                    <p class="desc-text">This family consists of sunbirds and spiderhunters, which are small, highly active birds found primarily in Africa, Southern Asia, and parts of Australasia.</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">What are the main characteristics of this level?</span>
+                    <p class="desc-text">They feature thin, distinctively downward-curving bills and specialized tubular tongues designed to extract nectar from flowers. Males typically exhibit spectacular, iridescent metallic plumage.</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Why is the Purple Sunbird in this level?</span>
+                    <p class="desc-text">With its specialized decurved beak, tubular tongue adapted for nectar-feeding, and the male's striking iridescent plumage, the Purple Sunbird is a quintessential member of Nectariniidae.</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">10 Examples of Nectariniidae</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/sunbird,purple"><div class="creature-body"><h3>Purple Sunbird</h3><p>Common across the Indian subcontinent.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/malachite,sunbird"><div class="creature-body"><h3>Malachite Sunbird</h3><p>A large, bright green African sunbird.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/spiderhunter"><div class="creature-body"><h3>Little Spiderhunter</h3><p>An Asian bird with a very long curved beak.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/olive,sunbird"><div class="creature-body"><h3>Olive Sunbird</h3><p>A subtly colored, forest-dwelling species.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bronze,sunbird"><div class="creature-body"><h3>Bronze Sunbird</h3><p>Features striking coppery-bronze iridescence.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/crimson,sunbird"><div class="creature-body"><h3>Crimson Sunbird</h3><p>Singapore's unofficial national bird.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/collared,sunbird"><div class="creature-body"><h3>Collared Sunbird</h3><p>A tiny bird with a distinctive breast band.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/scarlet,sunbird"><div class="creature-body"><h3>Scarlet-chested Sunbird</h3><p>Known for a brilliant red chest patch.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/beautiful,sunbird"><div class="creature-body"><h3>Beautiful Sunbird</h3><p>Features striking red, green, and yellow plumage.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/ruby,sunbird"><div class="creature-body"><h3>Ruby-cheeked Sunbird</h3><p>A colorful species of Southeast Asia.</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- GENUS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/cinnyris?lock=7" alt="Genus">
+            <div>
+                <div class="rank">Genus</div><div class="name">Cinnyris</div>
+                <div class="scientific"><strong>Typical Sunbirds -> </strong>The Cinnyris genus comprises sunbirds known for extreme sexual dimorphism.</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">What types of organisms belong in this level?</span>
+                    <p class="desc-text">Cinnyris is a large genus of sunbirds, widely distributed primarily throughout Africa, with several species extending into the Middle East and South Asia.</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">What are the main characteristics of this level?</span>
+                    <p class="desc-text">Species in this genus show marked differences between sexes. Breeding males have highly reflective, metallic plumage (often purples, greens, and coppers), while females are generally dull olive or brown.</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Why is the Purple Sunbird in this level?</span>
+                    <p class="desc-text">Based on its distinct male eclipse plumage cycle, strong sexual dimorphism, and precise morphological traits shared with other African and Asian sunbirds, it is classified directly under the genus Cinnyris.</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Characteristics and Relatives of Cinnyris</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/palestine,sunbird"><div class="creature-body"><h3>Palestine Sunbird</h3><p>A close relative found in the Middle East.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/olive,bellied"><div class="creature-body"><h3>Olive-bellied Sunbird</h3><p>An African species of the same genus.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/marico,sunbird"><div class="creature-body"><h3>Marico Sunbird</h3><p>A larger metallic green African sunbird.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shining,sunbird"><div class="creature-body"><h3>Shining Sunbird</h3><p>A bright and highly reflective relative.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sunbird,feathers"><div class="creature-body"><h3>Iridescent Plumage</h3><p>Structural coloration that gleams in sunlight.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sunbird,beak"><div class="creature-body"><h3>Curved Beak</h3><p>Perfectly shaped for probing flower corollas.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/flower,nectar"><div class="creature-body"><h3>Nectar Diet</h3><p>Provides the high sugar needed for energy.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/hovering,bird"><div class="creature-body"><h3>Hovering Ability</h3><p>Can hover briefly to feed, though prefers perching.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/insect,food"><div class="creature-body"><h3>Insectivorous Habits</h3><p>Consumes insects, especially to feed chicks.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bird,flight"><div class="creature-body"><h3>Rapid Flight</h3><p>Extremely fast and darting flight patterns.</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SPECIES -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/cinnyris%20asiaticus?lock=8" alt="Species">
+            <div>
+                <div class="rank">Species</div><div class="name">Cinnyris asiaticus</div>
+                <div class="scientific"><strong>The Purple Sunbird -> </strong>This is the specific, widely-distributed sunbird species native to South and Southeast Asia.</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">What types of organisms belong in this level?</span>
+                    <p class="desc-text">This is the final, most specific level of classification. It refers exclusively to the Purple Sunbird, a distinct species found stretching from the Persian Gulf to Southeast Asia.</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">What are the main characteristics of this level?</span>
+                    <p class="desc-text">Breeding males exhibit a uniform, glossy metallic purple-black coloration. Non-breeding males enter an "eclipse" phase, looking like females (olive-brown) but retaining a dark vertical stripe down their chest and throat.</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Why is this bird classified as this species?</span>
+                    <p class="desc-text">Its unique genetic sequence, distinct geographic range, the specific metallic purple plumage of the breeding male, and its characteristic "chwit-chwit" calls define it biologically as <strong>Cinnyris asiaticus</strong>.</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">10 Fascinating Facts about Cinnyris asiaticus</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/purple,plumage"><div class="creature-body"><h3>Metallic Purple</h3><p>Breeding males gleam in sunlight.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eclipse,plumage"><div class="creature-body"><h3>Eclipse Plumage</h3><p>Non-breeding males turn olive-brown.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/female,sunbird"><div class="creature-body"><h3>Camouflaged Females</h3><p>Females remain a dull yellow-olive year-round.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tubular,tongue"><div class="creature-body"><h3>Tubular Tongue</h3><p>Uses a capillary action to drink nectar.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sunbird,nest"><div class="creature-body"><h3>Pouch-like Nests</h3><p>Builds hanging pouch nests with a side entrance.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/spider,web"><div class="creature-body"><h3>Cobweb Architecture</h3><p>Uses spider webs to bind the nest together.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/chwit,call"><div class="creature-body"><h3>Sharp Vocals</h3><p>Emits a high-pitched "chwit-chwit" or "ptyg-ptyg" call.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sunbird,insects"><div class="creature-body"><h3>Spider Hunters</h3><p>Highly reliant on small spiders to feed their young.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/pollinator"><div class="creature-body"><h3>Crucial Pollinators</h3><p>Play a massive role in pollinating local flora.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sunbird,urban"><div class="creature-body"><h3>Urban Adaptable</h3><p>Commonly found in city gardens and parks.</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<footer>Beautiful Detailed Taxonomy Explorer (Purple Sunbird Edition)</footer>
+
+<!-- =========================   JAVASCRIPT========================= -->
+<script>
+const cards = document.querySelectorAll(".taxonomy-card");
+cards.forEach(card=>{
+    const header = card.querySelector(".taxonomy-header");
+    header.addEventListener("click",()=>{
+        card.classList.toggle("active");
+        const content = card.querySelector(".content");
+        if(content.style.maxHeight){
+            content.style.maxHeight = null;
+        }else{
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    });
+});
+
+const observer = new IntersectionObserver((entries)=>{
+    entries.forEach((entry)=>{
+        if(entry.isIntersecting){
+            entry.target.classList.add("show");
+        }
+    });
+});
+const hiddenElements = document.querySelectorAll(".hidden");
+hiddenElements.forEach((el)=>observer.observe(el));
+
+document.querySelectorAll('.creature img').forEach(img=>{
+ const wrap=document.createElement('div');
+ wrap.className='image-wrap';
+ img.parentNode.insertBefore(wrap,img);
+ wrap.appendChild(img);
+
+ const tools=document.createElement('div');
+ tools.className='img-tools';
+
+ const r=document.createElement('button');
+ r.className='img-tool-btn';
+ r.innerHTML='🔄';
+
+ const s=document.createElement('button');
+ s.className='img-tool-btn';
+ s.innerHTML='🌐';
+
+ tools.appendChild(r);
+ tools.appendChild(s);
+ wrap.appendChild(tools);
+
+ const original=(img.src.split('/300/')[1]||'animal').split('?')[0];
+
+ r.onclick=(e)=>{
+   e.stopPropagation();
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+Date.now();
+ };
+
+ s.onclick=(e)=>{
+   e.stopPropagation();
+   window.open('https://commons.wikimedia.org/w/index.php?search='+encodeURIComponent(original),'_blank');
+ };
+
+ img.onerror=()=>{
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+(Date.now()+1);
+ };
+});
+
+
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('img').forEach((img,i)=>{
+   if(img.src.includes('loremflickr.com')){
+      const base=img.src.split('?')[0];
+      img.src=base+'?lock='+(Date.now()+i);
+   }
+ });
+});
+</script>
+
+
+<script>
+document.querySelectorAll('img').forEach(img=>{
+  img.onerror=function(){
+    this.onerror=null;
+    this.src='https://loremflickr.com/400/300/bird?lock='+Date.now();
+  };
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.image-wrap').forEach(w=>{
+   const tools=w.querySelector('.img-tools');
+   const card=w.closest('.creature');
+   const title=card ? card.querySelector('.creature-body h3') : null;
+   if(tools && title){
+      title.insertAdjacentElement('afterend', tools);
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.padding='0';
+      tools.style.background='transparent';
+      tools.style.verticalAlign='middle';
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const title=card.querySelector('.creature-body h3');
+   const tools=card.querySelector('.img-tools');
+   if(title && tools){
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.verticalAlign='middle';
+      tools.style.background='transparent';
+      tools.style.padding='0';
+      tools.style.position='static';
+
+      title.appendChild(tools);
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.taxonomy-header .left img').forEach(img=>{
+   if(img.parentElement.querySelector('.header-tools')) return;
+
+   const tools=document.createElement('div');
+   tools.className='header-tools';
+   tools.style.display='flex';
+   tools.style.justifyContent='center';
+   tools.style.gap='6px';
+   tools.style.marginTop='4px';
+
+   const r=document.createElement('button');
+   r.textContent='🔄';
+
+   const g=document.createElement('button');
+   g.textContent='🌐';
+
+   r.onclick=(e)=>{
+      e.stopPropagation();
+      img.src=img.src.split('?')[0]+'?v='+Date.now();
+   };
+
+   g.onclick=(e)=>{
+      e.stopPropagation();
+      const q=img.alt || 'animal';
+      window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+
+   const wrap=document.createElement('div');
+   wrap.style.display='flex';
+   wrap.style.flexDirection='column';
+   wrap.style.alignItems='center';
+
+   img.parentNode.insertBefore(wrap,img);
+   wrap.appendChild(img);
+   wrap.appendChild(tools);
+   tools.appendChild(r);
+   tools.appendChild(g);
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+
+document.querySelectorAll('.header-tools button:last-child').forEach(btn=>{
+ btn.onclick=(e)=>{
+  e.stopPropagation();
+  const card=btn.closest('.taxonomy-card');
+  const q=[
+   card?.querySelector('.rank')?.innerText||'',
+   card?.querySelector('.name')?.innerText||'',
+   card?.querySelector('.scientific')?.innerText||''
+  ].join(' ');
+  window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+ };
+});
+
+document.querySelectorAll('.creature').forEach(card=>{
+ const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+ if(globe){
+   globe.onclick=(e)=>{
+    e.stopPropagation();
+    const q=(card.querySelector('h3')?.innerText||'')+' '+(card.querySelector('p')?.innerText||'');
+    window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+ }
+});
+
+});
+</script>
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+   if(!globe) return;
+
+   globe.onclick=(e)=>{
+     e.stopPropagation();
+
+     const titleNode = card.querySelector('h3');
+     let title='';
+     if(titleNode){
+       title=(titleNode.childNodes[0]?.textContent || titleNode.textContent || '').trim();
+       title=title.replace('🔄','').replace('🌐','').trim();
+     }
+
+     const desc=(card.querySelector('p')?.innerText || '').trim();
+
+     const taxonomyCard=card.closest('.taxonomy-card');
+     const rank=(taxonomyCard?.querySelector('.rank')?.innerText || '').trim();
+     const taxonomyName=(taxonomyCard?.querySelector('.name')?.innerText || '').trim();
+
+     const query=(rank+' '+taxonomyName+' '+title+' '+desc).replace(/\s+/g,' ').trim();
+
+     window.open(
+       'https://www.google.com/search?tbm=isch&q='+encodeURIComponent(query),
+       '_blank'
+     );
+   };
+ });
+});
+</script>
+
+</body>
+</html>

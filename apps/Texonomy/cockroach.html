@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cockroach Taxonomy Explorer - Detailed</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================   BASIC========================= */
+*{margin:0; padding:0; box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{    font-family:'Poppins',sans-serif;    background:linear-gradient(to bottom right,#fffcf5,#f5ebe0,#ffffff);    color:#1c2430; overflow-x:hidden;}
+
+/* =========================   HERO========================= */
+.hero{    display:flex; align-items:center;    justify-content:center; flex-direction:column;    text-align:center; padding:40px 20px;    position:relative; overflow:hidden;}
+.hero::before, .hero::after{    content:""; position:absolute;    border-radius:50%;}
+.hero::before{    width:700px; height:700px; top:-250px; left:-200px;    background:radial-gradient(circle,#8b451355,transparent 70%);    animation:float1 8s ease-in-out infinite;}
+.hero::after{    width:600px; height:600px; bottom:-250px; right:-200px;    background:radial-gradient(circle,#d2691e44,transparent 70%);    animation:float2 10s ease-in-out infinite;}
+@keyframes float1{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(30px);} }
+@keyframes float2{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(-30px);} }
+.hero h1{    font-size:70px; font-weight:700; z-index:2;    background:linear-gradient(to right,#8b4513,#a0522d);    -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+.hero p{    margin-top:20px; font-size:20px; color:#5c6773;    max-width:1200px; line-height:1.8; z-index:2;}
+
+/* =========================   CONTAINER & CARDS========================= */
+.container{ width:95%; max-width:1250px; margin:auto; padding-bottom:80px; }
+.taxonomy-card{    background:white; margin-bottom:30px; border-radius:30px;    overflow:hidden; border:1px solid #ebd5c1;    box-shadow:0 10px 30px rgba(0,0,0,0.05); transition:0.5s;}
+.taxonomy-card:hover{ transform:translateY(-6px); box-shadow:0 18px 40px rgba(139,69,19,0.08); }
+.taxonomy-header{    padding:25px; display:flex; align-items:center;    justify-content:space-between; cursor:pointer; transition:0.3s;}
+.taxonomy-header:hover{ background:#fff5eb; }
+.left{ display:flex; align-items:center; gap:22px; }
+.left img{    width:95px; height:95px; border-radius:24px;    object-fit:cover; border:4px solid #ebd5c1; transition:0.4s;}
+.taxonomy-card:hover .left img{ transform:scale(1.05) rotate(2deg); }
+.rank{ font-size:13px; text-transform:uppercase; letter-spacing:3px; color:#8b4513; font-weight:600; }
+.name{ font-size:34px; font-weight:700; margin-top:4px; }
+.scientific{ margin-top:7px; color:#637082; font-size:16px; }
+.arrow{ font-size:38px; color:#8b4513; transition:0.5s; }
+.taxonomy-card.active .arrow{ transform:rotate(180deg); }
+
+/* =========================   CONTENT & DETAILED DESC========================= */
+.content{ max-height:0; overflow:hidden; transition:max-height 0.8s ease; }
+.content-inner{ padding:35px; border-top:1px solid #ebd5c1; }
+
+.detailed-desc {    background: #fffaf5;    padding: 25px;    border-radius: 20px;    border-left: 5px solid #8b4513;    margin-bottom: 35px;}
+.desc-item {    margin-bottom: 18px;}
+.desc-item:last-child {    margin-bottom: 0;}
+.desc-label {    display: block;    font-size: 17px;    font-weight: 600;    color: #5c3a21;    margin-bottom: 5px;}
+.desc-text {    font-size: 16px;    line-height: 1.8;    color: #4e342e;}
+
+.section-title{ font-size:30px; margin-bottom:25px; color:#5c3a21; }
+
+/* =========================   GRID & CREATURES========================= */
+.creatures{    display:grid; gap:25px;    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));}
+.creature{    background:#ffffff; border-radius:20px; overflow:hidden;    border:1px solid #ebd5c1; transition:0.5s;}
+.creature:hover{ transform:translateY(-10px) scale(1.02); box-shadow:0 15px 30px rgba(139,69,19,0.08); }
+.creature img{ width:100%; height:160px; object-fit:cover; transition:0.5s; }
+.creature:hover img{ transform:scale(1.08); }
+.creature-body{ padding:15px; }
+.creature h3{ font-size:18px; margin-bottom:8px; color: #1c2430;}
+.creature p{ color:#66717d; line-height:1.5; font-size:14px; }
+
+/* =========================   UTILITIES========================= */
+.hidden{ opacity:0; transform:translateY(50px); transition:all 1s; }
+.show{ opacity:1; transform:translateY(0px); }
+footer{ padding:40px 20px; text-align:center; color:#607080; font-size:15px; }
+
+@media(max-width:800px){    .hero h1{font-size:44px;} .hero p{font-size:17px;}    .name{font-size:26px;} .left{align-items:flex-start;}    .left img{width:75px; height:75px;}    .taxonomy-header{padding:20px;} .content-inner{padding:25px;}}
+
+.image-wrap{position:relative;display:flex;flex-direction:column}
+.img-tools{position:static;display:flex;gap:6px;justify-content:center;padding:8px 0;background:#fff}
+.img-tool-btn{border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;background:rgba(255,255,255,.9)}
+
+</style>
+
+<style>
+.header-tools button,.img-tool-btn,.img-tools button{
+border:none!important;
+outline:none!important;
+background:transparent!important;
+box-shadow:none!important;
+padding:0!important;
+cursor:pointer;
+font-size:20px;
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+    <h1>Cockroach Taxonomy</h1>
+    <p>Cockroach (तिलचट्टा) की पूरी Biological Classification प्रणाली को गहराई से जानिए। हर Level पर क्लिक करें और वैज्ञानिक कारण (Reasoning) व उदाहरणों के साथ समझें कि Cockroach को उस स्तर में क्यों रखा गया है।</p>
+</section>
+
+<div class="container">
+
+<!-- DOMAIN -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/eukarya?lock=1" alt="Domain">
+            <div>
+                <div class="rank">Domain</div><div class="name">Eukarya</div>
+                <div class="scientific"><strong>Complex Cell वाले जीव -> </strong>Eukarya में वे सभी जीव आते हैं जिनकी Cells में स्पष्ट Nucleus होता है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस Level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Domain में पृथ्वी के वे सभी जीव आते हैं जिनकी Cells में एक स्पष्ट Membrane-bound Nucleus होता है। इसमें Plants, Animals, Fungi और Protists शामिल हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस Level की मुख्य Characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी Cells की संरचना बहुत जटिल (Complex cell structure) होती है। इनका Genetic material यानी DNA, Nucleus के अंदर सुरक्षित रहता है और इनकी Cells में विभिन्न Organelles होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Cockroach को इसी Level में क्यों रखा गया है?</span>
+                    <p class="desc-text">Cockroach का शरीर जटिल कोशिकाओं (Eukaryotic cells) से बना है। इसकी हर Cell के अंदर स्पष्ट Nucleus और अन्य Organelles मौजूद होते हैं, इसीलिए इसे Eukarya Domain का हिस्सा माना जाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Eukarya के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/cockroach"><div class="creature-body"><h3>Cockroach</h3><p>अंधेरे में रहने वाला Scavenger।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/human"><div class="creature-body"><h3>Human</h3><p>सबसे बुद्धिमान प्राणी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog"><div class="creature-body"><h3>Dog</h3><p>वफादार और समझदार जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tree"><div class="creature-body"><h3>Tree</h3><p>Photosynthesis करने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mushroom"><div class="creature-body"><h3>Mushroom</h3><p>Fungi जगत का सदस्य।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bird"><div class="creature-body"><h3>Bird</h3><p>आसमान में उड़ने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/fish"><div class="creature-body"><h3>Fish</h3><p>पानी में रहने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog"><div class="creature-body"><h3>Frog</h3><p>Amphibian जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/butterfly"><div class="creature-body"><h3>Butterfly</h3><p>रंगीन और सुंदर Insect।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/rose"><div class="creature-body"><h3>Rose</h3><p>फूलों वाला सुंदर पौधा।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- KINGDOM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/animal?lock=2" alt="Kingdom">
+            <div>
+                <div class="rank">Kingdom</div><div class="name">Animalia</div>
+                <div class="scientific"><strong>Animal Kingdom -> </strong>Animalia Kingdom में वे जीव आते हैं जो अपना भोजन स्वयं नहीं बनाते।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस Level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Kingdom में सभी Multicellular Animals आते हैं। इस समूह के जीव अपना भोजन खुद नहीं बना सकते (Plants की तरह) बल्कि भोजन के लिए दूसरे जीवों या Organic matter पर निर्भर रहते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस Level की मुख्य Characteristics क्या हैं?</span>
+                    <p class="desc-text">ये Heterotrophic होते हैं। इनकी Cells के बाहर Plants जैसी कठोर Cell wall नहीं होती है। इस Kingdom के अधिकांश जीव अपने जीवन के किसी न किसी चरण में स्वेच्छा से Locomotion (गति) कर सकते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Cockroach को इसी Level में क्यों रखा गया है?</span>
+                    <p class="desc-text">Cockroach एक Multicellular जीव है जो अपना भोजन स्वयं नहीं बना सकता। यह ऊर्जा के लिए Organic matter (सड़े-गले पदार्थों) पर निर्भर होता है। इसमें चलने और उड़ने की क्षमता (Locomotion) है, अतः यह पूर्ण रूप से एक Animal है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Animalia के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/cockroach,eating"><div class="creature-body"><h3>Cockroach</h3><p>रात में निकलने वाला Scavenger।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lion"><div class="creature-body"><h3>Lion</h3><p>जंगल का शक्तिशाली राजा।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant"><div class="creature-body"><h3>Elephant</h3><p>सबसे बड़ा स्थलीय जानवर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark"><div class="creature-body"><h3>Shark</h3><p>समुद्र का खतरनाक शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle"><div class="creature-body"><h3>Eagle</h3><p>तेज़ नज़र वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/spider"><div class="creature-body"><h3>Spider</h3><p>जाल बुनने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake"><div class="creature-body"><h3>Snake</h3><p>रेंगने वाला विषैला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dolphin"><div class="creature-body"><h3>Dolphin</h3><p>समुद्री बुद्धिमान जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bear"><div class="creature-body"><h3>Bear</h3><p>विशालकाय जंगली जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/penguin"><div class="creature-body"><h3>Penguin</h3><p>बर्फ में रहने वाला पक्षी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PHYLUM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/arthropod?lock=3" alt="Phylum">
+            <div>
+                <div class="rank">Phylum</div><div class="name">Arthropoda</div>
+                <div class="scientific"><strong>Jointed Appendages -> </strong>Arthropoda समूह के जीवों में Exoskeleton और जुड़े हुए पैर होते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस Level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Phylum में वे जीव आते हैं जिनका शरीर Segments (खंडों) में बंटा होता है और जिनके शरीर पर एक कठोर बाहरी आवरण (Exoskeleton) होता है। इनमें Insects, Spiders, और Crustaceans आते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस Level की मुख्य Characteristics क्या हैं?</span>
+                    <p class="desc-text">इस समूह के जीवों में Chitin से बना Exoskeleton होता है। इनके पैर जोड़ों (Joints) में होते हैं, जिसे Jointed appendages कहते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Cockroach को इसी Level में क्यों रखा गया है?</span>
+                    <p class="desc-text">Cockroach का शरीर Segments में बंटा होता है और इसके पैर जुड़े हुए (Jointed legs) हैं। इसके शरीर की रक्षा के लिए Chitin से बना एक कठोर Exoskeleton होता है, इसीलिए इसे Arthropoda Phylum में रखा गया है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Arthropoda के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/cockroach,legs"><div class="creature-body"><h3>Cockroach</h3><p>Jointed legs वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/butterfly,insect"><div class="creature-body"><h3>Butterfly</h3><p>सुंदर पंखों वाला Arthropod।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/spider,macro"><div class="creature-body"><h3>Spider</h3><p>आठ पैरों वाला Arthropod।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/crab"><div class="creature-body"><h3>Crab</h3><p>मज़बूत Exoskeleton वाला समुद्री जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/scorpion"><div class="creature-body"><h3>Scorpion</h3><p>ज़हरीले डंक वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/ant"><div class="creature-body"><h3>Ant</h3><p>परिश्रमी सामाजिक Arthropod।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/centipede"><div class="creature-body"><h3>Centipede</h3><p>अनेक पैरों वाला शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/millipede"><div class="creature-body"><h3>Millipede</h3><p>हज़ार पैरों वाला शाकाहारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mosquito"><div class="creature-body"><h3>Mosquito</h3><p>खून चूसने वाला Arthropod।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lobster"><div class="creature-body"><h3>Lobster</h3><p>समुद्री Crustacean।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CLASS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/insect?lock=4" alt="Class">
+            <div>
+                <div class="rank">Class</div><div class="name">Insecta</div>
+                <div class="scientific"><strong>Insect Class -> </strong>Insecta Class के जीवों के छह पैर (Six legs) होते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस Level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Class में सभी प्रकार के Insects आते हैं। यह पृथ्वी पर जीवों का सबसे बड़ा समूह (Largest group) है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस Level की मुख्य Characteristics क्या हैं?</span>
+                    <p class="desc-text">इनके शरीर के तीन मुख्य भाग होते हैं: Head, Thorax, और Abdomen। इनके Thorax से तीन जोड़े पैर (Three pairs of legs) और आमतौर पर दो जोड़े पंख (Two pairs of wings) जुड़े होते हैं। सिर पर Antennae की जोड़ी होती है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Cockroach को इसी Level में क्यों रखा गया है?</span>
+                    <p class="desc-text">Cockroach के पास छह पैर (Six legs) हैं जो इसके Thorax से जुड़े हैं। इसके शरीर के तीन स्पष्ट भाग (Head, Thorax, Abdomen) हैं और सिर पर Antennae की एक जोड़ी है, इसलिए यह पूर्ण रूप से एक Insect है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Insecta के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/cockroach,wings"><div class="creature-body"><h3>Cockroach</h3><p>छह पैरों वाला तेज़ धावक।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/ant,insect"><div class="creature-body"><h3>Ant</h3><p>बिना पंख वाला सामाजिक Insect।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/butterfly,wing"><div class="creature-body"><h3>Butterfly</h3><p>बड़े रंगीन पंखों वाला Insect।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mosquito,insect"><div class="creature-body"><h3>Mosquito</h3><p>बीमारी फैलाने वाला Insect।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/beetle"><div class="creature-body"><h3>Beetle</h3><p>कठोर पंखों वाला Insect।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/grasshopper"><div class="creature-body"><h3>Grasshopper</h3><p>कूदने में माहिर Insect।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/fly,insect"><div class="creature-body"><h3>Fly</h3><p>दो पंखों वाली मक्खी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/honeybee"><div class="creature-body"><h3>Honeybee</h3><p>शहद बनाने वाला Insect।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dragonfly"><div class="creature-body"><h3>Dragonfly</h3><p>हवा में तेज़ी से उड़ने वाला शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/flea"><div class="creature-body"><h3>Flea</h3><p>कूदने वाला परजीवी Insect।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ORDER -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/blattodea?lock=5" alt="Order">
+            <div>
+                <div class="rank">Order</div><div class="name">Blattodea</div>
+                <div class="scientific"><strong>Cockroach and Termite Order -> </strong> Blattodea Order में Cockroaches और Termites आते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस Level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Order में वे Insects आते हैं जिनका शरीर चपटा (Flattened body) होता है और जो आमतौर पर अंधेरे और नमी वाली जगहों (Dark, moist environments) में रहना पसंद करते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस Level की मुख्य Characteristics क्या हैं?</span>
+                    <p class="desc-text">इनका सिर Thorax के एक ढाल जैसे हिस्से (Pronotum) के नीचे छिपा होता है। इनके पास लंबे और लचीले Antennae होते हैं। ये Omnivorous (सर्वाहारी) होते हैं और Scavengers के रूप में कार्य करते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Cockroach को इसी Level में क्यों रखा गया है?</span>
+                    <p class="desc-text">Cockroach का शरीर चपटा (Dorsoventrally flattened) होता है, इसका सिर Pronotum से ढका होता है और इसमें लंबे Thread-like antennae होते हैं, जो Blattodea Order की प्रमुख विशेषताएं हैं।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Blattodea के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/american,cockroach"><div class="creature-body"><h3>American Cockroach</h3><p>बड़ा और आम घरेलू Cockroach।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/german,cockroach"><div class="creature-body"><h3>German Cockroach</h3><p>छोटा और तेज़ी से फैलने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/oriental,cockroach"><div class="creature-body"><h3>Oriental Cockroach</h3><p>गहरे रंग का, पानी पसंद करने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/subterranean,termite"><div class="creature-body"><h3>Subterranean Termite</h3><p>ज़मीन के नीचे रहने वाली Termite।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/drywood,termite"><div class="creature-body"><h3>Drywood Termite</h3><p>सूखी लकड़ी में रहने वाली Termite।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/wood,roach"><div class="creature-body"><h3>Wood Roach</h3><p>जंगलों में रहने वाला Cockroach।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/madagascar,hissing,cockroach"><div class="creature-body"><h3>Madagascar Hissing Cockroach</h3><p>फुफकारने (Hissing) वाला बड़ा Cockroach।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/brownbanded,cockroach"><div class="creature-body"><h3>Brown-banded Cockroach</h3><p>हल्के रंग की धारियों वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/smokybrown,cockroach"><div class="creature-body"><h3>Smokybrown Cockroach</h3><p>गहरे भूरे रंग का उड़ने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dampwood,termite"><div class="creature-body"><h3>Dampwood Termite</h3><p>नम लकड़ी में रहने वाली Termite।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAMILY -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/blattidae?lock=6" alt="Family">
+            <div>
+                <div class="rank">Family</div><div class="name">Blattidae</div>
+                <div class="scientific"><strong>Large Cockroach Family -> </strong> Blattidae Family में बड़े आकार के Cockroaches आते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस Level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Family में घरेलू और बाहरी वातावरण में पाए जाने वाले बड़े आकार (Large-sized) के Cockroaches शामिल हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस Level की मुख्य Characteristics क्या हैं?</span>
+                    <p class="desc-text">इस Family के सदस्य आकार में अपेक्षाकृत बड़े होते हैं और इनके पैर कांटों (Spines) से ढके होते हैं। इनकी मादाएं अपने अंडों को एक कठोर Ootheca (Egg case) में सुरक्षित रखती हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Cockroach को इसी Level में क्यों रखा गया है?</span>
+                    <p class="desc-text">हमारा Cockroach आकार में बड़ा होता है, इसके पैरों पर भारी Spines होते हैं, और यह Ootheca का निर्माण करता है, जो इसे Blattidae Family का सदस्य बनाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Blattidae के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/american,cockroach"><div class="creature-body"><h3>American Cockroach</h3><p>Blattidae का सबसे आम सदस्य।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/oriental,cockroach"><div class="creature-body"><h3>Oriental Cockroach</h3><p>गहरे काले रंग का बड़ा Cockroach।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/smokybrown,cockroach"><div class="creature-body"><h3>Smokybrown Cockroach</h3><p>गहरे लाल-भूरे रंग का।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/australian,cockroach"><div class="creature-body"><h3>Australian Cockroach</h3><p>गर्म जलवायु पसंद करने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/florida,woods,cockroach"><div class="creature-body"><h3>Florida Woods Cockroach</h3><p>बिना पंख वाला बड़ा जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/brown,cockroach"><div class="creature-body"><h3>Brown Cockroach</h3><p>American Cockroach से मिलता-जुलता।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/turkestan,cockroach"><div class="creature-body"><h3>Turkestan Cockroach</h3><p>तेज़ी से फैलने वाला बाहरी जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/harlequin,cockroach"><div class="creature-body"><h3>Harlequin Cockroach</h3><p>सुंदर पैटर्न वाला Cockroach।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/wood,cockroach"><div class="creature-body"><h3>Wood Cockroach</h3><p>जंगली Blattidae सदस्य।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/field,cockroach"><div class="creature-body"><h3>Pale-bordered Field Cockroach</h3><p>मैदानों में पाया जाने वाला।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- GENUS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/periplaneta?lock=7" alt="Genus">
+            <div>
+                <div class="rank">Genus</div><div class="name">Periplaneta</div>
+                <div class="scientific"><strong>Periplaneta Genus -> </strong> Periplaneta Genus में विश्व स्तर पर पाए जाने वाले बड़े घरेलू Cockroaches आते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस Level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Genus में ऐसे Cockroaches आते हैं जो दुनिया भर (Cosmopolitan distribution) में फैल चुके हैं और मानव बस्तियों (Human habitats) में प्रचुर मात्रा में पाए जाते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस Level की मुख्य Characteristics क्या हैं?</span>
+                    <p class="desc-text">इनका रंग लाल-भूरा (Reddish-brown) से लेकर गहरा भूरा (Dark brown) होता है। वयस्कों (Adults) में पूर्ण विकसित पंख (Fully developed wings) होते हैं और ये उड़ने (Gliding/Flying) में सक्षम होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: हमारे यहाँ के Cockroach को इसी Level में क्यों रखा गया है?</span>
+                    <p class="desc-text">इसका लाल-भूरा रंग, बड़े पंख और मानव निर्मित वातावरण (Human environments) में रहने की अत्यधिक अनुकूलन क्षमता (Adaptability) इसे Periplaneta Genus में वर्गीकृत करती है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Periplaneta के कुछ मुख्य प्रकार और विशेषताएं</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/american,cockroach"><div class="creature-body"><h3>Periplaneta americana</h3><p>सबसे बड़ा और आम American Cockroach।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/australian,cockroach"><div class="creature-body"><h3>Periplaneta australasiae</h3><p>Australian Cockroach, किनारों पर पीला रंग।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/brown,cockroach"><div class="creature-body"><h3>Periplaneta brunnea</h3><p>Brown Cockroach।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/smokybrown,cockroach"><div class="creature-body"><h3>Periplaneta fuliginosa</h3><p>Smokybrown Cockroach, उड़ने में माहिर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/japanese,cockroach"><div class="creature-body"><h3>Periplaneta japonica</h3><p>ठंड सहन करने वाली जापानी प्रजाति।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cockroach,wings"><div class="creature-body"><h3>Gliding Ability</h3><p>ऊंचाई से कूदकर हवा में तैरना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cockroach,antennae"><div class="creature-body"><h3>Sensory Antennae</h3><p>आसपास के माहौल को महसूस करना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cockroach,scavenger"><div class="creature-body"><h3>Omnivorous Diet</h3><p>लगभग हर तरह का Organic matter खाना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cockroach,legs"><div class="creature-body"><h3>Spiky Legs</h3><p>पकड़ बनाने के लिए कांटों वाले पैर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cockroach,night"><div class="creature-body"><h3>Nocturnal Habit</h3><p>रात के समय सक्रिय (Active) रहना।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SPECIES -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/periplaneta%20americana?lock=8" alt="Species">
+            <div>
+                <div class="rank">Species</div><div class="name">Periplaneta americana</div>
+                <div class="scientific"><strong>American Cockroach -> </strong> यह दुनिया भर में पाया जाने वाला सबसे आम और बड़ा घरेलू Cockroach है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस Level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">यह Taxonomy का अंतिम और सबसे सटीक Level है। इसमें विशेष रूप से 'American Cockroach' आता है, जो घरों, Sewers और व्यापारिक इमारतों में सबसे अधिक पाया जाता है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस Level की मुख्य Characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी लंबाई लगभग 1.5 से 2 इंच तक होती है। इनके Pronotum (सिर के पीछे की ढाल) पर एक हल्का पीला या भूरा (Pale yellow or brown) बैंड होता है जो 8 (Eight) के आकार का दिखता है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: इस Cockroach को इसी Level में क्यों रखा गया है?</span>
+                    <p class="desc-text">इसके Pronotum पर विशिष्ट पीला पैटर्न (Yellow pattern), इसका आकार और इसका विशिष्ट Genetic makeup इसे विज्ञान में <strong>'Periplaneta americana'</strong> के रूप में एक अलग Species बनाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Periplaneta americana (American Cockroach) की 10 खास बातें</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/cockroach,large"><div class="creature-body"><h3>Large Size</h3><p>घरेलू Cockroaches में सबसे बड़ा आकार।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cockroach,pronotum"><div class="creature-body"><h3>Yellow Pattern</h3><p>Pronotum पर '8' के आकार का पीला निशान।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cockroach,running"><div class="creature-body"><h3>Fast Runner</h3><p>Insect जगत में सबसे तेज़ दौड़ने वालों में से एक।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cockroach,food"><div class="creature-body"><h3>Omnivorous Scavenger</h3><p>कागज, गोंद और हर तरह का भोजन खाने की क्षमता।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cockroach,ootheca"><div class="creature-body"><h3>Ootheca (Egg Case)</h3><p>अंडों को सुरक्षित रखने वाला कैप्सूल।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cockroach,dark"><div class="creature-body"><h3>Nocturnal</h3><p>रात के समय भोजन की तलाश में निकलना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cockroach,flight"><div class="creature-body"><h3>Wings</h3><p>गर्म मौसम में उड़ने (Flight) में सक्षम।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cockroach,drain"><div class="creature-body"><h3>Sewers Habitat</h3><p>सीवर और नालियों में रहना पसंद।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cockroach,crevice"><div class="creature-body"><h3>Thigmotactic</h3><p>दरारों और तंग जगहों (Tight spaces) में छिपने की आदत।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cockroach,infestation"><div class="creature-body"><h3>High Reproductive Rate</h3><p>तेज़ी से Reproduction और फैलने की क्षमता।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<footer>Beautiful Detailed Taxonomy Explorer (Cockroach Edition)</footer>
+
+<!-- =========================   JAVASCRIPT========================= -->
+<script>
+const cards = document.querySelectorAll(".taxonomy-card");
+cards.forEach(card=>{
+    const header = card.querySelector(".taxonomy-header");
+    header.addEventListener("click",()=>{
+        card.classList.toggle("active");
+        const content = card.querySelector(".content");
+        if(content.style.maxHeight){
+            content.style.maxHeight = null;
+        }else{
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    });
+});
+
+const observer = new IntersectionObserver((entries)=>{
+    entries.forEach((entry)=>{
+        if(entry.isIntersecting){
+            entry.target.classList.add("show");
+        }
+    });
+});
+const hiddenElements = document.querySelectorAll(".hidden");
+hiddenElements.forEach((el)=>observer.observe(el));
+
+document.querySelectorAll('.creature img').forEach(img=>{
+ const wrap=document.createElement('div');
+ wrap.className='image-wrap';
+ img.parentNode.insertBefore(wrap,img);
+ wrap.appendChild(img);
+
+ const tools=document.createElement('div');
+ tools.className='img-tools';
+
+ const r=document.createElement('button');
+ r.className='img-tool-btn';
+ r.innerHTML='🔄';
+
+ const s=document.createElement('button');
+ s.className='img-tool-btn';
+ s.innerHTML='🌐';
+
+ tools.appendChild(r);
+ tools.appendChild(s);
+ wrap.appendChild(tools);
+
+ const original=(img.src.split('/300/')[1]||'animal').split('?')[0];
+
+ r.onclick=(e)=>{
+   e.stopPropagation();
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+Date.now();
+ };
+
+ s.onclick=(e)=>{
+   e.stopPropagation();
+   window.open('https://commons.wikimedia.org/w/index.php?search='+encodeURIComponent(original),'_blank');
+ };
+
+ img.onerror=()=>{
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+(Date.now()+1);
+ };
+});
+
+
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('img').forEach((img,i)=>{
+   if(img.src.includes('loremflickr.com')){
+      const base=img.src.split('?')[0];
+      img.src=base+'?lock='+(Date.now()+i);
+   }
+ });
+});
+</script>
+
+
+<script>
+document.querySelectorAll('img').forEach(img=>{
+  img.onerror=function(){
+    this.onerror=null;
+    this.src='https://loremflickr.com/400/300/cockroach?lock='+Date.now();
+  };
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.image-wrap').forEach(w=>{
+   const tools=w.querySelector('.img-tools');
+   const card=w.closest('.creature');
+   const title=card ? card.querySelector('.creature-body h3') : null;
+   if(tools && title){
+      title.insertAdjacentElement('afterend', tools);
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.padding='0';
+      tools.style.background='transparent';
+      tools.style.verticalAlign='middle';
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const title=card.querySelector('.creature-body h3');
+   const tools=card.querySelector('.img-tools');
+   if(title && tools){
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.verticalAlign='middle';
+      tools.style.background='transparent';
+      tools.style.padding='0';
+      tools.style.position='static';
+
+      title.appendChild(tools);
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.taxonomy-header .left img').forEach(img=>{
+   if(img.parentElement.querySelector('.header-tools')) return;
+
+   const tools=document.createElement('div');
+   tools.className='header-tools';
+   tools.style.display='flex';
+   tools.style.justifyContent='center';
+   tools.style.gap='6px';
+   tools.style.marginTop='4px';
+
+   const r=document.createElement('button');
+   r.textContent='🔄';
+
+   const g=document.createElement('button');
+   g.textContent='🌐';
+
+   r.onclick=(e)=>{
+      e.stopPropagation();
+      img.src=img.src.split('?')[0]+'?v='+Date.now();
+   };
+
+   g.onclick=(e)=>{
+      e.stopPropagation();
+      const q=img.alt || 'animal';
+      window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+
+   const wrap=document.createElement('div');
+   wrap.style.display='flex';
+   wrap.style.flexDirection='column';
+   wrap.style.alignItems='center';
+
+   img.parentNode.insertBefore(wrap,img);
+   wrap.appendChild(img);
+   wrap.appendChild(tools);
+   tools.appendChild(r);
+   tools.appendChild(g);
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+
+document.querySelectorAll('.header-tools button:last-child').forEach(btn=>{
+ btn.onclick=(e)=>{
+  e.stopPropagation();
+  const card=btn.closest('.taxonomy-card');
+  const q=[
+   card?.querySelector('.rank')?.innerText||'',
+   card?.querySelector('.name')?.innerText||'',
+   card?.querySelector('.scientific')?.innerText||''
+  ].join(' ');
+  window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+ };
+});
+
+document.querySelectorAll('.creature').forEach(card=>{
+ const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+ if(globe){
+   globe.onclick=(e)=>{
+    e.stopPropagation();
+    const q=(card.querySelector('h3')?.innerText||'')+' '+(card.querySelector('p')?.innerText||'');
+    window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+ }
+});
+
+});
+</script>
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+   if(!globe) return;
+
+   globe.onclick=(e)=>{
+     e.stopPropagation();
+
+     const titleNode = card.querySelector('h3');
+     let title='';
+     if(titleNode){
+       title=(titleNode.childNodes[0]?.textContent || titleNode.textContent || '').trim();
+       title=title.replace('🔄','').replace('🌐','').trim();
+     }
+
+     const desc=(card.querySelector('p')?.innerText || '').trim();
+
+     const taxonomyCard=card.closest('.taxonomy-card');
+     const rank=(taxonomyCard?.querySelector('.rank')?.innerText || '').trim();
+     const taxonomyName=(taxonomyCard?.querySelector('.name')?.innerText || '').trim();
+
+     const query=(rank+' '+taxonomyName+' '+title+' '+desc).replace(/\s+/g,' ').trim();
+
+     window.open(
+       'https://www.google.com/search?tbm=isch&q='+encodeURIComponent(query),
+       '_blank'
+     );
+   };
+ });
+});
+</script>
+
+</body>
+</html>

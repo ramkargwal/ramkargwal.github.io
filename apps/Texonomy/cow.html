@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Indian Cow Taxonomy Explorer - Detailed</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================   BASIC========================= */
+*{margin:0; padding:0; box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{    font-family:'Poppins',sans-serif;    background:linear-gradient(to bottom right,#fff8fb,#eef5ff,#ffffff);    color:#1c2430; overflow-x:hidden;}
+
+/* =========================   HERO========================= */
+.hero{    display:flex; align-items:center;    justify-content:center; flex-direction:column;    text-align:center; padding:40px 20px;    position:relative; overflow:hidden;}
+.hero::before, .hero::after{    content:""; position:absolute;    border-radius:50%;}
+.hero::before{    width:700px; height:700px; top:-250px; left:-200px;    background:radial-gradient(circle,#ffb84d55,transparent 70%);    animation:float1 8s ease-in-out infinite;}
+.hero::after{    width:600px; height:600px; bottom:-250px; right:-200px;    background:radial-gradient(circle,#d3540044,transparent 70%);    animation:float2 10s ease-in-out infinite;}
+@keyframes float1{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(30px);} }
+@keyframes float2{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(-30px);} }
+.hero h1{    font-size:70px; font-weight:700; z-index:2;    background:linear-gradient(to right,#d35400,#f39c12);    -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+.hero p{    margin-top:20px; font-size:20px; color:#5c6773;    max-width:1200px; line-height:1.8; z-index:2;}
+
+/* =========================   CONTAINER & CARDS========================= */
+.container{ width:95%; max-width:1250px; margin:auto; padding-bottom:80px; }
+.taxonomy-card{    background:white; margin-bottom:30px; border-radius:30px;    overflow:hidden; border:1px solid #dde8f5;    box-shadow:0 10px 30px rgba(0,0,0,0.05); transition:0.5s;}
+.taxonomy-card:hover{ transform:translateY(-6px); box-shadow:0 18px 40px rgba(0,0,0,0.08); }
+.taxonomy-header{    padding:25px; display:flex; align-items:center;    justify-content:space-between; cursor:pointer; transition:0.3s;}
+.taxonomy-header:hover{ background:#fffaf5; }
+.left{ display:flex; align-items:center; gap:22px; }
+.left img{    width:95px; height:95px; border-radius:24px;    object-fit:cover; border:4px solid #fff5ea; transition:0.4s;}
+.taxonomy-card:hover .left img{ transform:scale(1.05) rotate(2deg); }
+.rank{ font-size:13px; text-transform:uppercase; letter-spacing:3px; color:#c06c00; font-weight:600; }
+.name{ font-size:34px; font-weight:700; margin-top:4px; }
+.scientific{ margin-top:7px; color:#637082; font-size:16px; }
+.arrow{ font-size:38px; color:#c06c00; transition:0.5s; }
+.taxonomy-card.active .arrow{ transform:rotate(180deg); }
+
+/* =========================   CONTENT & DETAILED DESC========================= */
+.content{ max-height:0; overflow:hidden; transition:max-height 0.8s ease; }
+.content-inner{ padding:35px; border-top:1px solid #edf3fa; }
+
+.detailed-desc {    background: #fffcf9;    padding: 25px;    border-radius: 20px;    border-left: 5px solid #c06c00;    margin-bottom: 35px;}
+.desc-item {    margin-bottom: 18px;}
+.desc-item:last-child {    margin-bottom: 0;}
+.desc-label {    display: block;    font-size: 17px;    font-weight: 600;    color: #6a3c00;    margin-bottom: 5px;}
+.desc-text {    font-size: 16px;    line-height: 1.8;    color: #465260;}
+
+.section-title{ font-size:30px; margin-bottom:25px; color:#6a3c00; }
+
+/* =========================   GRID & CREATURES========================= */
+.creatures{    display:grid; gap:25px;    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));}
+.creature{    background:#ffffff; border-radius:20px; overflow:hidden;    border:1px solid #e8eef7; transition:0.5s;}
+.creature:hover{ transform:translateY(-10px) scale(1.02); box-shadow:0 15px 30px rgba(0,0,0,0.08); }
+.creature img{ width:100%; height:160px; object-fit:cover; transition:0.5s; }
+.creature:hover img{ transform:scale(1.08); }
+.creature-body{ padding:15px; }
+.creature h3{ font-size:18px; margin-bottom:8px; color: #1c2430;}
+.creature p{ color:#66717d; line-height:1.5; font-size:14px; }
+
+/* =========================   UTILITIES========================= */
+.hidden{ opacity:0; transform:translateY(50px); transition:all 1s; }
+.show{ opacity:1; transform:translateY(0px); }
+footer{ padding:40px 20px; text-align:center; color:#607080; font-size:15px; }
+
+@media(max-width:800px){    .hero h1{font-size:44px;} .hero p{font-size:17px;}    .name{font-size:26px;} .left{align-items:flex-start;}    .left img{width:75px; height:75px;}    .taxonomy-header{padding:20px;} .content-inner{padding:25px;}}
+
+.image-wrap{position:relative;display:flex;flex-direction:column}
+.img-tools{position:static;display:flex;gap:6px;justify-content:center;padding:8px 0;background:#fff}
+.img-tool-btn{border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;background:rgba(255,255,255,.9)}
+
+</style>
+
+<style>
+.header-tools button,.img-tool-btn,.img-tools button{
+border:none!important;
+outline:none!important;
+background:transparent!important;
+box-shadow:none!important;
+padding:0!important;
+cursor:pointer;
+font-size:20px;
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+    <h1>Indian Cow Taxonomy</h1>
+    <p>भारतीय गाय (Bos indicus) की पूरी जैविक वर्गीकरण (Taxonomy) प्रणाली को गहराई से जानिए। हर स्तर पर क्लिक करें और वैज्ञानिक कारण (Reasoning) व उदाहरणों के साथ समझें कि भारतीय गाय को उस स्तर में क्यों रखा गया है।</p>
+</section>
+
+<div class="container">
+
+<!-- DOMAIN -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/eukarya?lock=1" alt="Domain">
+            <div>
+                <div class="rank">Domain</div><div class="name">Eukarya</div>
+                <div class="scientific"><strong>जटिल कोशिका वाले जीव -> </strong>Eukarya में वे सभी जीव आते हैं जिनकी कोशिकाओं में स्पष्ट केंद्रक (Nucleus) होता है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस डोमेन में पृथ्वी के वे सभी जीव आते हैं जिनकी कोशिकाओं (Cells) में एक स्पष्ट और झिल्लीदार केंद्रक (Membrane-bound nucleus) होता है। इसमें पौधे (Plants), जानवर (Animals), कवक (Fungi) और प्रोटिस्ट (Protists) शामिल हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य Characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी कोशिकाओं की संरचना बहुत जटिल (Complex cell structure) होती है। इनका आनुवंशिक पदार्थ यानी डीएनए (DNA) केंद्रक के अंदर सुरक्षित रहता है और इनकी कोशिकाओं में विभिन्न अंगक (Organelles) होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: भारतीय गाय को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">भारतीय गाय (Indian Cow) का शरीर जटिल कोशिकाओं (Eukaryotic cells) से बना है। इसकी हर कोशिका के अंदर स्पष्ट केंद्रक (Nucleus) और अन्य कोशिका अंगक (Organelles) मौजूद होते हैं, इसीलिए इसे Eukarya डोमेन का हिस्सा माना जाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Eukarya के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/cow"><div class="creature-body"><h3>गाय (Cow)</h3><p>दूध देने वाला उपयोगी जंतु।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/human"><div class="creature-body"><h3>इंसान (Human)</h3><p>सबसे बुद्धिमान प्राणी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog"><div class="creature-body"><h3>कुत्ता (Dog)</h3><p>वफादार और समझदार जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tree"><div class="creature-body"><h3>पेड़ (Plants)</h3><p>प्रकाश संश्लेषण करने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mushroom"><div class="creature-body"><h3>मशरूम (Fungi)</h3><p>फंगस जगत का सदस्य।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bird"><div class="creature-body"><h3>पक्षी (Birds)</h3><p>आसमान में उड़ने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/fish"><div class="creature-body"><h3>मछली (Fish)</h3><p>पानी में रहने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog"><div class="creature-body"><h3>मेंढक (Amphibian)</h3><p>उभयचर जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/butterfly"><div class="creature-body"><h3>तितली (Insects)</h3><p>रंगीन और सुंदर कीट।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/rose"><div class="creature-body"><h3>गुलाब (Rose)</h3><p>फूलों वाला सुंदर पौधा।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- KINGDOM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/animal?lock=2" alt="Kingdom">
+            <div>
+                <div class="rank">Kingdom</div><div class="name">Animalia</div>
+                <div class="scientific"><strong>जंतु जगत -> </strong>Animalia kingdom में वे जीव आते हैं जो अपना भोजन स्वयं नहीं बनाते।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस जगत में सभी बहुकोशिकीय (Multicellular) जंतु आते हैं। इस समूह के जीव अपना भोजन खुद नहीं बना सकते (पौधों की तरह) बल्कि भोजन के लिए दूसरे जीवों या वनस्पतियों पर निर्भर रहते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य Characteristics क्या हैं?</span>
+                    <p class="desc-text">ये परपोषी (Heterotrophic) होते हैं। इनकी कोशिकाओं के बाहर पौधों जैसी कठोर कोशिका भित्ति (Cell wall) नहीं होती है। इस जगत के अधिकांश जीव अपने जीवन के किसी न किसी चरण में स्वेच्छा से गति (Movement) कर सकते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: भारतीय गाय को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">भारतीय गाय एक बहुकोशिकीय जीव (Multicellular organism) है जो अपना भोजन स्वयं नहीं बना सकती। यह भोजन के लिए घास, पत्तियों और चारे पर निर्भर होती है। इसमें स्वेच्छा से गति (Locomotion) करने की क्षमता है, अतः यह पूर्ण रूप से एक जंतु (Animal) है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Animalia के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/cow,grazing"><div class="creature-body"><h3>गाय (Cow)</h3><p>घास चरने वाला जंतु।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lion"><div class="creature-body"><h3>शेर (Lion)</h3><p>जंगल का शक्तिशाली राजा।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant"><div class="creature-body"><h3>हाथी (Elephant)</h3><p>सबसे बड़ा स्थलीय जानवर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark"><div class="creature-body"><h3>शार्क (Shark)</h3><p>समुद्र का खतरनाक शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle"><div class="creature-body"><h3>गरुड़ (Eagle)</h3><p>तेज़ नज़र वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/spider"><div class="creature-body"><h3>मकड़ी (Spider)</h3><p>जाल बुनने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake"><div class="creature-body"><h3>सांप (Snake)</h3><p>रेंगने वाला विषैला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dolphin"><div class="creature-body"><h3>डॉल्फिन (Dolphin)</h3><p>समुद्री बुद्धिमान जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bear"><div class="creature-body"><h3>भालू (Bear)</h3><p>विशालकाय जंगली जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/penguin"><div class="creature-body"><h3>पेंगुइन (Penguin)</h3><p>बर्फ में रहने वाला पक्षी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PHYLUM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/vertebrate?lock=3" alt="Phylum">
+            <div>
+                <div class="rank">Phylum</div><div class="name">Chordata</div>
+                <div class="scientific"><strong>रज्जुकी संघ -> </strong>Chordata समूह के जीवों में रीढ़ की हड्डी (Backbone) होती है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस संघ में वे जीव आते हैं जिनके शरीर में जीवन के किसी न किसी चरण में नोटोकॉर्ड (Notochord) या रीढ़ की हड्डी (Vertebral column) मौजूद होती है। इनमें मछलियां, पक्षी, सरीसृप (Reptiles) और स्तनधारी (Mammals) आते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य Characteristics क्या हैं?</span>
+                    <p class="desc-text">इस समूह के जीवों में एक विकसित केंद्रीय तंत्रिका तंत्र (Central nervous system), शरीर को सहारा देने वाली रीढ़ की हड्डी, और शरीर के पिछले हिस्से में पूंछ (Post-anal tail) का होना प्रमुख लक्षण है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: भारतीय गाय को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">गाय के शरीर में एक मजबूत रीढ़ की हड्डी (Vertebral column / Backbone) होती है जो उसके नर्वस सिस्टम की रक्षा करती है और उसके भारी शरीर को सहारा (Support) देती है। इसके अलावा इसके पास एक पूंछ (Tail) होती है, इसीलिए इसे कॉर्डेटा (Chordata) संघ में रखा गया है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Chordata के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/cow,back"><div class="creature-body"><h3>गाय (Cow)</h3><p>मजबूत रीढ़ और पूंछ वाली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog,animal"><div class="creature-body"><h3>कुत्ता (Dog)</h3><p>रीढ़ की हड्डी वाला वफादार जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/monkey"><div class="creature-body"><h3>बंदर (Monkey)</h3><p>पेड़ों पर कूदने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/whale"><div class="creature-body"><h3>व्हेल (Whale)</h3><p>समुद्र का विशाल जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle,bird"><div class="creature-body"><h3>चील (Eagle)</h3><p>आसमान का शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake,animal"><div class="creature-body"><h3>सांप (Snake)</h3><p>अत्यधिक लचीली रीढ़ वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog,animal"><div class="creature-body"><h3>मेंढक (Frog)</h3><p>जमीन और पानी दोनों में रहने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark,fish"><div class="creature-body"><h3>शार्क (Shark)</h3><p>कार्टिलेज से बनी रीढ़ वाली मछली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/turtle"><div class="creature-body"><h3>कछुआ (Turtle)</h3><p>खोल (Shell) के अंदर रीढ़ वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/horse"><div class="creature-body"><h3>घोड़ा (Horse)</h3><p>तेज़ दौड़ने वाला रीढ़धारी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CLASS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/mammal?lock=4" alt="Class">
+            <div>
+                <div class="rank">Class</div><div class="name">Mammalia</div>
+                <div class="scientific"><strong>स्तनधारी वर्ग -> </strong>Mammalia वर्ग के जीव अपने बच्चों को दूध (Milk) पिलाते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस वर्ग में वे सभी जीव आते हैं जो अंडे देने के बजाय सीधे बच्चों को जन्म देते हैं (कुछ अपवादों को छोड़कर) और उन्हें अपना दूध पिलाकर पालते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य Characteristics क्या हैं?</span>
+                    <p class="desc-text">मादाओं में स्तन ग्रंथियां (Mammary glands) होती हैं जिनसे नवजात के पोषण के लिए दूध निकलता है। इनके शरीर पर बाल या रोएं (Hair/Fur) पाए जाते हैं, और ये गर्म खून वाले (Warm-blooded) जीव होते हैं जो अपने शरीर का तापमान नियंत्रित रख सकते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: भारतीय गाय को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">मादा गाय बछड़े (Calf) को जन्म देती है और उसे अपना पौष्टिक दूध (Milk) पिलाकर पालती है। इसके शरीर पर छोटे बाल (Hair) होते हैं और यह एक गर्म खून वाला (Warm-blooded) जानवर है, इसलिए यह पूर्ण रूप से एक स्तनधारी (Mammal) है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Mammalia के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/cow,calf"><div class="creature-body"><h3>गाय (Cow)</h3><p>दूध देने वाली घरेलू स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tiger"><div class="creature-body"><h3>बाघ (Tiger)</h3><p>भारत का राष्ट्रीय स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,wild"><div class="creature-body"><h3>हाथी (Elephant)</h3><p>सबसे भारी स्थलीय स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/whale,ocean"><div class="creature-body"><h3>ब्लू व्हेल (Blue Whale)</h3><p>पानी में रहने वाली स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/human,face"><div class="creature-body"><h3>इंसान (Human)</h3><p>सामाजिक स्तनधारी प्राणी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bat"><div class="creature-body"><h3>चमगादड़ (Bat)</h3><p>उड़ने वाला एकमात्र स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/kangaroo"><div class="creature-body"><h3>कंगारू (Kangaroo)</h3><p>पाउच (Pouch) वाला स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bear,wild"><div class="creature-body"><h3>भालू (Bear)</h3><p>घने बालों वाला स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dolphin,sea"><div class="creature-body"><h3>डॉल्फिन (Dolphin)</h3><p>समुद्री बुद्धिमान स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/camel"><div class="creature-body"><h3>ऊंट (Camel)</h3><p>रेगिस्तान का स्तनधारी जीव।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ORDER -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/hoof?lock=5" alt="Order">
+            <div>
+                <div class="rank">Order</div><div class="name">Artiodactyla</div>
+                <div class="scientific"><strong>सम-खुर वाले स्तनधारी -> </strong>Artiodactyla समूह में समान संख्या में उंगलियों वाले खुर (Even toes) वाले जीव आते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस गण (Order) में ऐसे खुरदार (Hoofed) जीव आते हैं जिनके पैरों में सम संख्या (दो या चार) में उंगलियां (Toes) होती हैं। इनमें गाय, सुअर, हिरण, ऊंट और दरियाई घोड़े जैसे जीव शामिल हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य Characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी सबसे बड़ी पहचान इनके पैरों की बनावट है, जहां शरीर का भार मुख्य रूप से तीसरी और चौथी उंगली पर पड़ता है जो आपस में मिलकर एक खुर (Cloven hoof) बनाते हैं। इस समूह के अधिकांश सदस्य शाकाहारी (Herbivores) होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: भारतीय गाय को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">भारतीय गाय के पैरों में खुर (Hooves) होते हैं जो बीच से दो हिस्सों में बंटे होते हैं (Cloven hooves)। इसके पैरों की यह सम-उंगली (Even-toed) वाली शारीरिक संरचना इसे Artiodactyla गण में रखती है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Artiodactyla के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/cow,hoof"><div class="creature-body"><h3>गाय (Cow)</h3><p>दो हिस्सों में बंटे खुर वाली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/pig"><div class="creature-body"><h3>सुअर (Pig)</h3><p>सम-खुर वाला सर्वाहारी जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/camel,desert"><div class="creature-body"><h3>ऊंट (Camel)</h3><p>रेगिस्तान का जहाज़।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/deer"><div class="creature-body"><h3>हिरण (Deer)</h3><p>तेज़ दौड़ने वाला सम-खुर जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/giraffe"><div class="creature-body"><h3>जिराफ (Giraffe)</h3><p>लंबी गर्दन वाला खुरदार जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sheep"><div class="creature-body"><h3>भेड़ (Sheep)</h3><p>ऊन देने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/goat"><div class="creature-body"><h3>बकरी (Goat)</h3><p>पहाड़ों पर चढ़ने में माहिर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/hippopotamus"><div class="creature-body"><h3>दरियाई घोड़ा (Hippopotamus)</h3><p>पानी में रहने वाला भारी जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/buffalo"><div class="creature-body"><h3>भैंस (Buffalo)</h3><p>मजबूत सींगों वाला जंतु।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/antelope"><div class="creature-body"><h3>एंटीलोप (Antelope)</h3><p>तेज़ और फुर्तीला शाकाहारी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAMILY -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/cattle?lock=6" alt="Family">
+            <div>
+                <div class="rank">Family</div><div class="name">Bovidae</div>
+                <div class="scientific"><strong>बोविडे कुल -> </strong>Bovidae परिवार में सींग वाले (Horns) और जुगाली करने वाले (Ruminants) जीव आते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस परिवार में मवेशी (Cattle), भैंस, भेड़, बकरी, बाइसन और एंटीलोप शामिल हैं। ये सभी पूरी तरह से शाकाहारी होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य Characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी मुख्य विशेषताएं हैं: इनके सिर पर बिना शाखा वाले स्थायी सींग (Unbranched, permanent horns) होते हैं जो जीवन भर नहीं गिरते। इनका पेट चार कक्षों (Four-chambered stomach) में बंटा होता है जो इन्हें कठोर घास को पचाने के लिए जुगाली (Rumination) करने में मदद करता है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: भारतीय गाय को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">भारतीय गाय एक जुगाली करने वाली (Ruminant) जीव है, जिसके सिर पर स्थायी सींग (Horns) होते हैं। यह पहले घास को निगलती है और बाद में उसे मुंह में लाकर चबाती (Chewing the cud) है। इसी पाचन प्रणाली के कारण यह Bovidae परिवार का हिस्सा है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Bovidae के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/zebu,cow"><div class="creature-body"><h3>भारतीय गाय (Indian Cow)</h3><p>जुगाली करने वाली पवित्र गाय।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/water,buffalo"><div class="creature-body"><h3>जल भैंस (Water Buffalo)</h3><p>दूध और कृषि के लिए उपयोगी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/domestic,sheep"><div class="creature-body"><h3>घरेलू भेड़ (Domestic Sheep)</h3><p>ऊन और मांस के लिए पाली जाने वाली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/domestic,goat"><div class="creature-body"><h3>घरेलू बकरी (Domestic Goat)</h3><p>आम जुगाली करने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bison"><div class="creature-body"><h3>बाइसन (Bison)</h3><p>विशालकाय जंगली बोविड।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/yak"><div class="creature-body"><h3>याक (Yak)</h3><p>ठंडे पहाड़ों पर रहने वाला मवेशी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/gazelle"><div class="creature-body"><h3>गज़ेल (Gazelle)</h3><p>फुर्तीला सींग वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/impala"><div class="creature-body"><h3>इम्पाला (Impala)</h3><p>लंबी छलांग लगाने वाला बोविड।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/wildebeest"><div class="creature-body"><h3>विल्डबीस्ट (Wildebeest)</h3><p>प्रवास (Migration) करने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/gaur"><div class="creature-body"><h3>गौर (Gaur)</h3><p>भारतीय जंगली मवेशी (Indian Bison)।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- GENUS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/cow?lock=7" alt="Genus">
+            <div>
+                <div class="rank">Genus</div><div class="name">Bos</div>
+                <div class="scientific"><strong>बोस वंश -> </strong>Bos वंश में जंगली और घरेलू मवेशी (Cattle) शामिल हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">Bos वंश में मुख्य रूप से बड़े और भारी मवेशी (Wild and domestic cattle) आते हैं। इसमें हमारी पालतू गायों के साथ-साथ याक, गौर और बैंटेंग जैसे जंगली जीव भी शामिल हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य Characteristics क्या हैं?</span>
+                    <p class="desc-text">इनका शरीर भारी और मजबूत होता है। इनके सिर चौड़े होते हैं और नर (Bulls) मादाओं (Cows) की तुलना में बहुत अधिक भारी और आक्रामक होते हैं। ये झुंड (Herds) में रहना पसंद करते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: भारतीय गाय को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">भारतीय गाय का शारीरिक ढांचा, दुग्ध उत्पादन की क्षमता और अन्य मवेशियों (Cattle) के साथ इसका आनुवंशिक संबंध (Genetic relation) इसे Bos वंश का मुख्य सदस्य बनाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Bos वंश के मुख्य प्रकार</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/zebu"><div class="creature-body"><h3>ज़ेबू (Bos indicus)</h3><p>कूबड़ वाली भारतीय गाय।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/taurine,cattle"><div class="creature-body"><h3>यूरोपीय गाय (Bos taurus)</h3><p>बिना कूबड़ वाली गाय।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/wild,yak"><div class="creature-body"><h3>जंगली याक (Bos mutus)</h3><p>तिब्बत का भारी मवेशी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/domestic,yak"><div class="creature-body"><h3>घरेलू याक (Bos grunniens)</h3><p>पहाड़ों पर पाला जाने वाला याक।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/gaur,animal"><div class="creature-body"><h3>गौर (Bos gaurus)</h3><p>सबसे बड़ा जीवित बोवाइन।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/gayal"><div class="creature-body"><h3>गयाल (Bos frontalis)</h3><p>उत्तर-पूर्वी भारत का अर्द्ध-पालतू जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/banteng"><div class="creature-body"><h3>बैंटेंग (Bos javanicus)</h3><p>दक्षिण पूर्व एशिया का जंगली मवेशी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/aurochs"><div class="creature-body"><h3>ऑरोक्स (Bos primigenius)</h3><p>विलुप्त (Extinct) प्राचीन मवेशी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/kouprey"><div class="creature-body"><h3>कौप्रेय (Bos sauveli)</h3><p>गंभीर रूप से लुप्तप्राय जंगली गाय।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/calf"><div class="creature-body"><h3>बछड़ा (Calf)</h3><p>Bos वंश का युवा सदस्य।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SPECIES -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/indian%20cow?lock=8" alt="Species">
+            <div>
+                <div class="rank">Species</div><div class="name">Bos indicus</div>
+                <div class="scientific"><strong>ज़ेबू या भारतीय गाय -> </strong>यह कूबड़ (Hump) वाली प्रजाति है जो मुख्य रूप से दक्षिण एशिया में पाई जाती है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">यह वर्गीकरण का अंतिम और सबसे सटीक स्तर है। इसमें विशेष रूप से 'भारतीय गाय' या ज़ेबू (Zebu) आती है, जिसे इसके विशिष्ट शारीरिक लक्षणों के कारण अन्य गायों (जैसे यूरोपीय Bos taurus) से अलग प्रजाति (Species) माना जाता है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य Characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी सबसे प्रमुख विशेषता इनकी पीठ पर मौजूद एक स्पष्ट कूबड़ (Hump), गले के नीचे लटकने वाली झालर (Dewlap), और लंबे लटकते कान (Drooping ears) हैं। यह प्रजाति गर्म जलवायु (Tropical climate) और परजीवियों (Parasites) के प्रति अत्यधिक प्रतिरोधी है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: इस गाय को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">भारत और उष्णकटिबंधीय क्षेत्रों में पाई जाने वाली इस गाय का जेनेटिक मेकअप (Genetic makeup), कूबड़ वाला शरीर, और A2 गुणवत्ता वाला दूध इसे विज्ञान में <strong>'Bos indicus'</strong> के रूप में एक अलग और विशिष्ट प्रजाति (Species) बनाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Bos indicus (भारतीय गाय) की 10 खास बातें</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/cow,hump"><div class="creature-body"><h3>कूबड़ (Hump)</h3><p>पीठ पर मांसल और स्पष्ट कूबड़।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cow,dewlap"><div class="creature-body"><h3>झालर (Dewlap)</h3><p>गले के नीचे लटकती हुई त्वचा।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cow,heat"><div class="creature-body"><h3>गर्मी प्रतिरोधी (Heat Tolerance)</h3><p>गर्म और उमस भरे मौसम को सहने की क्षमता।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cow,skin"><div class="creature-body"><h3>परजीवी प्रतिरोधी (Tick Resistance)</h3><p>विशेष त्वचा के कारण परजीवियों से बचाव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cow,milk"><div class="creature-body"><h3>A2 दूध (A2 Milk)</h3><p>पोषक तत्वों से भरपूर उच्च कोटि का दूध।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bull,farm"><div class="creature-body"><h3>कृषि कार्य (Draft Power)</h3><p>बैल (Bulls) खेती और परिवहन के लिए उपयुक्त।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cow,ears"><div class="creature-body"><h3>लंबे कान (Drooping Ears)</h3><p>गर्मी को बाहर निकालने में सहायक लंबे कान।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cow,healthy"><div class="creature-body"><h3>रोग प्रतिरोधक (Disease Resistance)</h3><p>बीमारियों के प्रति मजबूत प्रतिरक्षा प्रणाली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cow,colors"><div class="creature-body"><h3>रंग (Color Variation)</h3><p>सफेद, भूरा, काला या चितकबरा (Spotted) रंग।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cow,india"><div class="creature-body"><h3>धार्मिक महत्व (Cultural Significance)</h3><p>भारतीय संस्कृति में पवित्र और पूजनीय।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<footer>Beautiful Detailed Taxonomy Explorer (Indian Cow Edition)</footer>
+
+<!-- =========================   JAVASCRIPT========================= -->
+<script>
+const cards = document.querySelectorAll(".taxonomy-card");
+cards.forEach(card=>{
+    const header = card.querySelector(".taxonomy-header");
+    header.addEventListener("click",()=>{
+        card.classList.toggle("active");
+        const content = card.querySelector(".content");
+        if(content.style.maxHeight){
+            content.style.maxHeight = null;
+        }else{
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    });
+});
+
+const observer = new IntersectionObserver((entries)=>{
+    entries.forEach((entry)=>{
+        if(entry.isIntersecting){
+            entry.target.classList.add("show");
+        }
+    });
+});
+const hiddenElements = document.querySelectorAll(".hidden");
+hiddenElements.forEach((el)=>observer.observe(el));
+
+document.querySelectorAll('.creature img').forEach(img=>{
+ const wrap=document.createElement('div');
+ wrap.className='image-wrap';
+ img.parentNode.insertBefore(wrap,img);
+ wrap.appendChild(img);
+
+ const tools=document.createElement('div');
+ tools.className='img-tools';
+
+ const r=document.createElement('button');
+ r.className='img-tool-btn';
+ r.innerHTML='🔄';
+
+ const s=document.createElement('button');
+ s.className='img-tool-btn';
+ s.innerHTML='🌐';
+
+ tools.appendChild(r);
+ tools.appendChild(s);
+ wrap.appendChild(tools);
+
+ const original=(img.src.split('/300/')[1]||'animal').split('?')[0];
+
+ r.onclick=(e)=>{
+   e.stopPropagation();
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+Date.now();
+ };
+
+ s.onclick=(e)=>{
+   e.stopPropagation();
+   window.open('https://commons.wikimedia.org/w/index.php?search='+encodeURIComponent(original),'_blank');
+ };
+
+ img.onerror=()=>{
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+(Date.now()+1);
+ };
+});
+
+
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('img').forEach((img,i)=>{
+   if(img.src.includes('loremflickr.com')){
+      const base=img.src.split('?')[0];
+      img.src=base+'?lock='+(Date.now()+i);
+   }
+ });
+});
+</script>
+
+
+<script>
+document.querySelectorAll('img').forEach(img=>{
+  img.onerror=function(){
+    this.onerror=null;
+    this.src='https://loremflickr.com/400/300/cow?lock='+Date.now();
+  };
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.image-wrap').forEach(w=>{
+   const tools=w.querySelector('.img-tools');
+   const card=w.closest('.creature');
+   const title=card ? card.querySelector('.creature-body h3') : null;
+   if(tools && title){
+      title.insertAdjacentElement('afterend', tools);
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.padding='0';
+      tools.style.background='transparent';
+      tools.style.verticalAlign='middle';
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const title=card.querySelector('.creature-body h3');
+   const tools=card.querySelector('.img-tools');
+   if(title && tools){
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.verticalAlign='middle';
+      tools.style.background='transparent';
+      tools.style.padding='0';
+      tools.style.position='static';
+
+      title.appendChild(tools);
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.taxonomy-header .left img').forEach(img=>{
+   if(img.parentElement.querySelector('.header-tools')) return;
+
+   const tools=document.createElement('div');
+   tools.className='header-tools';
+   tools.style.display='flex';
+   tools.style.justifyContent='center';
+   tools.style.gap='6px';
+   tools.style.marginTop='4px';
+
+   const r=document.createElement('button');
+   r.textContent='🔄';
+
+   const g=document.createElement('button');
+   g.textContent='🌐';
+
+   r.onclick=(e)=>{
+      e.stopPropagation();
+      img.src=img.src.split('?')[0]+'?v='+Date.now();
+   };
+
+   g.onclick=(e)=>{
+      e.stopPropagation();
+      const q=img.alt || 'animal';
+      window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+
+   const wrap=document.createElement('div');
+   wrap.style.display='flex';
+   wrap.style.flexDirection='column';
+   wrap.style.alignItems='center';
+
+   img.parentNode.insertBefore(wrap,img);
+   wrap.appendChild(img);
+   wrap.appendChild(tools);
+   tools.appendChild(r);
+   tools.appendChild(g);
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+
+document.querySelectorAll('.header-tools button:last-child').forEach(btn=>{
+ btn.onclick=(e)=>{
+  e.stopPropagation();
+  const card=btn.closest('.taxonomy-card');
+  const q=[
+   card?.querySelector('.rank')?.innerText||'',
+   card?.querySelector('.name')?.innerText||'',
+   card?.querySelector('.scientific')?.innerText||''
+  ].join(' ');
+  window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+ };
+});
+
+document.querySelectorAll('.creature').forEach(card=>{
+ const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+ if(globe){
+   globe.onclick=(e)=>{
+    e.stopPropagation();
+    const q=(card.querySelector('h3')?.innerText||'')+' '+(card.querySelector('p')?.innerText||'');
+    window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+ }
+});
+
+});
+</script>
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+   if(!globe) return;
+
+   globe.onclick=(e)=>{
+     e.stopPropagation();
+
+     const titleNode = card.querySelector('h3');
+     let title='';
+     if(titleNode){
+       title=(titleNode.childNodes[0]?.textContent || titleNode.textContent || '').trim();
+       title=title.replace('🔄','').replace('🌐','').trim();
+     }
+
+     const desc=(card.querySelector('p')?.innerText || '').trim();
+
+     const taxonomyCard=card.closest('.taxonomy-card');
+     const rank=(taxonomyCard?.querySelector('.rank')?.innerText || '').trim();
+     const taxonomyName=(taxonomyCard?.querySelector('.name')?.innerText || '').trim();
+
+     const query=(rank+' '+taxonomyName+' '+title+' '+desc).replace(/\s+/g,' ').trim();
+
+     window.open(
+       'https://www.google.com/search?tbm=isch&q='+encodeURIComponent(query),
+       '_blank'
+     );
+   };
+ });
+});
+</script>
+
+</body>
+</html>

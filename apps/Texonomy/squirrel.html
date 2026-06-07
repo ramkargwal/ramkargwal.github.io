@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Squirrel Taxonomy Explorer - Detailed</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================   BASIC========================= */
+*{margin:0; padding:0; box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{    font-family:'Poppins',sans-serif;    background:linear-gradient(to bottom right,#fff8fb,#eef5ff,#ffffff);    color:#1c2430; overflow-x:hidden;}
+
+/* =========================   HERO========================= */
+.hero{    display:flex; align-items:center;    justify-content:center; flex-direction:column;    text-align:center; padding:40px 20px;    position:relative; overflow:hidden;}
+.hero::before, .hero::after{    content:""; position:absolute;    border-radius:50%;}
+.hero::before{    width:700px; height:700px; top:-250px; left:-200px;    background:radial-gradient(circle,#8fd3ff55,transparent 70%);    animation:float1 8s ease-in-out infinite;}
+.hero::after{    width:600px; height:600px; bottom:-250px; right:-200px;    background:radial-gradient(circle,#bca7ff44,transparent 70%);    animation:float2 10s ease-in-out infinite;}
+@keyframes float1{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(30px);} }
+@keyframes float2{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(-30px);} }
+.hero h1{    font-size:70px; font-weight:700; z-index:2;    background:linear-gradient(to right,#00b09b,#96c93d);    -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+.hero p{    margin-top:20px; font-size:20px; color:#5c6773;    max-width:1200px; line-height:1.8; z-index:2;}
+
+/* =========================   CONTAINER & CARDS========================= */
+.container{ width:95%; max-width:1250px; margin:auto; padding-bottom:80px; }
+.taxonomy-card{    background:white; margin-bottom:30px; border-radius:30px;    overflow:hidden; border:1px solid #dde8f5;    box-shadow:0 10px 30px rgba(0,0,0,0.05); transition:0.5s;}
+.taxonomy-card:hover{ transform:translateY(-6px); box-shadow:0 18px 40px rgba(0,0,0,0.08); }
+.taxonomy-header{    padding:25px; display:flex; align-items:center;    justify-content:space-between; cursor:pointer; transition:0.3s;}
+.taxonomy-header:hover{ background:#f7fbff; }
+.left{ display:flex; align-items:center; gap:22px; }
+.left img{    width:95px; height:95px; border-radius:24px;    object-fit:cover; border:4px solid #eef5ff; transition:0.4s;}
+.taxonomy-card:hover .left img{ transform:scale(1.05) rotate(2deg); }
+.rank{ font-size:13px; text-transform:uppercase; letter-spacing:3px; color:#008f7a; font-weight:600; }
+.name{ font-size:34px; font-weight:700; margin-top:4px; }
+.scientific{ margin-top:7px; color:#637082; font-size:16px; }
+.arrow{ font-size:38px; color:#008f7a; transition:0.5s; }
+.taxonomy-card.active .arrow{ transform:rotate(180deg); }
+
+/* =========================   CONTENT & DETAILED DESC========================= */
+.content{ max-height:0; overflow:hidden; transition:max-height 0.8s ease; }
+.content-inner{ padding:35px; border-top:1px solid #edf3fa; }
+
+.detailed-desc {    background: #fdfdff;    padding: 25px;    border-radius: 20px;    border-left: 5px solid #008f7a;    margin-bottom: 35px;}
+.desc-item {    margin-bottom: 18px;}
+.desc-item:last-child {    margin-bottom: 0;}
+.desc-label {    display: block;    font-size: 17px;    font-weight: 600;    color: #006052;    margin-bottom: 5px;}
+.desc-text {    font-size: 16px;    line-height: 1.8;    color: #465260;}
+
+.section-title{ font-size:30px; margin-bottom:25px; color:#006052; }
+
+/* =========================   GRID & CREATURES========================= */
+.creatures{    display:grid; gap:25px;    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));}
+.creature{    background:#ffffff; border-radius:20px; overflow:hidden;    border:1px solid #e8eef7; transition:0.5s;}
+.creature:hover{ transform:translateY(-10px) scale(1.02); box-shadow:0 15px 30px rgba(0,0,0,0.08); }
+.creature img{ width:100%; height:160px; object-fit:cover; transition:0.5s; }
+.creature:hover img{ transform:scale(1.08); }
+.creature-body{ padding:15px; }
+.creature h3{ font-size:18px; margin-bottom:8px; color: #1c2430;}
+.creature p{ color:#66717d; line-height:1.5; font-size:14px; }
+
+/* =========================   UTILITIES========================= */
+.hidden{ opacity:0; transform:translateY(50px); transition:all 1s; }
+.show{ opacity:1; transform:translateY(0px); }
+footer{ padding:40px 20px; text-align:center; color:#607080; font-size:15px; }
+
+@media(max-width:800px){    .hero h1{font-size:44px;} .hero p{font-size:17px;}    .name{font-size:26px;} .left{align-items:flex-start;}    .left img{width:75px; height:75px;}    .taxonomy-header{padding:20px;} .content-inner{padding:25px;}}
+
+.image-wrap{position:relative;display:flex;flex-direction:column}
+.img-tools{position:static;display:flex;gap:6px;justify-content:center;padding:8px 0;background:#fff}
+.img-tool-btn{border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;background:rgba(255,255,255,.9)}
+
+</style>
+
+<style>
+.header-tools button,.img-tool-btn,.img-tools button{
+border:none!important;
+outline:none!important;
+background:transparent!important;
+box-shadow:none!important;
+padding:0!important;
+cursor:pointer;
+font-size:20px;
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+    <h1>Squirrel Taxonomy</h1>
+    <p>गिलहरी (Squirrel) की पूरी जैविक वर्गीकरण प्रणाली को गहराई से जानिए। हर स्तर पर क्लिक करें और वैज्ञानिक कारण (Reasoning) व उदाहरणों के साथ समझें कि गिलहरी को उस स्तर में क्यों रखा गया है।</p>
+</section>
+
+<div class="container">
+
+<!-- DOMAIN -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/eukarya?lock=1" alt="Domain">
+            <div>
+                <div class="rank">Domain (डोमेन)</div><div class="name">Eukarya</div>
+                <div class="scientific"><strong>जटिल कोशिका वाले जीव -> </strong>Eukarya में वे सभी जीव आते हैं जिनकी कोशिकाओं में स्पष्ट केंद्रक (nucleus) होता है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस डोमेन में पृथ्वी के वे सभी जीव आते हैं जिनकी कोशिकाओं (cells) में एक स्पष्ट और झिल्लीदार केंद्रक (membrane-bound nucleus) होता है। इसमें पौधे, जानवर, कवक (fungi) और प्रोटिस्ट शामिल हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी कोशिकाओं की संरचना बहुत जटिल (complex cell structure) होती है। इनका आनुवंशिक पदार्थ यानी डीएनए (DNA) केंद्रक के अंदर सुरक्षित रहता है और इनकी कोशिकाओं में विभिन्न अंगक (organelles) होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: गिलहरी को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">गिलहरी का शरीर जटिल कोशिकाओं (eukaryotic cells) से बना है। इसकी हर कोशिका के अंदर स्पष्ट केंद्रक (nucleus) और अन्य कोशिका अंगक मौजूद होते हैं, इसीलिए इसे Eukarya डोमेन का हिस्सा माना जाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Eukarya के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel"><div class="creature-body"><h3>गिलहरी</h3><p>फुर्तीला कुतरने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/human"><div class="creature-body"><h3>इंसान</h3><p>सबसे बुद्धिमान प्राणी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog"><div class="creature-body"><h3>कुत्ता</h3><p>वफादार और समझदार जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tree"><div class="creature-body"><h3>पेड़ (पौधे)</h3><p>प्रकाश संश्लेषण करने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mushroom"><div class="creature-body"><h3>मशरूम</h3><p>फंगस जगत का सदस्य।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bird"><div class="creature-body"><h3>पक्षी</h3><p>आसमान में उड़ने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/fish"><div class="creature-body"><h3>मछली</h3><p>पानी में रहने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog"><div class="creature-body"><h3>मेंढक</h3><p>उभयचर (Amphibian) जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/butterfly"><div class="creature-body"><h3>तितली</h3><p>रंगीन और सुंदर कीट।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/rose"><div class="creature-body"><h3>गुलाब</h3><p>फूलों वाला सुंदर पौधा।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- KINGDOM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/animal?lock=2" alt="Kingdom">
+            <div>
+                <div class="rank">Kingdom (जगत)</div><div class="name">Animalia</div>
+                <div class="scientific"><strong>जंतु जगत -> </strong>Animalia kingdom में वे जीव आते हैं जो अपना भोजन स्वयं नहीं बनाते।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस जगत में सभी बहुकोशिकीय (multicellular) जंतु आते हैं। इस समूह के जीव अपना भोजन खुद नहीं बना सकते (पौधों की तरह) बल्कि भोजन के लिए दूसरे जीवों पर निर्भर रहते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">ये परपोषी (heterotrophic) होते हैं। इनकी कोशिकाओं के बाहर पौधों जैसी कठोर कोशिका भित्ति (cell wall) नहीं होती है। इस जगत के अधिकांश जीव अपने जीवन के किसी न किसी चरण में स्वेच्छा से गति (movement) कर सकते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: गिलहरी को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">गिलहरी एक बहुकोशिकीय जीव है जो अपना भोजन स्वयं नहीं बना सकती। यह भोजन के लिए फल, बीज और कभी-कभी छोटे कीड़ों पर निर्भर होती है। इसमें चलने-फिरने की क्षमता है, अतः यह पूर्ण रूप से एक जंतु (Animal) है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Animalia के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel,eating"><div class="creature-body"><h3>गिलहरी</h3><p>पेड़ों पर कूदने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lion"><div class="creature-body"><h3>शेर</h3><p>जंगल का शक्तिशाली राजा।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant"><div class="creature-body"><h3>हाथी</h3><p>सबसे बड़ा स्थलीय जानवर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark"><div class="creature-body"><h3>शार्क</h3><p>समुद्र का खतरनाक शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle"><div class="creature-body"><h3>गरुड़ (Eagle)</h3><p>तेज़ नज़र वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/spider"><div class="creature-body"><h3>मकड़ी</h3><p>जाल बुनने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake"><div class="creature-body"><h3>सांप</h3><p>रेंगने वाला विषैला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dolphin"><div class="creature-body"><h3>डॉल्फिन</h3><p>समुद्री बुद्धिमान जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bear"><div class="creature-body"><h3>भालू</h3><p>विशालकाय जंगली जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/penguin"><div class="creature-body"><h3>पेंगुइन</h3><p>बर्फ में रहने वाला पक्षी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PHYLUM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/vertebrate?lock=3" alt="Phylum">
+            <div>
+                <div class="rank">Phylum (संघ)</div><div class="name">Chordata</div>
+                <div class="scientific"><strong>रज्जुकी संघ -> </strong>Chordata समूह के जीवों में रीढ़ की हड्डी होती है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस संघ में वे जीव आते हैं जिनके शरीर में जीवन के किसी न किसी चरण में नोटोकॉर्ड (notochord) या रीढ़ की हड्डी मौजूद होती है। इनमें मछलियां, पक्षी, सरीसृप (reptiles) और स्तनधारी आते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इस समूह के जीवों में एक विकसित केंद्रीय तंत्रिका तंत्र (central nervous system), शरीर को सहारा देने वाली रीढ़ की हड्डी (vertebral column), और शरीर के पिछले हिस्से में पूंछ (post-anal tail) का होना प्रमुख लक्षण है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: गिलहरी को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">गिलहरी के शरीर में एक लचीली और मजबूत रीढ़ की हड्डी (backbone) होती है जो उसके नर्वस सिस्टम की रक्षा करती है। इसके अलावा, संतुलन बनाने के लिए इसके पास एक लंबी पूंछ (tail) होती है, इसीलिए इसे कॉर्डेटा संघ में रखा गया है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Chordata के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel,tree"><div class="creature-body"><h3>गिलहरी</h3><p>रीढ़ की हड्डी और लंबी पूंछ वाली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog,animal"><div class="creature-body"><h3>कुत्ता</h3><p>रीढ़ की हड्डी वाला वफादार जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/monkey"><div class="creature-body"><h3>बंदर</h3><p>पेड़ों पर कूदने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/whale"><div class="creature-body"><h3>व्हेल</h3><p>समुद्र का विशाल जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle,bird"><div class="creature-body"><h3>चील</h3><p>आसमान का शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake,animal"><div class="creature-body"><h3>सांप</h3><p>अत्यधिक लचीली रीढ़ वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog,animal"><div class="creature-body"><h3>मेंढक</h3><p>जमीन और पानी दोनों में रहने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark,fish"><div class="creature-body"><h3>शार्क</h3><p>कार्टिलेज से बनी रीढ़ वाली मछली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/turtle"><div class="creature-body"><h3>कछुआ</h3><p>खोल (Shell) के अंदर रीढ़ वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/horse"><div class="creature-body"><h3>घोड़ा</h3><p>तेज़ दौड़ने वाला रीढ़धारी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CLASS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/mammal?lock=4" alt="Class">
+            <div>
+                <div class="rank">Class (वर्ग)</div><div class="name">Mammalia</div>
+                <div class="scientific"><strong>स्तनधारी वर्ग -> </strong>Mammalia वर्ग के जीव अपने बच्चों को दूध पिलाते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस वर्ग में वे सभी जीव आते हैं जो अंडे देने के बजाय सीधे बच्चों को जन्म देते हैं (कुछ अपवादों को छोड़कर) और उन्हें अपना दूध पिलाकर पालते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">मादाओं में स्तन ग्रंथियां (mammary glands) होती हैं जिनसे नवजात के पोषण के लिए दूध निकलता है। इनके शरीर पर बाल या रोएं (hair/fur) पाए जाते हैं, और ये गर्म खून वाले (warm-blooded) जीव होते हैं जो अपने शरीर का तापमान नियंत्रित रख सकते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: गिलहरी को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">मादा गिलहरी छोटे और अंधे बच्चों (Pups) को जन्म देती है और उन्हें अपना दूध पिलाकर पालती है। इसके पूरे शरीर पर बाल (Fur) होते हैं और यह एक गर्म खून वाला (warm-blooded) जानवर है, इसलिए यह एक स्तनधारी (Mammal) है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Mammalia के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel,fur"><div class="creature-body"><h3>गिलहरी</h3><p>बालों वाली छोटी स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tiger"><div class="creature-body"><h3>बाघ</h3><p>भारत का राष्ट्रीय स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,wild"><div class="creature-body"><h3>हाथी</h3><p>सबसे भारी स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/whale,ocean"><div class="creature-body"><h3>ब्लू व्हेल</h3><p>पानी में रहने वाली स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/human,face"><div class="creature-body"><h3>इंसान</h3><p>सामाजिक स्तनधारी प्राणी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bat"><div class="creature-body"><h3>चमगादड़</h3><p>उड़ने वाला एकमात्र स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/kangaroo"><div class="creature-body"><h3>कंगारू</h3><p>पाउच (Pouch) वाला स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bear,wild"><div class="creature-body"><h3>भालू</h3><p>घने बालों वाला स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dolphin,sea"><div class="creature-body"><h3>डॉल्फिन</h3><p>समुद्री बुद्धिमान स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cow"><div class="creature-body"><h3>गाय</h3><p>दूध देने वाली घरेलू स्तनधारी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ORDER -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/rodent?lock=5" alt="Order">
+            <div>
+                <div class="rank">Order (गण)</div><div class="name">Rodentia</div>
+                <div class="scientific"><strong>कृंतक गण -> </strong> Rodentia समूह में कुतरने (Gnawing) वाले जीव आते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस गण (Order) में ऐसे जीव आते हैं जिन्हें हम 'कृंतक' (Rodents) कहते हैं। इसमें चूहे, गिलहरी, बीवर और साही (Porcupine) जैसे जीव शामिल हैं, जो अपने दांतों से सख्त चीजों को कुतरते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी सबसे बड़ी पहचान इनके ऊपर और नीचे के जबड़े में मौजूद दो जोड़े कृंतक दांत (incisors) हैं। ये दांत जीवन भर लगातार बढ़ते रहते हैं। इसलिए इन्हें हमेशा लकड़ी, बीज या नट्स कुतरने पड़ते हैं ताकि दांत घिसते रहें और ज्यादा बड़े न हों।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: गिलहरी को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">गिलहरी के आगे के दांत (incisors) हमेशा बढ़ते रहते हैं। अखरोट, मूंगफली और सख्त बीजों को कुतरना (gnawing) इसकी मज़बूरी भी है और आदत भी। इसी विशेष दाँत संरचना के कारण इसे Rodentia गण में रखा गया है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Rodentia के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel,nut"><div class="creature-body"><h3>गिलहरी</h3><p>पेड़ों का कृंतक जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/rat"><div class="creature-body"><h3>चूहा (Rat)</h3><p>बड़ा और आम कृंतक।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mouse,animal"><div class="creature-body"><h3>माउस (Mouse)</h3><p>छोटा घरेलू कृंतक।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/beaver"><div class="creature-body"><h3>बीवर (Beaver)</h3><p>लकड़ी से बांध बनाने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/porcupine"><div class="creature-body"><h3>साही (Porcupine)</h3><p>कांटों वाला कृंतक।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/guineapig"><div class="creature-body"><h3>गिनी पिग</h3><p>पालतू और शांत कृंतक।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/hamster"><div class="creature-body"><h3>हैम्स्टर (Hamster)</h3><p>गालों में खाना छिपाने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/capybara"><div class="creature-body"><h3>कैपिबारा (Capybara)</h3><p>दुनिया का सबसे बड़ा कृंतक।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/chinchilla"><div class="creature-body"><h3>चिंचिला (Chinchilla)</h3><p>अत्यंत मुलायम बालों वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/prairiedog"><div class="creature-body"><h3>प्रैरी डॉग</h3><p>ज़मीन के नीचे रहने वाला।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAMILY -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/squirrel?lock=6" alt="Family">
+            <div>
+                <div class="rank">Family (कुल)</div><div class="name">Sciuridae</div>
+                <div class="scientific"><strong>गिलहरी कुल -> </strong> Sciuridae परिवार में सभी प्रकार की गिलहरियां आती हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस परिवार में पेड़ों पर रहने वाली गिलहरियां (Tree squirrels), जमीन पर रहने वाली गिलहरियां (Ground squirrels), उड़ने वाली गिलहरियां (Flying squirrels) और मार्मोट्स शामिल हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इस परिवार के जीवों का शरीर बेलनाकार होता है और इनकी पूंछ प्रायः बहुत घनी और बालों वाली (bushy tail) होती है। इनके पिछले पैर लंबे होते हैं जो इन्हें छलांग लगाने में बहुत मदद करते हैं। इनकी आंखें बड़ी होती हैं जो इन्हें बेहतरीन दृष्टि प्रदान करती हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: गिलहरी को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">गिलहरी की घनी और लंबी पूंछ, जो उसे संतुलन बनाने में मदद करती है, और इसके कूदने और पेड़ों पर चढ़ने की असाधारण क्षमता इसे पूरी तरह से Sciuridae परिवार का सदस्य बनाती है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Sciuridae के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/treesquirrel"><div class="creature-body"><h3>पेड़ की गिलहरी</h3><p>पेड़ों पर रहने वाली आम गिलहरी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/ground,squirrel"><div class="creature-body"><h3>ग्राउंड स्क्विरल</h3><p>ज़मीन में बिल बनाकर रहने वाली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/flying,squirrel"><div class="creature-body"><h3>फ्लाइंग स्क्विरल</h3><p>हवा में ग्लाइड (Glide) करने वाली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/chipmunk"><div class="creature-body"><h3>चिपमंक (Chipmunk)</h3><p>गालों में धारी वाला छोटा जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/marmot"><div class="creature-body"><h3>मार्मोट (Marmot)</h3><p>पहाड़ों पर रहने वाली बड़ी गिलहरी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/woodchuck"><div class="creature-body"><h3>वुडचक (Groundhog)</h3><p>सर्दियों में हाइबरनेट करने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/red,squirrel"><div class="creature-body"><h3>लाल गिलहरी (Red Squirrel)</h3><p>यूरेशिया में पाई जाने वाली लाल प्रजाति।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/fox,squirrel"><div class="creature-body"><h3>फॉक्स स्क्विरल</h3><p>उत्तरी अमेरिका की बड़ी गिलहरी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/palmsquirrel"><div class="creature-body"><h3>पाम स्क्विरल</h3><p>एशियाई धारीदार गिलहरी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/souslik"><div class="creature-body"><h3>सूसलिक (Souslik)</h3><p>यूरोपीय ग्राउंड स्क्विरल।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- GENUS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/palm%20squirrel?lock=7" alt="Genus">
+            <div>
+                <div class="rank">Genus (वंश)</div><div class="name">Funambulus</div>
+                <div class="scientific"><strong>पाम गिलहरियाँ -> </strong> Funambulus वंश में पीठ पर धारियों वाली गिलहरियां शामिल हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">Funambulus वंश में मुख्य रूप से भारतीय उपमहाद्वीप (भारत, पाकिस्तान, नेपाल, श्रीलंका) में पाई जाने वाली पाम गिलहरियां (Palm Squirrels) आती हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी सबसे बड़ी पहचान इनकी पीठ पर मौजूद सफेद और भूरी धारियां (stripes) होती हैं। ये बहुत ही सक्रिय होती हैं, इंसानी बस्तियों के आस-पास रहना पसंद करती हैं और खतरे का आभास होने पर तीखी आवाज़ (chirping/bird-like calls) निकालती हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: हमारे यहाँ की गिलहरी को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">हमारे आस-पास दिखने वाली गिलहरी की पीठ पर स्पष्ट धारियां होती हैं। यह अन्य देशों की बिना धारी वाली बड़ी गिलहरियों (जैसे Sciurus) से अलग है। इसका शारीरिक ढांचा और धारियों वाला पैटर्न इसे Funambulus वंश का बनाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Funambulus के कुछ मुख्य प्रकार और विशेषताएं</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/indian,squirrel"><div class="creature-body"><h3>उत्तरी पाम गिलहरी</h3><p>5 धारियों वाली (F. pennantii)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/three,striped,squirrel"><div class="creature-body"><h3>भारतीय पाम गिलहरी</h3><p>3 धारियों वाली (F. palmarum)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/jungle,squirrel"><div class="creature-body"><h3>जंगल पाम गिलहरी</h3><p>घने जंगलों में पाई जाने वाली (F. tristriatus)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel"><div class="creature-body"><h3>नीलगिरि पाम गिलहरी</h3><p>दक्षिण भारत की विशेष गिलहरी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/palm,squirrel"><div class="creature-body"><h3>लेयार्ड पाम गिलहरी</h3><p>श्रीलंका में मिलने वाली प्रजाति (F. layardi)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel"><div class="creature-body"><h3>डस्की पाम गिलहरी</h3><p>गहरे रंग वाली गिलहरी (F. obscurus)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel,climbing"><div class="creature-body"><h3>चढ़ने में माहिर</h3><p>खड़ी दीवारों पर दौड़ सकती हैं।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel,tail"><div class="creature-body"><h3>संतुलन पूंछ</h3><p>कूदते समय दिशा बदलने में मददगार।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel,chirp"><div class="creature-body"><h3>चेतावनी की आवाज़</h3><p>पक्षियों जैसी तीखी अलार्म कॉल।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel,nest"><div class="creature-body"><h3>घोंसला निर्माण</h3><p>पेड़ों की शाखाओं में घास का घोंसला।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SPECIES -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/northern%20palm%20squirrel?lock=8" alt="Species">
+            <div>
+                <div class="rank">Species (प्रजाति)</div><div class="name">Funambulus pennantii</div>
+                <div class="scientific"><strong>उत्तरी पाम गिलहरी -> </strong> यह हमारे आस-पास सबसे ज्यादा पाई जाने वाली पांच-धारीदार गिलहरी है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">यह वर्गीकरण का अंतिम और सबसे सटीक स्तर है। इसमें विशेष रूप से 'उत्तरी पाम गिलहरी' (Northern Palm Squirrel) आती है, जो मुख्य रूप से उत्तर भारत और आस-पास के क्षेत्रों में बहुत आम है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी मुख्य विशेषता इनकी पीठ पर मौजूद 5 हल्की सफेद धारियां (Five stripes) होती हैं (जबकि दक्षिण भारतीय गिलहरी में 3 होती हैं)। ये शहरी माहौल और इंसानी गतिविधियों के बीच रहने के लिए बहुत अच्छी तरह अनुकूलित (adapted) हो चुकी हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: इस गिलहरी को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">भारत के उत्तरी और मध्य हिस्सों (जैसे हरियाणा, दिल्ली आदि) में दिखने वाली गिलहरी का जेनेटिक मेकअप, पांच धारियों का पैटर्न, और इसका भौगोलिक वितरण इसे विज्ञान में <strong>'Funambulus pennantii'</strong> के रूप में एक अलग और विशिष्ट प्रजाति बनाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Funambulus pennantii (उत्तरी पाम गिलहरी) की 10 खास बातें</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/palm,squirrel"><div class="creature-body"><h3>पांच धारियां (Five Stripes)</h3><p>पीठ पर स्पष्ट पांच सफेद लाइनें।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel,eating,fruit"><div class="creature-body"><h3>सर्वाहारी आहार</h3><p>फल, बीज और कभी-कभी कीड़े भी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel,urban"><div class="creature-body"><h3>शहरी अनुकूलन</h3><p>घरों और पार्कों में रहने की आदी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel"><div class="creature-body"><h3>धार्मिक मान्यता</h3><p>रामायण में भगवान राम से जुड़ी कथा।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel,running"><div class="creature-body"><h3>अद्भुत फुर्ती</h3><p>पलक झपकते ही गायब हो जाने वाली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel,baby"><div class="creature-body"><h3>प्रजनन (Reproduction)</h3><p>एक बार में 2 से 3 बच्चों को जन्म।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel,teeth"><div class="creature-body"><h3>लगातार बढ़ते दांत</h3><p>जीवन भर कृंतक दांतों का बढ़ना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel"><div class="creature-body"><h3>पूंछ हिलाकर बात करना</h3><p>खतरे में पूंछ को झटके से हिलाना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel,winter"><div class="creature-body"><h3>कोई हाइबरनेशन नहीं</h3><p>सर्दियों में भी सक्रिय रहती है।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel"><div class="creature-body"><h3>जीवनकाल (Lifespan)</h3><p>जंगल में 2-4 साल, कैद में 5+ साल।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<footer>Beautiful Detailed Taxonomy Explorer (Squirrel Edition)</footer>
+
+<!-- =========================   JAVASCRIPT========================= -->
+<script>
+const cards = document.querySelectorAll(".taxonomy-card");
+cards.forEach(card=>{
+    const header = card.querySelector(".taxonomy-header");
+    header.addEventListener("click",()=>{
+        card.classList.toggle("active");
+        const content = card.querySelector(".content");
+        if(content.style.maxHeight){
+            content.style.maxHeight = null;
+        }else{
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    });
+});
+
+const observer = new IntersectionObserver((entries)=>{
+    entries.forEach((entry)=>{
+        if(entry.isIntersecting){
+            entry.target.classList.add("show");
+        }
+    });
+});
+const hiddenElements = document.querySelectorAll(".hidden");
+hiddenElements.forEach((el)=>observer.observe(el));
+
+document.querySelectorAll('.creature img').forEach(img=>{
+ const wrap=document.createElement('div');
+ wrap.className='image-wrap';
+ img.parentNode.insertBefore(wrap,img);
+ wrap.appendChild(img);
+
+ const tools=document.createElement('div');
+ tools.className='img-tools';
+
+ const r=document.createElement('button');
+ r.className='img-tool-btn';
+ r.innerHTML='🔄';
+
+ const s=document.createElement('button');
+ s.className='img-tool-btn';
+ s.innerHTML='🌐';
+
+ tools.appendChild(r);
+ tools.appendChild(s);
+ wrap.appendChild(tools);
+
+ const original=(img.src.split('/300/')[1]||'animal').split('?')[0];
+
+ r.onclick=(e)=>{
+   e.stopPropagation();
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+Date.now();
+ };
+
+ s.onclick=(e)=>{
+   e.stopPropagation();
+   window.open('https://commons.wikimedia.org/w/index.php?search='+encodeURIComponent(original),'_blank');
+ };
+
+ img.onerror=()=>{
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+(Date.now()+1);
+ };
+});
+
+
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('img').forEach((img,i)=>{
+   if(img.src.includes('loremflickr.com')){
+      const base=img.src.split('?')[0];
+      img.src=base+'?lock='+(Date.now()+i);
+   }
+ });
+});
+</script>
+
+
+<script>
+document.querySelectorAll('img').forEach(img=>{
+  img.onerror=function(){
+    this.onerror=null;
+    this.src='https://loremflickr.com/400/300/squirrel?lock='+Date.now();
+  };
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.image-wrap').forEach(w=>{
+   const tools=w.querySelector('.img-tools');
+   const card=w.closest('.creature');
+   const title=card ? card.querySelector('.creature-body h3') : null;
+   if(tools && title){
+      title.insertAdjacentElement('afterend', tools);
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.padding='0';
+      tools.style.background='transparent';
+      tools.style.verticalAlign='middle';
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const title=card.querySelector('.creature-body h3');
+   const tools=card.querySelector('.img-tools');
+   if(title && tools){
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.verticalAlign='middle';
+      tools.style.background='transparent';
+      tools.style.padding='0';
+      tools.style.position='static';
+
+      title.appendChild(tools);
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.taxonomy-header .left img').forEach(img=>{
+   if(img.parentElement.querySelector('.header-tools')) return;
+
+   const tools=document.createElement('div');
+   tools.className='header-tools';
+   tools.style.display='flex';
+   tools.style.justifyContent='center';
+   tools.style.gap='6px';
+   tools.style.marginTop='4px';
+
+   const r=document.createElement('button');
+   r.textContent='🔄';
+
+   const g=document.createElement('button');
+   g.textContent='🌐';
+
+   r.onclick=(e)=>{
+      e.stopPropagation();
+      img.src=img.src.split('?')[0]+'?v='+Date.now();
+   };
+
+   g.onclick=(e)=>{
+      e.stopPropagation();
+      const q=img.alt || 'animal';
+      window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+
+   const wrap=document.createElement('div');
+   wrap.style.display='flex';
+   wrap.style.flexDirection='column';
+   wrap.style.alignItems='center';
+
+   img.parentNode.insertBefore(wrap,img);
+   wrap.appendChild(img);
+   wrap.appendChild(tools);
+   tools.appendChild(r);
+   tools.appendChild(g);
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+
+document.querySelectorAll('.header-tools button:last-child').forEach(btn=>{
+ btn.onclick=(e)=>{
+  e.stopPropagation();
+  const card=btn.closest('.taxonomy-card');
+  const q=[
+   card?.querySelector('.rank')?.innerText||'',
+   card?.querySelector('.name')?.innerText||'',
+   card?.querySelector('.scientific')?.innerText||''
+  ].join(' ');
+  window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+ };
+});
+
+document.querySelectorAll('.creature').forEach(card=>{
+ const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+ if(globe){
+   globe.onclick=(e)=>{
+    e.stopPropagation();
+    const q=(card.querySelector('h3')?.innerText||'')+' '+(card.querySelector('p')?.innerText||'');
+    window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+ }
+});
+
+});
+</script>
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+   if(!globe) return;
+
+   globe.onclick=(e)=>{
+     e.stopPropagation();
+
+     const titleNode = card.querySelector('h3');
+     let title='';
+     if(titleNode){
+       title=(titleNode.childNodes[0]?.textContent || titleNode.textContent || '').trim();
+       title=title.replace('🔄','').replace('🌐','').trim();
+     }
+
+     const desc=(card.querySelector('p')?.innerText || '').trim();
+
+     const taxonomyCard=card.closest('.taxonomy-card');
+     const rank=(taxonomyCard?.querySelector('.rank')?.innerText || '').trim();
+     const taxonomyName=(taxonomyCard?.querySelector('.name')?.innerText || '').trim();
+
+     const query=(rank+' '+taxonomyName+' '+title+' '+desc).replace(/\s+/g,' ').trim();
+
+     window.open(
+       'https://www.google.com/search?tbm=isch&q='+encodeURIComponent(query),
+       '_blank'
+     );
+   };
+ });
+});
+</script>
+
+</body>
+</html>

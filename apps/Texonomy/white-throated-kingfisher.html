@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>White-throated Kingfisher Taxonomy Explorer - Detailed</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================   BASIC ========================= */
+*{margin:0; padding:0; box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{    font-family:'Poppins',sans-serif;    background:linear-gradient(to bottom right,#fff8fb,#eef5ff,#ffffff);    color:#1c2430; overflow-x:hidden;}
+
+/* =========================   HERO ========================= */
+.hero{    display:flex; align-items:center;    justify-content:center; flex-direction:column;    text-align:center; padding:40px 20px;    position:relative; overflow:hidden;}
+.hero::before, .hero::after{    content:""; position:absolute;    border-radius:50%;}
+.hero::before{    width:700px; height:700px; top:-250px; left:-200px;    background:radial-gradient(circle,#8fd3ff55,transparent 70%);    animation:float1 8s ease-in-out infinite;}
+.hero::after{    width:600px; height:600px; bottom:-250px; right:-200px;    background:radial-gradient(circle,#ffbd8a44,transparent 70%);    animation:float2 10s ease-in-out infinite;}
+@keyframes float1{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(30px);} }
+@keyframes float2{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(-30px);} }
+.hero h1{    font-size:70px; font-weight:700; z-index:2;    background:linear-gradient(to right,#0072ff,#d45d27);    -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+.hero p{    margin-top:20px; font-size:20px; color:#5c6773;    max-width:1200px; line-height:1.8; z-index:2;}
+
+/* =========================   CONTAINER & CARDS ========================= */
+.container{ width:95%; max-width:1250px; margin:auto; padding-bottom:80px; }
+.taxonomy-card{    background:white; margin-bottom:30px; border-radius:30px;    overflow:hidden; border:1px solid #dde8f5;    box-shadow:0 10px 30px rgba(0,0,0,0.05); transition:0.5s;}
+.taxonomy-card:hover{ transform:translateY(-6px); box-shadow:0 18px 40px rgba(0,0,0,0.08); }
+.taxonomy-header{    padding:25px; display:flex; align-items:center;    justify-content:space-between; cursor:pointer; transition:0.3s;}
+.taxonomy-header:hover{ background:#f7fbff; }
+.left{ display:flex; align-items:center; gap:22px; }
+.left img{    width:95px; height:95px; border-radius:24px;    object-fit:cover; border:4px solid #eef5ff; transition:0.4s;}
+.taxonomy-card:hover .left img{ transform:scale(1.05) rotate(2deg); }
+.rank{ font-size:13px; text-transform:uppercase; letter-spacing:3px; color:#0072ff; font-weight:600; }
+.name{ font-size:34px; font-weight:700; margin-top:4px; }
+.scientific{ margin-top:7px; color:#637082; font-size:16px; }
+.arrow{ font-size:38px; color:#0072ff; transition:0.5s; }
+.taxonomy-card.active .arrow{ transform:rotate(180deg); }
+
+/* =========================   CONTENT & DETAILED DESC ========================= */
+.content{ max-height:0; overflow:hidden; transition:max-height 0.8s ease; }
+.content-inner{ padding:35px; border-top:1px solid #edf3fa; }
+
+.detailed-desc {    background: #fdfdff;    padding: 25px;    border-radius: 20px;    border-left: 5px solid #0072ff;    margin-bottom: 35px;}
+.desc-item {    margin-bottom: 18px;}
+.desc-item:last-child {    margin-bottom: 0;}
+.desc-label {    display: block;    font-size: 17px;    font-weight: 600;    color: #004b99;    margin-bottom: 5px;}
+.desc-text {    font-size: 16px;    line-height: 1.8;    color: #465260;}
+
+.section-title{ font-size:30px; margin-bottom:25px; color:#d45d27; }
+
+/* =========================   GRID & CREATURES ========================= */
+.creatures{    display:grid; gap:25px;    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));}
+.creature{    background:#ffffff; border-radius:20px; overflow:hidden;    border:1px solid #e8eef7; transition:0.5s;}
+.creature:hover{ transform:translateY(-10px) scale(1.02); box-shadow:0 15px 30px rgba(0,0,0,0.08); }
+.creature img{ width:100%; height:160px; object-fit:cover; transition:0.5s; }
+.creature:hover img{ transform:scale(1.08); }
+.creature-body{ padding:15px; }
+.creature h3{ font-size:18px; margin-bottom:8px; color: #1c2430;}
+.creature p{ color:#66717d; line-height:1.5; font-size:14px; }
+
+/* =========================   UTILITIES ========================= */
+.hidden{ opacity:0; transform:translateY(50px); transition:all 1s; }
+.show{ opacity:1; transform:translateY(0px); }
+footer{ padding:40px 20px; text-align:center; color:#607080; font-size:15px; }
+
+@media(max-width:800px){    .hero h1{font-size:44px;} .hero p{font-size:17px;}    .name{font-size:26px;} .left{align-items:flex-start;}    .left img{width:75px; height:75px;}    .taxonomy-header{padding:20px;} .content-inner{padding:25px;}}
+
+.image-wrap{position:relative;display:flex;flex-direction:column}
+.img-tools{position:static;display:flex;gap:6px;justify-content:center;padding:8px 0;background:#fff}
+.img-tool-btn{border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;background:rgba(255,255,255,.9)}
+
+</style>
+
+<style>
+.header-tools button,.img-tool-btn,.img-tools button{
+border:none!important;
+outline:none!important;
+background:transparent!important;
+box-shadow:none!important;
+padding:0!important;
+cursor:pointer;
+font-size:20px;
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+    <h1>White-throated Kingfisher Taxonomy</h1>
+    <p>व्हाइट-थ्रोटेड किंगफिशर (White-throated Kingfisher) की पूरी जैविक वर्गीकरण (taxonomy) प्रणाली को गहराई से जानिए। हर स्तर (level) पर क्लिक करें और वैज्ञानिक कारण (reasoning) व उदाहरणों के साथ समझें कि इस पक्षी को उस स्तर में क्यों रखा गया है।</p>
+</section>
+
+<div class="container">
+
+<!-- DOMAIN -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/eukarya?lock=1" alt="Domain">
+            <div>
+                <div class="rank">Domain</div><div class="name">Eukarya</div>
+                <div class="scientific"><strong>Complex cells -> </strong>Eukarya में वे सभी जीव आते हैं जिनकी cells में स्पष्ट nucleus होता है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Domain में पृथ्वी के वे सभी जीव आते हैं जिनकी cells में एक स्पष्ट और membrane-bound nucleus होता है। इसमें plants, animals, fungi और protists शामिल हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस level की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी cells की संरचना बहुत complex होती है। इनका DNA nucleus के अंदर सुरक्षित रहता है और इनकी cells में विभिन्न organelles होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: White-throated Kingfisher को इसी level में क्यों रखा गया है?</span>
+                    <p class="desc-text">White-throated Kingfisher का शरीर eukaryotic cells से बना है। इसकी हर cell के अंदर स्पष्ट nucleus और अन्य cell organelles मौजूद होते हैं, इसीलिए इसे Eukarya Domain का हिस्सा माना जाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Eukarya के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/kingfisher"><div class="creature-body"><h3>White-throated Kingfisher</h3><p>सुंदर और फुर्तीला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/human"><div class="creature-body"><h3>Human</h3><p>सबसे बुद्धिमान प्राणी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog"><div class="creature-body"><h3>Dog</h3><p>वफादार जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tree"><div class="creature-body"><h3>Tree (Plants)</h3><p>Photosynthesis करने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mushroom"><div class="creature-body"><h3>Mushroom</h3><p>Fungi जगत का सदस्य।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bird"><div class="creature-body"><h3>Bird</h3><p>आसमान में उड़ने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/fish"><div class="creature-body"><h3>Fish</h3><p>पानी में रहने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog"><div class="creature-body"><h3>Frog</h3><p>Amphibian जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/butterfly"><div class="creature-body"><h3>Butterfly</h3><p>रंगीन और सुंदर कीट।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/rose"><div class="creature-body"><h3>Rose</h3><p>फूलों वाला सुंदर पौधा।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- KINGDOM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/animal?lock=2" alt="Kingdom">
+            <div>
+                <div class="rank">Kingdom</div><div class="name">Animalia</div>
+                <div class="scientific"><strong>Animals -> </strong>Animalia Kingdom में वे जीव आते हैं जो अपना भोजन स्वयं नहीं बनाते।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Kingdom में सभी multicellular animals आते हैं। इस समूह के जीव अपना भोजन खुद नहीं बना सकते (plants की तरह) बल्कि भोजन के लिए दूसरे जीवों पर निर्भर रहते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस level की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">ये heterotrophic होते हैं। इनकी cells के बाहर plants जैसी कठोर cell wall नहीं होती है। इस Kingdom के अधिकांश जीव अपने जीवन के किसी न किसी चरण में स्वेच्छा से movement कर सकते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: White-throated Kingfisher को इसी level में क्यों रखा गया है?</span>
+                    <p class="desc-text">White-throated Kingfisher एक multicellular जीव है जो अपना भोजन स्वयं नहीं बना सकता। यह भोजन के लिए fish, insects, frogs और small reptiles पर निर्भर होता है। इसमें उड़ने और movement करने की क्षमता है, अतः यह पूर्ण रूप से एक Animal है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Animalia के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/kingfisher,eating"><div class="creature-body"><h3>Kingfisher</h3><p>शिकार करने वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lion"><div class="creature-body"><h3>Lion</h3><p>जंगल का शक्तिशाली राजा।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant"><div class="creature-body"><h3>Elephant</h3><p>सबसे बड़ा स्थलीय जानवर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark"><div class="creature-body"><h3>Shark</h3><p>समुद्र का खतरनाक शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle"><div class="creature-body"><h3>Eagle</h3><p>तेज़ नज़र वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/spider"><div class="creature-body"><h3>Spider</h3><p>जाल बुनने वाला Arachnid जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake"><div class="creature-body"><h3>Snake</h3><p>रेंगने वाला Reptile जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dolphin"><div class="creature-body"><h3>Dolphin</h3><p>समुद्री बुद्धिमान जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bear"><div class="creature-body"><h3>Bear</h3><p>विशालकाय जंगली जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/penguin"><div class="creature-body"><h3>Penguin</h3><p>बर्फ में रहने वाला पक्षी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PHYLUM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/vertebrate?lock=3" alt="Phylum">
+            <div>
+                <div class="rank">Phylum</div><div class="name">Chordata</div>
+                <div class="scientific"><strong>Chordates -> </strong>Chordata समूह के जीवों में backbone या notochord होती है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Phylum में वे जीव आते हैं जिनके शरीर में जीवन के किसी न किसी चरण में notochord या backbone मौजूद होती है। इनमें fishes, birds, reptiles और mammals आते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस level की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इस समूह के जीवों में एक विकसित central nervous system, शरीर को सहारा देने वाली vertebral column, और शरीर के पिछले हिस्से में post-anal tail का होना प्रमुख लक्षण है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: White-throated Kingfisher को इसी level में क्यों रखा गया है?</span>
+                    <p class="desc-text">White-throated Kingfisher के शरीर में एक लचीली और मजबूत backbone होती है जो इसके nervous system की रक्षा करती है, इसीलिए इसे Chordata Phylum में रखा गया है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Chordata के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/kingfisher,bird"><div class="creature-body"><h3>Kingfisher</h3><p>Backbone वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog,animal"><div class="creature-body"><h3>Dog</h3><p>रीढ़ की हड्डी वाला वफादार Mammal।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/monkey"><div class="creature-body"><h3>Monkey</h3><p>पेड़ों पर कूदने वाला Primate।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/whale"><div class="creature-body"><h3>Whale</h3><p>समुद्र का विशाल Marine mammal।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle,bird"><div class="creature-body"><h3>Eagle</h3><p>आसमान का शिकारी पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake,animal"><div class="creature-body"><h3>Snake</h3><p>अत्यधिक लचीली रीढ़ वाला Reptile।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog,animal"><div class="creature-body"><h3>Frog</h3><p>जमीन और पानी दोनों में रहने वाला Amphibian।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark,fish"><div class="creature-body"><h3>Shark</h3><p>Cartilage से बनी रीढ़ वाली मछली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/turtle"><div class="creature-body"><h3>Turtle</h3><p>Shell के अंदर रीढ़ वाला Reptile।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/horse"><div class="creature-body"><h3>Horse</h3><p>तेज़ दौड़ने वाला Mammal।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CLASS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/bird?lock=4" alt="Class">
+            <div>
+                <div class="rank">Class</div><div class="name">Aves</div>
+                <div class="scientific"><strong>Birds -> </strong>Aves Class के जीवों के शरीर पर feathers होते हैं और वे eggs देते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Class में वे सभी जीव आते हैं जिन्हें हम पक्षी (Birds) कहते हैं। इनके forelimbs विकसित होकर wings में बदल गए हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस level की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">ये warm-blooded जीव हैं। इनके शरीर पर feathers पाए जाते हैं और इनकी हड्डियां खोखली (pneumatic bones) होती हैं जो इन्हें उड़ने में मदद करती हैं। इनका जबड़ा beak में बदल जाता है और इनमें दांत नहीं होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: White-throated Kingfisher को इसी level में क्यों रखा गया है?</span>
+                    <p class="desc-text">White-throated Kingfisher के शरीर पर feathers होते हैं, इसके पास उड़ने के लिए wings और शिकार पकड़ने के लिए एक मजबूत beak है। यह eggs देता है, इसलिए यह Aves Class का सदस्य है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Aves के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/kingfisher,feathers"><div class="creature-body"><h3>Kingfisher</h3><p>चमकीले रंग का तेज़ पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow"><div class="creature-body"><h3>Sparrow</h3><p>घरों के आस-पास दिखने वाली छोटी चिड़िया।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/pigeon"><div class="creature-body"><h3>Pigeon</h3><p>आम शहरी पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle,sky"><div class="creature-body"><h3>Eagle</h3><p>आसमान में ऊंचा उड़ने वाला शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/owl"><div class="creature-body"><h3>Owl</h3><p>रात के समय शिकार करने वाला (Nocturnal)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/penguin,ice"><div class="creature-body"><h3>Penguin</h3><p>उड़ न सकने वाला, पानी में तैरने वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/ostrich"><div class="creature-body"><h3>Ostrich</h3><p>धरती का सबसे बड़ा पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/parrot"><div class="creature-body"><h3>Parrot</h3><p>रंगीन और बुद्धिमान पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/peacock"><div class="creature-body"><h3>Peacock</h3><p>अत्यंत सुंदर पंखों वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/woodpecker"><div class="creature-body"><h3>Woodpecker</h3><p>पेड़ में छेद करने वाली मजबूत beak वाला।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ORDER -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/coraciiformes?lock=5" alt="Order">
+            <div>
+                <div class="rank">Order</div><div class="name">Coraciiformes</div>
+                <div class="scientific"><strong>Coraciiformes -> </strong>इस Order में रंग-बिरंगे पक्षी आते हैं जिनके पैरों की उंगलियां (toes) आपस में जुड़ी होती हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Order में kingfishers, bee-eaters, rollers और hornbills जैसे ज्यादातर चमकीले और रंग-बिरंगे (colorful) पक्षी आते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस level की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी सबसे बड़ी पहचान इनके feet की संरचना है। इनमें syndactyly होती है, जिसका मतलब है कि इनके पैरों की आगे की तीन toes आंशिक रूप से आपस में जुड़ी होती हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: White-throated Kingfisher को इसी level में क्यों रखा गया है?</span>
+                    <p class="desc-text">White-throated Kingfisher के feet syndactyl होते हैं और यह एक चमकीले रंग का पक्षी है। इसकी शारीरिक संरचना Coraciiformes Order की विशेषताओं से पूरी तरह मेल खाती है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Coraciiformes के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/common,kingfisher"><div class="creature-body"><h3>Common Kingfisher</h3><p>नदी के किनारे मिलने वाला छोटा kingfisher।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/roller,bird"><div class="creature-body"><h3>European Roller</h3><p>चमकीला नीला और आकर्षक पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/beeeater"><div class="creature-body"><h3>Green Bee-eater</h3><p>हवा में कीड़े पकड़ने वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/hornbill"><div class="creature-body"><h3>Great Hornbill</h3><p>बड़ी और भारी beak वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/pied,kingfisher"><div class="creature-body"><h3>Pied Kingfisher</h3><p>हवा में hover करने वाला काले-सफेद रंग का पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/hoopoe"><div class="creature-body"><h3>Hoopoe</h3><p>ताज जैसी कलगी (crest) वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tody,bird"><div class="creature-body"><h3>Tody</h3><p>छोटा और बेहद रंगीन पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/motmot"><div class="creature-body"><h3>Motmot</h3><p>लंबी और रैकेट जैसी पूंछ वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/kookaburra"><div class="creature-body"><h3>Kookaburra</h3><p>हंसने जैसी तेज़ आवाज़ वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/carmine,beeeater"><div class="creature-body"><h3>Carmine Bee-eater</h3><p>लाल और गुलाबी रंग का खूबसूरत पक्षी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAMILY -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/alcedinidae?lock=6" alt="Family">
+            <div>
+                <div class="rank">Family</div><div class="name">Alcedinidae</div>
+                <div class="scientific"><strong>Kingfishers -> </strong>Alcedinidae Family में सभी प्रकार के kingfishers आते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Family में छोटे से लेकर मध्यम आकार के रंग-बिरंगे पक्षी आते हैं, जिन्हें kingfishers कहा जाता है। ये दुनिया भर के उष्णकटिबंधीय (tropical) और समशीतोष्ण (temperate) क्षेत्रों में पाए जाते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस level की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इस Family के जीवों का सिर बड़ा (large head), चोंच लंबी और नुकीली (dagger-like bill), पैर छोटे (short legs) और पूंछ छोटी (stubby tail) होती है। इनकी vision बहुत तेज़ होती है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: White-throated Kingfisher को इसी level में क्यों रखा गया है?</span>
+                    <p class="desc-text">White-throated Kingfisher का सिर बड़ा और चोंच लंबी, भारी व नुकीली (heavy red bill) है, जो शिकार को पकड़ने के लिए उपयुक्त है। इसका शरीर Alcedinidae Family के लक्षणों को स्पष्ट दर्शाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Alcedinidae के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/white,throated,kingfisher"><div class="creature-body"><h3>White-throated Kingfisher</h3><p>Tree kingfisher जो पानी से दूर भी रहता है।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/river,kingfisher"><div class="creature-body"><h3>Common Kingfisher</h3><p>नदियों के पास मछली पकड़ने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/pied,kingfisher"><div class="creature-body"><h3>Pied Kingfisher</h3><p>काले और सफेद रंग का hovering विशेषज्ञ।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/laughing,kookaburra"><div class="creature-body"><h3>Laughing Kookaburra</h3><p>Alcedinidae Family का सबसे बड़ा सदस्य।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/stork,billed,kingfisher"><div class="creature-body"><h3>Stork-billed Kingfisher</h3><p>बहुत बड़ी लाल चोंच वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/woodland,kingfisher"><div class="creature-body"><h3>Woodland Kingfisher</h3><p>अफ्रीका का सुंदर kingfisher।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/malachite,kingfisher"><div class="creature-body"><h3>Malachite Kingfisher</h3><p>छोटा और चमकीले नीले रंग का पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dwarf,kingfisher"><div class="creature-body"><h3>Oriental Dwarf Kingfisher</h3><p>बहुत ही छोटा और बहुरंगी kingfisher।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/belted,kingfisher"><div class="creature-body"><h3>Belted Kingfisher</h3><p>उत्तर अमेरिका में पाया जाने वाला kingfisher।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sacred,kingfisher"><div class="creature-body"><h3>Sacred Kingfisher</h3><p>ऑस्ट्रेलिया और न्यूज़ीलैंड का kingfisher।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- GENUS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/halcyon?lock=7" alt="Genus">
+            <div>
+                <div class="rank">Genus</div><div class="name">Halcyon</div>
+                <div class="scientific"><strong>Tree Kingfishers -> </strong>Halcyon Genus में मुख्य रूप से बड़े और भारी चोंच वाले tree kingfishers आते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">Halcyon Genus में tree kingfishers शामिल हैं जो मुख्य रूप से एशिया, अफ्रीका और ऑस्ट्रेलिया में पाए जाते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस level की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इस Genus के kingfishers अक्सर पानी से दूर सूखे इलाकों (dry habitats) या जंगलों में भी पाए जाते हैं। इनका शिकार करने का तरीका "sit-and-wait" होता है और ये fish के अलावा insects, reptiles और rodents का भी शिकार करते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: इस पक्षी को इसी level में क्यों रखा गया है?</span>
+                    <p class="desc-text">White-throated Kingfisher भी पानी से दूर रहना पसंद करता है और इसका आहार (diet) बहुत विविध (varied) है। इसका व्यवहार और शारीरिक बनावट Halcyon Genus के अनुरूप है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Halcyon Genus के कुछ मुख्य प्रकार</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/white,throated,kingfisher"><div class="creature-body"><h3>White-throated Kingfisher</h3><p>Halcyon smyrnensis।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/javan,kingfisher"><div class="creature-body"><h3>Javan Kingfisher</h3><p>Halcyon cyanoventris।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/grey,headed,kingfisher"><div class="creature-body"><h3>Grey-headed Kingfisher</h3><p>Halcyon leucocephala।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/black,capped,kingfisher"><div class="creature-body"><h3>Black-capped Kingfisher</h3><p>Halcyon pileata।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/chestnut,backed,kingfisher"><div class="creature-body"><h3>Chestnut-backed Kingfisher</h3><p>Halcyon badis।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/ruddy,kingfisher"><div class="creature-body"><h3>Ruddy Kingfisher</h3><p>Halcyon coromanda।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/woodland,kingfisher"><div class="creature-body"><h3>Woodland Kingfisher</h3><p>Halcyon senegalensis।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/brown,hooded,kingfisher"><div class="creature-body"><h3>Brown-hooded Kingfisher</h3><p>Halcyon albiventris।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/striped,kingfisher"><div class="creature-body"><h3>Striped Kingfisher</h3><p>Halcyon chelicuti।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/blue,breasted,kingfisher"><div class="creature-body"><h3>Blue-breasted Kingfisher</h3><p>Halcyon malimbica।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SPECIES -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/halcyon%20smyrnensis?lock=8" alt="Species">
+            <div>
+                <div class="rank">Species</div><div class="name">Halcyon smyrnensis</div>
+                <div class="scientific"><strong>White-throated Kingfisher -> </strong>यह हमारे आस-पास आम तौर पर पाया जाने वाला सफेद गले वाला kingfisher है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस level में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">यह वर्गीकरण (taxonomy) का अंतिम और सबसे सटीक level है। इसमें विशेष रूप से 'White-throated Kingfisher' (Halcyon smyrnensis) आता है, जो एशिया में व्यापक रूप से पाया जाता है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस level की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी मुख्य विशेषता इनकी पीठ, पंख और पूंछ का चमकीला नीला (bright blue) रंग है। इनका सिर और पेट भूरे (chestnut) रंग का होता है और गले (throat) पर स्पष्ट सफेद (white) धब्बा होता है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: इस kingfisher को इसी level में क्यों रखा गया है?</span>
+                    <p class="desc-text">इसके विशिष्ट रंगों का पैटर्न (सफेद गला, लाल चोंच, और नीला-भूरा शरीर), इसका habitat, और इसकी तेज़ आवाज़ इसे विज्ञान में <strong>'Halcyon smyrnensis'</strong> के रूप में एक अलग प्रजाति (species) बनाती है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Halcyon smyrnensis (White-throated Kingfisher) की 10 खास बातें</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/kingfisher,throat"><div class="creature-body"><h3>White Throat</h3><p>गले और छाती का स्पष्ट सफेद रंग।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/kingfisher,beak"><div class="creature-body"><h3>Red Bill</h3><p>शिकार पकड़ने के लिए बड़ी और मजबूत लाल चोंच।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/kingfisher,blue"><div class="creature-body"><h3>Bright Blue Wings</h3><p>उड़ते समय दिखने वाले चमकीले नीले पंख।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/kingfisher,head"><div class="creature-body"><h3>Chestnut Head</h3><p>सिर और पेट का गहरा भूरा रंग।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/kingfisher,prey"><div class="creature-body"><h3>Varied Diet</h3><p>Fish के अलावा frogs, lizards और insects का शिकार।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/kingfisher,singing"><div class="creature-body"><h3>Loud Call</h3><p>हंसने (chuckling) जैसी तेज़ और तीखी आवाज़।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/kingfisher,city"><div class="creature-body"><h3>Adaptable Habitat</h3><p>शहरों के तारों से लेकर जंगलों तक में निवास।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/kingfisher,monsoon"><div class="creature-body"><h3>Monsoon Breeding</h3><p>आमतौर पर मानसून के दौरान प्रजनन (breeding) करना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/kingfisher,nest"><div class="creature-body"><h3>Tunnel Nest</h3><p>मिट्टी के किनारे (earth bank) में सुरंग बनाकर घोंसला बनाना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/kingfisher,flying"><div class="creature-body"><h3>Rapid Flight</h3><p>तेज़ और सीधी उड़ान (direct flight)।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<footer>Beautiful Detailed Taxonomy Explorer (White-throated Kingfisher Edition)</footer>
+
+<!-- =========================   JAVASCRIPT ========================= -->
+<script>
+const cards = document.querySelectorAll(".taxonomy-card");
+cards.forEach(card=>{
+    const header = card.querySelector(".taxonomy-header");
+    header.addEventListener("click",()=>{
+        card.classList.toggle("active");
+        const content = card.querySelector(".content");
+        if(content.style.maxHeight){
+            content.style.maxHeight = null;
+        }else{
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    });
+});
+
+const observer = new IntersectionObserver((entries)=>{
+    entries.forEach((entry)=>{
+        if(entry.isIntersecting){
+            entry.target.classList.add("show");
+        }
+    });
+});
+const hiddenElements = document.querySelectorAll(".hidden");
+hiddenElements.forEach((el)=>observer.observe(el));
+
+document.querySelectorAll('.creature img').forEach(img=>{
+ const wrap=document.createElement('div');
+ wrap.className='image-wrap';
+ img.parentNode.insertBefore(wrap,img);
+ wrap.appendChild(img);
+
+ const tools=document.createElement('div');
+ tools.className='img-tools';
+
+ const r=document.createElement('button');
+ r.className='img-tool-btn';
+ r.innerHTML='🔄';
+
+ const s=document.createElement('button');
+ s.className='img-tool-btn';
+ s.innerHTML='🌐';
+
+ tools.appendChild(r);
+ tools.appendChild(s);
+ wrap.appendChild(tools);
+
+ const original=(img.src.split('/300/')[1]||'kingfisher').split('?')[0];
+
+ r.onclick=(e)=>{
+   e.stopPropagation();
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+Date.now();
+ };
+
+ s.onclick=(e)=>{
+   e.stopPropagation();
+   window.open('https://commons.wikimedia.org/w/index.php?search='+encodeURIComponent(original),'_blank');
+ };
+
+ img.onerror=()=>{
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+(Date.now()+1);
+ };
+});
+
+</script>
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('img').forEach((img,i)=>{
+   if(img.src.includes('loremflickr.com')){
+      const base=img.src.split('?')[0];
+      img.src=base+'?lock='+(Date.now()+i);
+   }
+ });
+});
+</script>
+
+<script>
+document.querySelectorAll('img').forEach(img=>{
+  img.onerror=function(){
+    this.onerror=null;
+    this.src='https://loremflickr.com/400/300/kingfisher?lock='+Date.now();
+  };
+});
+</script>
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.image-wrap').forEach(w=>{
+   const tools=w.querySelector('.img-tools');
+   const card=w.closest('.creature');
+   const title=card ? card.querySelector('.creature-body h3') : null;
+   if(tools && title){
+      title.insertAdjacentElement('afterend', tools);
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.padding='0';
+      tools.style.background='transparent';
+      tools.style.verticalAlign='middle';
+   }
+ });
+});
+</script>
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const title=card.querySelector('.creature-body h3');
+   const tools=card.querySelector('.img-tools');
+   if(title && tools){
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.verticalAlign='middle';
+      tools.style.background='transparent';
+      tools.style.padding='0';
+      tools.style.position='static';
+
+      title.appendChild(tools);
+   }
+ });
+});
+</script>
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.taxonomy-header .left img').forEach(img=>{
+   if(img.parentElement.querySelector('.header-tools')) return;
+
+   const tools=document.createElement('div');
+   tools.className='header-tools';
+   tools.style.display='flex';
+   tools.style.justifyContent='center';
+   tools.style.gap='6px';
+   tools.style.marginTop='4px';
+
+   const r=document.createElement('button');
+   r.textContent='🔄';
+
+   const g=document.createElement('button');
+   g.textContent='🌐';
+
+   r.onclick=(e)=>{
+      e.stopPropagation();
+      img.src=img.src.split('?')[0]+'?v='+Date.now();
+   };
+
+   g.onclick=(e)=>{
+      e.stopPropagation();
+      const q=img.alt || 'kingfisher';
+      window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+
+   const wrap=document.createElement('div');
+   wrap.style.display='flex';
+   wrap.style.flexDirection='column';
+   wrap.style.alignItems='center';
+
+   img.parentNode.insertBefore(wrap,img);
+   wrap.appendChild(img);
+   wrap.appendChild(tools);
+   tools.appendChild(r);
+   tools.appendChild(g);
+ });
+});
+</script>
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+
+document.querySelectorAll('.header-tools button:last-child').forEach(btn=>{
+ btn.onclick=(e)=>{
+  e.stopPropagation();
+  const card=btn.closest('.taxonomy-card');
+  const q=[
+   card?.querySelector('.rank')?.innerText||'',
+   card?.querySelector('.name')?.innerText||'',
+   card?.querySelector('.scientific')?.innerText||''
+  ].join(' ');
+  window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+ };
+});
+
+document.querySelectorAll('.creature').forEach(card=>{
+ const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+ if(globe){
+   globe.onclick=(e)=>{
+    e.stopPropagation();
+    const q=(card.querySelector('h3')?.innerText||'')+' '+(card.querySelector('p')?.innerText||'');
+    window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+ }
+});
+
+});
+</script>
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+   if(!globe) return;
+
+   globe.onclick=(e)=>{
+     e.stopPropagation();
+
+     const titleNode = card.querySelector('h3');
+     let title='';
+     if(titleNode){
+       title=(titleNode.childNodes[0]?.textContent || titleNode.textContent || '').trim();
+       title=title.replace('🔄','').replace('🌐','').trim();
+     }
+
+     const desc=(card.querySelector('p')?.innerText || '').trim();
+
+     const taxonomyCard=card.closest('.taxonomy-card');
+     const rank=(taxonomyCard?.querySelector('.rank')?.innerText || '').trim();
+     const taxonomyName=(taxonomyCard?.querySelector('.name')?.innerText || '').trim();
+
+     const query=(rank+' '+taxonomyName+' '+title+' '+desc).replace(/\s+/g,' ').trim();
+
+     window.open(
+       'https://www.google.com/search?tbm=isch&q='+encodeURIComponent(query),
+       '_blank'
+     );
+   };
+ });
+});
+</script>
+
+</body>
+</html>

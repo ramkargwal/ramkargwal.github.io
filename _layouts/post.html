@@ -1,0 +1,59 @@
+---
+layout: default
+---
+<div class="header">
+  <h1>⚡ {{ page.title }}</h1>
+  <p>{{ page.description }}</p>
+</div>
+
+<div class="content">
+  <div class="toolbar">
+    <div class="language">{{ page.language | default: "AutoHotkey v2" }}</div>
+    <div class="buttons">
+      <button class="copy-btn" onclick="copyCode()">📋 Copy Code</button>
+      <button class="download-btn" onclick="downloadAHK()">⬇ Download .AHK</button>
+    </div>
+  </div>
+
+  <div class="code-container">
+    <div class="code-header">
+      <div class="file-name" id="script-filename">{{ page.filename }}</div>
+      <div class="dots">
+        <div class="dot red"></div>
+        <div class="dot yellow"></div>
+        <div class="dot green"></div>
+      </div>
+    </div>
+    <pre id="code">{{ content | escape }}</pre>
+  </div>
+</div>
+
+<div class="footer">
+  📅 दिनांक: {{ page.date | date: "%d-%m-%Y" }} 
+  {% if page.categories.size > 0 %} | 📁 कैटेगरी: {{ page.categories | join: ", " }} {% endif %}
+  {% if page.subcategories %} | 🏷️ सब-कैटेगरी: {{ page.subcategories }} {% endif %}
+</div>
+
+<script>
+  const fileName = "{{ page.filename }}";
+
+  function copyCode() {
+    const codeText = document.getElementById("code").innerText;
+    navigator.clipboard.writeText(codeText)
+      .then(() => {
+        alert("AHK Code Copied Successfully!");
+      });
+  }
+
+  function downloadAHK() {
+    const codeText = document.getElementById("code").innerText;
+    const blob = new Blob([codeText], { type: "text/plain" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  }
+</script>

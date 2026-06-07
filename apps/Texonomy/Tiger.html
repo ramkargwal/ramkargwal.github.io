@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tiger Taxonomy Explorer - Detailed</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================   BASIC========================= */
+*{margin:0; padding:0; box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{    font-family:'Poppins',sans-serif;    background:linear-gradient(to bottom right,#fff8fb,#eef5ff,#ffffff);    color:#1c2430; overflow-x:hidden;}
+
+/* =========================   HERO========================= */
+.hero{    display:flex; align-items:center;    justify-content:center; flex-direction:column;    text-align:center; padding:40px 20px;    position:relative; overflow:hidden;}
+.hero::before, .hero::after{    content:""; position:absolute;    border-radius:50%;}
+.hero::before{    width:700px; height:700px; top:-250px; left:-200px;    background:radial-gradient(circle,#ff993355,transparent 70%);    animation:float1 8s ease-in-out infinite;}
+.hero::after{    width:600px; height:600px; bottom:-250px; right:-200px;    background:radial-gradient(circle,#33333344,transparent 70%);    animation:float2 10s ease-in-out infinite;}
+@keyframes float1{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(30px);} }
+@keyframes float2{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(-30px);} }
+.hero h1{    font-size:70px; font-weight:700; z-index:2;    background:linear-gradient(to right,#ff7b00,#cc5200);    -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+.hero p{    margin-top:20px; font-size:20px; color:#5c6773;    max-width:1200px; line-height:1.8; z-index:2;}
+
+/* =========================   CONTAINER & CARDS========================= */
+.container{ width:95%; max-width:1250px; margin:auto; padding-bottom:80px; }
+.taxonomy-card{    background:white; margin-bottom:30px; border-radius:30px;    overflow:hidden; border:1px solid #dde8f5;    box-shadow:0 10px 30px rgba(0,0,0,0.05); transition:0.5s;}
+.taxonomy-card:hover{ transform:translateY(-6px); box-shadow:0 18px 40px rgba(0,0,0,0.08); }
+.taxonomy-header{    padding:25px; display:flex; align-items:center;    justify-content:space-between; cursor:pointer; transition:0.3s;}
+.taxonomy-header:hover{ background:#fff3e6; }
+.left{ display:flex; align-items:center; gap:22px; }
+.left img{    width:95px; height:95px; border-radius:24px;    object-fit:cover; border:4px solid #fff0e6; transition:0.4s;}
+.taxonomy-card:hover .left img{ transform:scale(1.05) rotate(2deg); }
+.rank{ font-size:13px; text-transform:uppercase; letter-spacing:3px; color:#cc5200; font-weight:600; }
+.name{ font-size:34px; font-weight:700; margin-top:4px; }
+.scientific{ margin-top:7px; color:#637082; font-size:16px; }
+.arrow{ font-size:38px; color:#cc5200; transition:0.5s; }
+.taxonomy-card.active .arrow{ transform:rotate(180deg); }
+
+/* =========================   CONTENT & DETAILED DESC========================= */
+.content{ max-height:0; overflow:hidden; transition:max-height 0.8s ease; }
+.content-inner{ padding:35px; border-top:1px solid #edf3fa; }
+
+.detailed-desc {    background: #fffaf5;    padding: 25px;    border-radius: 20px;    border-left: 5px solid #cc5200;    margin-bottom: 35px;}
+.desc-item {    margin-bottom: 18px;}
+.desc-item:last-child {    margin-bottom: 0;}
+.desc-label {    display: block;    font-size: 17px;    font-weight: 600;    color: #993d00;    margin-bottom: 5px;}
+.desc-text {    font-size: 16px;    line-height: 1.8;    color: #465260;}
+
+.section-title{ font-size:30px; margin-bottom:25px; color:#993d00; }
+
+/* =========================   GRID & CREATURES========================= */
+.creatures{    display:grid; gap:25px;    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));}
+.creature{    background:#ffffff; border-radius:20px; overflow:hidden;    border:1px solid #e8eef7; transition:0.5s;}
+.creature:hover{ transform:translateY(-10px) scale(1.02); box-shadow:0 15px 30px rgba(0,0,0,0.08); }
+.creature img{ width:100%; height:160px; object-fit:cover; transition:0.5s; }
+.creature:hover img{ transform:scale(1.08); }
+.creature-body{ padding:15px; }
+.creature h3{ font-size:18px; margin-bottom:8px; color: #1c2430;}
+.creature p{ color:#66717d; line-height:1.5; font-size:14px; }
+
+/* =========================   UTILITIES========================= */
+.hidden{ opacity:0; transform:translateY(50px); transition:all 1s; }
+.show{ opacity:1; transform:translateY(0px); }
+footer{ padding:40px 20px; text-align:center; color:#607080; font-size:15px; }
+
+@media(max-width:800px){    .hero h1{font-size:44px;} .hero p{font-size:17px;}    .name{font-size:26px;} .left{align-items:flex-start;}    .left img{width:75px; height:75px;}    .taxonomy-header{padding:20px;} .content-inner{padding:25px;}}
+
+.image-wrap{position:relative;display:flex;flex-direction:column}
+.img-tools{position:static;display:flex;gap:6px;justify-content:center;padding:8px 0;background:#fff}
+.img-tool-btn{border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;background:rgba(255,255,255,.9)}
+</style>
+
+<style>
+.header-tools button,.img-tool-btn,.img-tools button{
+border:none!important;
+outline:none!important;
+background:transparent!important;
+box-shadow:none!important;
+padding:0!important;
+cursor:pointer;
+font-size:20px;
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+    <h1>Tiger Taxonomy</h1>
+    <p>बाघ (Tiger) की पूरी जैविक वर्गीकरण प्रणाली को गहराई से जानिए। हर स्तर पर क्लिक करें और वैज्ञानिक कारण (Reasoning) व उदाहरणों के साथ समझें कि बाघ को उस स्तर में क्यों रखा गया है।</p>
+</section>
+
+<div class="container">
+
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/eukarya?lock=1" alt="Domain">
+            <div>
+                <div class="rank">Domain (डोमेन)</div><div class="name">Eukarya</div>
+                <div class="scientific"><strong>जटिल कोशिका वाले जीव -> </strong>Eukarya में वे सभी जीव आते हैं जिनकी कोशिकाओं में स्पष्ट केंद्रक (nucleus) होता है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस डोमेन में पृथ्वी के वे सभी जीव आते हैं जिनकी कोशिकाओं (cells) में एक स्पष्ट और झिल्लीदार केंद्रक (membrane-bound nucleus) होता है। इसमें पौधे, जानवर, कवक (fungi) और प्रोटिस्ट शामिल हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी कोशिकाओं की संरचना बहुत जटिल (complex cell structure) होती है। इनका आनुवंशिक पदार्थ यानी डीएनए (DNA) केंद्रक के अंदर सुरक्षित रहता है और इनकी कोशिकाओं में विभिन्न अंगक (organelles) होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: बाघ को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">बाघ का शरीर अरबों जटिल कोशिकाओं (eukaryotic cells) से बना है। इसकी हर कोशिका के अंदर स्पष्ट केंद्रक (nucleus) और अन्य कोशिका अंगक मौजूद होते हैं, इसीलिए इसे Eukarya डोमेन का हिस्सा माना जाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Eukarya के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/tiger"><div class="creature-body"><h3>बाघ</h3><p>जंगल का सबसे शानदार शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/human"><div class="creature-body"><h3>इंसान</h3><p>सबसे बुद्धिमान प्राणी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog"><div class="creature-body"><h3>कुत्ता</h3><p>वफादार और समझदार जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tree"><div class="creature-body"><h3>पेड़ (पौधे)</h3><p>प्रकाश संश्लेषण करने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mushroom"><div class="creature-body"><h3>मशरूम</h3><p>फंगस जगत का सदस्य।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bird"><div class="creature-body"><h3>पक्षी</h3><p>आसमान में उड़ने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/fish"><div class="creature-body"><h3>मछली</h3><p>पानी में रहने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog"><div class="creature-body"><h3>मेंढक</h3><p>उभयचर (Amphibian) जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/butterfly"><div class="creature-body"><h3>तितली</h3><p>रंगीन और सुंदर कीट।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/rose"><div class="creature-body"><h3>गुलाब</h3><p>फूलों वाला सुंदर पौधा।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/animal?lock=2" alt="Kingdom">
+            <div>
+                <div class="rank">Kingdom (जगत)</div><div class="name">Animalia</div>
+                <div class="scientific"><strong>जंतु जगत -> </strong>Animalia kingdom में वे जीव आते हैं जो अपना भोजन स्वयं नहीं बनाते।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस जगत में सभी बहुकोशिकीय (multicellular) जंतु आते हैं। इस समूह के जीव अपना भोजन खुद नहीं बना सकते (पौधों की तरह) बल्कि भोजन के लिए दूसरे जीवों पर निर्भर रहते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">ये परपोषी (heterotrophic) होते हैं। इनकी कोशिकाओं के बाहर पौधों जैसी कठोर कोशिका भित्ति (cell wall) नहीं होती है। इस जगत के अधिकांश जीव अपने जीवन के किसी न किसी चरण में स्वेच्छा से गति (movement) कर सकते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: बाघ को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">बाघ एक बहुकोशिकीय जीव है जो अपना भोजन स्वयं (प्रकाश संश्लेषण से) नहीं बना सकता। यह भोजन के लिए अन्य जानवरों का शिकार करता है। इसमें अपनी मर्जी से चलने-फिरने की क्षमता है, अतः यह पूर्ण रूप से एक जंतु (Animal) है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Animalia के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/tiger,hunting"><div class="creature-body"><h3>बाघ</h3><p>मांस खाने वाला शक्तिशाली जंतु।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lion"><div class="creature-body"><h3>शेर</h3><p>जंगल का शक्तिशाली राजा।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant"><div class="creature-body"><h3>हाथी</h3><p>सबसे बड़ा स्थलीय जानवर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark"><div class="creature-body"><h3>शार्क</h3><p>समुद्र का खतरनाक शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle"><div class="creature-body"><h3>गरुड़ (Eagle)</h3><p>तेज़ नज़र वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/spider"><div class="creature-body"><h3>मकड़ी</h3><p>जाल बुनने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake"><div class="creature-body"><h3>सांप</h3><p>रेंगने वाला विषैला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dolphin"><div class="creature-body"><h3>डॉल्फिन</h3><p>समुद्री बुद्धिमान जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bear"><div class="creature-body"><h3>भालू</h3><p>विशालकाय जंगली जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/penguin"><div class="creature-body"><h3>पेंगुइन</h3><p>बर्फ में रहने वाला पक्षी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/vertebrate?lock=3" alt="Phylum">
+            <div>
+                <div class="rank">Phylum (संघ)</div><div class="name">Chordata</div>
+                <div class="scientific"><strong>रज्जुकी संघ -> </strong>Chordata समूह के जीवों में रीढ़ की हड्डी होती है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस संघ में वे जीव आते हैं जिनके शरीर में जीवन के किसी न किसी चरण में नोटोकॉर्ड (notochord) या रीढ़ की हड्डी मौजूद होती है। इनमें मछलियां, पक्षी, सरीसृप (reptiles) और स्तनधारी आते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इस समूह के जीवों में एक विकसित केंद्रीय तंत्रिका तंत्र (central nervous system), शरीर को सहारा देने वाली रीढ़ की हड्डी (vertebral column), और शरीर के पिछले हिस्से में पूंछ (post-anal tail) का होना प्रमुख लक्षण है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: बाघ को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">बाघ के शरीर में एक बहुत मजबूत और लचीली रीढ़ की हड्डी (backbone) होती है जो उसके नर्वस सिस्टम की रक्षा करती है। इसके अलावा, संतुलन बनाने और संवाद के लिए इसके पास एक लंबी पूंछ (tail) होती है, इसीलिए इसे कॉर्डेटा संघ में रखा गया है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Chordata के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/tiger,skeleton"><div class="creature-body"><h3>बाघ</h3><p>रीढ़ की हड्डी वाला बड़ा शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog,animal"><div class="creature-body"><h3>कुत्ता</h3><p>रीढ़ की हड्डी वाला वफादार जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/monkey"><div class="creature-body"><h3>बंदर</h3><p>पेड़ों पर कूदने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/whale"><div class="creature-body"><h3>व्हेल</h3><p>समुद्र का विशाल जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle,bird"><div class="creature-body"><h3>चील</h3><p>आसमान का शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake,animal"><div class="creature-body"><h3>सांप</h3><p>अत्यधिक लचीली रीढ़ वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog,animal"><div class="creature-body"><h3>मेंढक</h3><p>जमीन और पानी दोनों में रहने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark,fish"><div class="creature-body"><h3>शार्क</h3><p>कार्टिलेज से बनी रीढ़ वाली मछली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/turtle"><div class="creature-body"><h3>कछुआ</h3><p>खोल (Shell) के अंदर रीढ़ वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/horse"><div class="creature-body"><h3>घोड़ा</h3><p>तेज़ दौड़ने वाला रीढ़धारी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/mammal?lock=4" alt="Class">
+            <div>
+                <div class="rank">Class (वर्ग)</div><div class="name">Mammalia</div>
+                <div class="scientific"><strong>स्तनधारी वर्ग -> </strong>Mammalia वर्ग के जीव अपने बच्चों को दूध पिलाते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस वर्ग में वे सभी जीव आते हैं जो अंडे देने के बजाय सीधे बच्चों को जन्म देते हैं (कुछ अपवादों को छोड़कर) और उन्हें अपना दूध पिलाकर पालते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">मादाओं में स्तन ग्रंथियां (mammary glands) होती हैं जिनसे नवजात के पोषण के लिए दूध निकलता है। इनके शरीर पर बाल या रोएं (hair/fur) पाए जाते हैं, और ये गर्म खून वाले (warm-blooded) जीव होते हैं जो अपने शरीर का तापमान नियंत्रित रख सकते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: बाघ को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">मादा बाघ (Tigress) शावकों (Cubs) को जन्म देती है और शुरुआती महीनों में उन्हें अपना दूध पिलाकर पालती है। बाघ के शरीर पर बालों (Fur) का मोटा कोट होता है और यह एक गर्म खून वाला जानवर है, इसलिए यह एक स्तनधारी (Mammal) है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Mammalia के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/tiger,cub"><div class="creature-body"><h3>बाघ</h3><p>भारत का राष्ट्रीय स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lioness"><div class="creature-body"><h3>शेरनी</h3><p>बच्चों को पालने वाली बड़ी बिल्ली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,wild"><div class="creature-body"><h3>हाथी</h3><p>सबसे भारी स्थलीय स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/whale,ocean"><div class="creature-body"><h3>ब्लू व्हेल</h3><p>पानी में रहने वाली स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/human,face"><div class="creature-body"><h3>इंसान</h3><p>सामाजिक स्तनधारी प्राणी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bat"><div class="creature-body"><h3>चमगादड़</h3><p>उड़ने वाला एकमात्र स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/kangaroo"><div class="creature-body"><h3>कंगारू</h3><p>पाउच (Pouch) वाला स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bear,wild"><div class="creature-body"><h3>भालू</h3><p>घने बालों वाला स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dolphin,sea"><div class="creature-body"><h3>डॉल्फिन</h3><p>समुद्री बुद्धिमान स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cow"><div class="creature-body"><h3>गाय</h3><p>दूध देने वाली घरेलू स्तनधारी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/carnivore?lock=5" alt="Order">
+            <div>
+                <div class="rank">Order (गण)</div><div class="name">Carnivora</div>
+                <div class="scientific"><strong>मांसाहारी गण -> </strong> Carnivora समूह में मांस खाने वाले शिकारी जीव आते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस गण (Order) में ऐसे जीव आते हैं जो मुख्य रूप से अन्य जानवरों का शिकार करते हैं और मांस खाते हैं। इसमें शेर, बाघ, भेड़िये, कुत्ते, बिल्लियाँ और भालू जैसे जीव शामिल हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी सबसे बड़ी पहचान इनके नुकीले और मजबूत कैनाइन (canine) दांत और मांस को फाड़ने के लिए विशेष रूप से विकसित कार्नेशियल (carnassial) दांत होते हैं। इनके जबड़े बहुत मजबूत होते हैं और इनका पाचन तंत्र मांस पचाने के लिए अनुकूलित होता है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: बाघ को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">बाघ एक "सुपर प्रीडेटर" (Apex predator) है। यह केवल मांस खाता है (obligate carnivore)। शिकार को पकड़ने और मारने के लिए इसके लंबे और बेहद धारदार दांत होते हैं, इसलिए इसे Carnivora गण में रखा गया है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Carnivora के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/tiger,teeth"><div class="creature-body"><h3>बाघ</h3><p>नुकीले दांतों वाला मुख्य मांसाहारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lion"><div class="creature-body"><h3>शेर (Lion)</h3><p>झुंड में शिकार करने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/wolf"><div class="creature-body"><h3>भेड़िया (Wolf)</h3><p>जंगली मांसाहारी कुत्ता प्रजाति।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/hyena"><div class="creature-body"><h3>लकड़बग्घा (Hyena)</h3><p>मजबूत जबड़े वाला शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cheetah"><div class="creature-body"><h3>चीता (Cheetah)</h3><p>ज़मीन पर सबसे तेज़ दौड़ने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/leopard"><div class="creature-body"><h3>तेंदुआ (Leopard)</h3><p>पेड़ पर शिकार ले जाने में माहिर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/fox"><div class="creature-body"><h3>लोमड़ी (Fox)</h3><p>चालाक मांसाहारी जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/polarbear"><div class="creature-body"><h3>ध्रुवीय भालू</h3><p>बर्फ में शिकार करने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mongoose"><div class="creature-body"><h3>नेवला (Mongoose)</h3><p>सांपों का शिकार करने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/wilddog"><div class="creature-body"><h3>जंगली कुत्ता</h3><p>बेहतरीन स्टैमिना वाला शिकारी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/feline?lock=6" alt="Family">
+            <div>
+                <div class="rank">Family (कुल)</div><div class="name">Felidae</div>
+                <div class="scientific"><strong>बिल्ली कुल -> </strong> Felidae परिवार में सभी प्रकार की जंगली और घरेलू बिल्लियां आती हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस परिवार में छोटी घरेलू बिल्लियों से लेकर जंगल के बड़े शिकारी (जैसे शेर, बाघ, जगुआर) तक शामिल होते हैं। इन्हें 'फेलिड्स' (Felids) या बिल्लियां कहा जाता है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनका शरीर बहुत लचीला होता है। इनके पंजों में वापस अंदर छिप जाने वाले (retractable) नाखून होते हैं (चीता को छोड़कर)। इनकी आंखें रात में देखने के लिए बहुत अच्छी तरह विकसित होती हैं और ये छिपकर (stalking) शिकार करने में माहिर होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: बाघ को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">बाघ का शारीरिक ढांचा, इसके पंजों के गद्देदार तलवे (जिससे यह बिना आवाज़ किए चलता है), अंदर छिपने वाले नाखून और छिपकर वार करने की तकनीक इसे पूरी तरह से Felidae (बिल्ली) परिवार का सदस्य बनाती है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Felidae के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/tiger,wild"><div class="creature-body"><h3>बाघ (Tiger)</h3><p>सबसे बड़ी बिल्ली प्रजाति।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lion,wild"><div class="creature-body"><h3>शेर (Lion)</h3><p>अयाल (Mane) वाली बड़ी बिल्ली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/jaguar"><div class="creature-body"><h3>जगुआर (Jaguar)</h3><p>अमेरिका की सबसे बड़ी बिल्ली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/leopard,wild"><div class="creature-body"><h3>तेंदुआ (Leopard)</h3><p>रोसेट पैटर्न वाली फुर्तीली बिल्ली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snowleopard"><div class="creature-body"><h3>हिम तेंदुआ (Snow Leopard)</h3><p>पहाड़ों की 'घोस्ट' कैट।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/puma"><div class="creature-body"><h3>प्यूमा (Puma/Cougar)</h3><p>माउंटेन लायन के नाम से मशहूर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cheetah,wild"><div class="creature-body"><h3>चीता (Cheetah)</h3><p>रफ़्तार की महारथी बिल्ली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lynx"><div class="creature-body"><h3>लिंक्स (Lynx)</h3><p>कानों पर बालों के गुच्छे वाली बिल्ली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/ocelot"><div class="creature-body"><h3>ओसेलॉट (Ocelot)</h3><p>सुंदर धब्बों वाली छोटी जंगली बिल्ली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cat"><div class="creature-body"><h3>घरेलू बिल्ली</h3><p>इंसानों के साथ रहने वाली छोटी फेलिड।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/panthera?lock=7" alt="Genus">
+            <div>
+                <div class="rank">Genus (वंश)</div><div class="name">Panthera</div>
+                <div class="scientific"><strong>दहाड़ने वाली बिल्लियां -> </strong> Panthera वंश में वे बड़ी बिल्लियां शामिल हैं जो दहाड़ सकती हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">Panthera वंश में दुनिया की केवल पांच सबसे बड़ी बिल्लियां आती हैं: शेर, बाघ, जगुआर, तेंदुआ और हिम तेंदुआ।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इस वंश की सबसे बड़ी खासियत यह है कि इन जानवरों के गले की हड्डी (hyoid bone) आंशिक रूप से कार्टिलेज की बनी होती है, जो इन्हें बहुत तेज़ आवाज़ में दहाड़ने (Roar) की क्षमता देती है (हिम तेंदुए को छोड़कर)।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: बाघ को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">बाघ एक बहुत विशाल बिल्ली है जिसकी दहाड़ कई किलोमीटर दूर तक सुनी जा सकती है। इसके गले की विशिष्ट शारीरिक बनावट और विशाल आकार इसे 'Panthera' वंश का प्रमुख सदस्य बनाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Panthera के मुख्य प्रकार और विशेषताएं</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/lion,roaring"><div class="creature-body"><h3>शेर (Panthera leo)</h3><p>सवाना का राजा, जो झुंड (Pride) में रहता है।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tiger,roaring"><div class="creature-body"><h3>बाघ (Panthera tigris)</h3><p>सबसे बड़ी और भारी पैंथेरा प्रजाति।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/jaguar,jungle"><div class="creature-body"><h3>जगुआर (Panthera onca)</h3><p>सबसे शक्तिशाली बाइट फोर्स (Bite force) वाली पैंथेरा।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/leopard,tree"><div class="creature-body"><h3>तेंदुआ (Panthera pardus)</h3><p>सबसे अच्छी चढ़ाई करने वाली पैंथेरा।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snowleopard,mountain"><div class="creature-body"><h3>हिम तेंदुआ (Panthera uncia)</h3><p>पहाड़ों की पैंथेरा (यह दहाड़ नहीं सकती)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/roar"><div class="creature-body"><h3>दहाड़ (Roar)</h3><p>विरोधियों को डराने के लिए तेज़ आवाज़।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tiger,swimming"><div class="creature-body"><h3>पानी का प्रेम</h3><p>बाघ और जगुआर बेहतरीन तैराक होते हैं।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tiger,paws"><div class="creature-body"><h3>शक्तिशाली पंजे</h3><p>एक झटके में शिकार को गिराने की ताकत।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/camouflage"><div class="creature-body"><h3>छलावरण (Camouflage)</h3><p>जंगल और घास में छिपने के पैटर्न।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tiger,eyes"><div class="creature-body"><h3>रात्रि दृष्टि</h3><p>इंसानों से 6 गुना बेहतर रात में देखने की क्षमता।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/bengaltiger?lock=8" alt="Species">
+            <div>
+                <div class="rank">Species (प्रजाति)</div><div class="name">Panthera tigris</div>
+                <div class="scientific"><strong>बाघ -> </strong> यह नारंगी कोट और काली धारियों वाला विशिष्ट शिकारी है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">यह वर्गीकरण का अंतिम और सबसे सटीक स्तर है। इसमें विशेष रूप से 'बाघ' (Tiger) प्रजाति आती है, जिसे इसके विशिष्ट डीएनए और शारीरिक बनावट के कारण शेर या तेंदुए से अलग माना जाता है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी मुख्य विशेषता इनके नारंगी या लाल-भूरे शरीर पर मौजूद गहरी काली धारियां (Dark stripes) होती हैं। इंसानों के फिंगरप्रिंट की तरह, हर बाघ की धारियों का पैटर्न बिल्कुल अलग होता है। ये एकांतप्रिय (Solitary) होते हैं और अपना इलाका बनाते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: बाघ को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">इसकी अनुवांशिकी (Genetics), धारियों वाला विशेष कोट, भारी वजन और इसका प्राकृतिक आवास (मुख्य रूप से एशिया के जंगल) इसे विज्ञान में <strong>'Panthera tigris'</strong> के रूप में एक अलग और विशिष्ट प्रजाति बनाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Panthera tigris (बाघ) की उप-प्रजातियां व 10 खास बातें</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/bengal,tiger"><div class="creature-body"><h3>बंगाल टाइगर</h3><p>भारत में पाई जाने वाली सबसे आम उप-प्रजाति।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/siberian,tiger"><div class="creature-body"><h3>साइबेरियन टाइगर</h3><p>रूस में मिलने वाला सबसे बड़ा बाघ।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sumatran,tiger"><div class="creature-body"><h3>सुमात्रा टाइगर</h3><p>सबसे छोटा, इंडोनेशिया के सुमात्रा द्वीप पर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/malayan,tiger"><div class="creature-body"><h3>मलयन टाइगर</h3><p>मलेशियाई प्रायद्वीप की उप-प्रजाति।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/indochinese,tiger"><div class="creature-body"><h3>इंडोचाइनीज टाइगर</h3><p>दक्षिण-पूर्व एशिया के घने जंगलों में।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/white,tiger"><div class="creature-body"><h3>सफेद बाघ (White Tiger)</h3><p>यह अलग प्रजाति नहीं, बल्कि जेनेटिक म्यूटेशन है।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tiger,stripes"><div class="creature-body"><h3>अनोखी धारियां</h3><p>हर बाघ की धारियों का पैटर्न फिंगरप्रिंट जैसा अलग होता है।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tiger,territory"><div class="creature-body"><h3>इलाका (Territory)</h3><p>पेशाब और पेड़ों पर खरोंच से अपना इलाका मार्क करना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tiger,night"><div class="creature-body"><h3>रात का शिकारी</h3><p>ज्यादातर शिकार शाम ढलने के बाद या रात में।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tiger,conservation"><div class="creature-body"><h3>संकटग्रस्त (Endangered)</h3><p>अवैध शिकार और जंगलों के कटने से खतरे में।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<footer>Beautiful Detailed Taxonomy Explorer (Tiger Edition)</footer>
+
+<script>
+const cards = document.querySelectorAll(".taxonomy-card");
+cards.forEach(card=>{
+    const header = card.querySelector(".taxonomy-header");
+    header.addEventListener("click",()=>{
+        card.classList.toggle("active");
+        const content = card.querySelector(".content");
+        if(content.style.maxHeight){
+            content.style.maxHeight = null;
+        }else{
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    });
+});
+
+const observer = new IntersectionObserver((entries)=>{
+    entries.forEach((entry)=>{
+        if(entry.isIntersecting){
+            entry.target.classList.add("show");
+        }
+    });
+});
+const hiddenElements = document.querySelectorAll(".hidden");
+hiddenElements.forEach((el)=>observer.observe(el));
+
+document.querySelectorAll('.creature img').forEach(img=>{
+ const wrap=document.createElement('div');
+ wrap.className='image-wrap';
+ img.parentNode.insertBefore(wrap,img);
+ wrap.appendChild(img);
+
+ const tools=document.createElement('div');
+ tools.className='img-tools';
+
+ const r=document.createElement('button');
+ r.className='img-tool-btn';
+ r.innerHTML='🔄';
+
+ const s=document.createElement('button');
+ s.className='img-tool-btn';
+ s.innerHTML='🌐';
+
+ tools.appendChild(r);
+ tools.appendChild(s);
+ wrap.appendChild(tools);
+
+ const original=(img.src.split('/300/')[1]||'animal').split('?')[0];
+
+ r.onclick=(e)=>{
+   e.stopPropagation();
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+Date.now();
+ };
+
+ s.onclick=(e)=>{
+   e.stopPropagation();
+   window.open('https://commons.wikimedia.org/w/index.php?search='+encodeURIComponent(original),'_blank');
+ };
+
+ img.onerror=()=>{
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+(Date.now()+1);
+ };
+});
+
+
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('img').forEach((img,i)=>{
+   if(img.src.includes('loremflickr.com')){
+      const base=img.src.split('?')[0];
+      img.src=base+'?lock='+(Date.now()+i);
+   }
+ });
+});
+</script>
+
+
+<script>
+document.querySelectorAll('img').forEach(img=>{
+  img.onerror=function(){
+    this.onerror=null;
+    this.src='https://loremflickr.com/400/300/tiger?lock='+Date.now();
+  };
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.image-wrap').forEach(w=>{
+   const tools=w.querySelector('.img-tools');
+   const card=w.closest('.creature');
+   const title=card ? card.querySelector('.creature-body h3') : null;
+   if(tools && title){
+      title.insertAdjacentElement('afterend', tools);
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.padding='0';
+      tools.style.background='transparent';
+      tools.style.verticalAlign='middle';
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const title=card.querySelector('.creature-body h3');
+   const tools=card.querySelector('.img-tools');
+   if(title && tools){
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.verticalAlign='middle';
+      tools.style.background='transparent';
+      tools.style.padding='0';
+      tools.style.position='static';
+
+      title.appendChild(tools);
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.taxonomy-header .left img').forEach(img=>{
+   if(img.parentElement.querySelector('.header-tools')) return;
+
+   const tools=document.createElement('div');
+   tools.className='header-tools';
+   tools.style.display='flex';
+   tools.style.justifyContent='center';
+   tools.style.gap='6px';
+   tools.style.marginTop='4px';
+
+   const r=document.createElement('button');
+   r.textContent='🔄';
+
+   const g=document.createElement('button');
+   g.textContent='🌐';
+
+   r.onclick=(e)=>{
+      e.stopPropagation();
+      img.src=img.src.split('?')[0]+'?v='+Date.now();
+   };
+
+   g.onclick=(e)=>{
+      e.stopPropagation();
+      const q=img.alt || 'animal';
+      window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+
+   const wrap=document.createElement('div');
+   wrap.style.display='flex';
+   wrap.style.flexDirection='column';
+   wrap.style.alignItems='center';
+
+   img.parentNode.insertBefore(wrap,img);
+   wrap.appendChild(img);
+   wrap.appendChild(tools);
+   tools.appendChild(r);
+   tools.appendChild(g);
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+
+document.querySelectorAll('.header-tools button:last-child').forEach(btn=>{
+ btn.onclick=(e)=>{
+  e.stopPropagation();
+  const card=btn.closest('.taxonomy-card');
+  const q=[
+   card?.querySelector('.rank')?.innerText||'',
+   card?.querySelector('.name')?.innerText||'',
+   card?.querySelector('.scientific')?.innerText||''
+  ].join(' ');
+  window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+ };
+});
+
+document.querySelectorAll('.creature').forEach(card=>{
+ const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+ if(globe){
+   globe.onclick=(e)=>{
+    e.stopPropagation();
+    const q=(card.querySelector('h3')?.innerText||'')+' '+(card.querySelector('p')?.innerText||'');
+    window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+ }
+});
+
+});
+</script>
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+   if(!globe) return;
+
+   globe.onclick=(e)=>{
+     e.stopPropagation();
+
+     const titleNode = card.querySelector('h3');
+     let title='';
+     if(titleNode){
+       title=(titleNode.childNodes[0]?.textContent || titleNode.textContent || '').trim();
+       title=title.replace('🔄','').replace('🌐','').trim();
+     }
+
+     const desc=(card.querySelector('p')?.innerText || '').trim();
+
+     const taxonomyCard=card.closest('.taxonomy-card');
+     const rank=(taxonomyCard?.querySelector('.rank')?.innerText || '').trim();
+     const taxonomyName=(taxonomyCard?.querySelector('.name')?.innerText || '').trim();
+
+     const query=(rank+' '+taxonomyName+' '+title+' '+desc).replace(/\s+/g,' ').trim();
+
+     window.open(
+       'https://www.google.com/search?tbm=isch&q='+encodeURIComponent(query),
+       '_blank'
+     );
+   };
+ });
+});
+</script>
+
+</body>
+</html>

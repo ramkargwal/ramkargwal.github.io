@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pigeon Taxonomy Explorer - Detailed</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================   BASIC========================= */
+*{margin:0; padding:0; box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{    font-family:'Poppins',sans-serif;    background:linear-gradient(to bottom right,#f4f6f9,#e2e8f0,#ffffff);    color:#1c2430; overflow-x:hidden;}
+
+/* =========================   HERO========================= */
+.hero{    display:flex; align-items:center;    justify-content:center; flex-direction:column;    text-align:center; padding:40px 20px;    position:relative; overflow:hidden;}
+.hero::before, .hero::after{    content:""; position:absolute;    border-radius:50%;}
+.hero::before{    width:700px; height:700px; top:-250px; left:-200px;    background:radial-gradient(circle,#9b59b655,transparent 70%);    animation:float1 8s ease-in-out infinite;}
+.hero::after{    width:600px; height:600px; bottom:-250px; right:-200px;    background:radial-gradient(circle,#3498db44,transparent 70%);    animation:float2 10s ease-in-out infinite;}
+@keyframes float1{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(30px);} }
+@keyframes float2{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(-30px);} }
+.hero h1{    font-size:70px; font-weight:700; z-index:2;    background:linear-gradient(to right,#2c3e50,#8e44ad);    -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+.hero p{    margin-top:20px; font-size:20px; color:#5c6773;    max-width:1200px; line-height:1.8; z-index:2;}
+
+/* =========================   CONTAINER & CARDS========================= */
+.container{ width:95%; max-width:1250px; margin:auto; padding-bottom:80px; }
+.taxonomy-card{    background:white; margin-bottom:30px; border-radius:30px;    overflow:hidden; border:1px solid #dcdde1;    box-shadow:0 10px 30px rgba(0,0,0,0.05); transition:0.5s;}
+.taxonomy-card:hover{ transform:translateY(-6px); box-shadow:0 18px 40px rgba(0,0,0,0.08); }
+.taxonomy-header{    padding:25px; display:flex; align-items:center;    justify-content:space-between; cursor:pointer; transition:0.3s;}
+.taxonomy-header:hover{ background:#f8f9fa; }
+.left{ display:flex; align-items:center; gap:22px; }
+.left img{    width:95px; height:95px; border-radius:24px;    object-fit:cover; border:4px solid #e2e8f0; transition:0.4s;}
+.taxonomy-card:hover .left img{ transform:scale(1.05) rotate(2deg); }
+.rank{ font-size:13px; text-transform:uppercase; letter-spacing:3px; color:#8e44ad; font-weight:600; }
+.name{ font-size:34px; font-weight:700; margin-top:4px; }
+.scientific{ margin-top:7px; color:#637082; font-size:16px; }
+.arrow{ font-size:38px; color:#8e44ad; transition:0.5s; }
+.taxonomy-card.active .arrow{ transform:rotate(180deg); }
+
+/* =========================   CONTENT & DETAILED DESC========================= */
+.content{ max-height:0; overflow:hidden; transition:max-height 0.8s ease; }
+.content-inner{ padding:35px; border-top:1px solid #ecf0f1; }
+
+.detailed-desc {    background: #fdfdff;    padding: 25px;    border-radius: 20px;    border-left: 5px solid #2980b9;    margin-bottom: 35px;}
+.desc-item {    margin-bottom: 18px;}
+.desc-item:last-child {    margin-bottom: 0;}
+.desc-label {    display: block;    font-size: 17px;    font-weight: 600;    color: #2c3e50;    margin-bottom: 5px;}
+.desc-text {    font-size: 16px;    line-height: 1.8;    color: #465260;}
+
+.section-title{ font-size:30px; margin-bottom:25px; color:#2c3e50; }
+
+/* =========================   GRID & CREATURES========================= */
+.creatures{    display:grid; gap:25px;    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));}
+.creature{    background:#ffffff; border-radius:20px; overflow:hidden;    border:1px solid #e8eef7; transition:0.5s;}
+.creature:hover{ transform:translateY(-10px) scale(1.02); box-shadow:0 15px 30px rgba(0,0,0,0.08); }
+.creature img{ width:100%; height:160px; object-fit:cover; transition:0.5s; }
+.creature:hover img{ transform:scale(1.08); }
+.creature-body{ padding:15px; }
+.creature h3{ font-size:18px; margin-bottom:8px; color: #1c2430;}
+.creature p{ color:#66717d; line-height:1.5; font-size:14px; }
+
+/* =========================   UTILITIES========================= */
+.hidden{ opacity:0; transform:translateY(50px); transition:all 1s; }
+.show{ opacity:1; transform:translateY(0px); }
+footer{ padding:40px 20px; text-align:center; color:#607080; font-size:15px; }
+
+@media(max-width:800px){    .hero h1{font-size:44px;} .hero p{font-size:17px;}    .name{font-size:26px;} .left{align-items:flex-start;}    .left img{width:75px; height:75px;}    .taxonomy-header{padding:20px;} .content-inner{padding:25px;}}
+
+.image-wrap{position:relative;display:flex;flex-direction:column}
+.img-tools{position:static;display:flex;gap:6px;justify-content:center;padding:8px 0;background:#fff}
+.img-tool-btn{border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;background:rgba(255,255,255,.9)}
+
+</style>
+
+<style>
+.header-tools button,.img-tool-btn,.img-tools button{
+border:none!important;
+outline:none!important;
+background:transparent!important;
+box-shadow:none!important;
+padding:0!important;
+cursor:pointer;
+font-size:20px;
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+    <h1>Pigeon Taxonomy</h1>
+    <p>कबूतर (Pigeon) की पूरी जैविक वर्गीकरण (taxonomy) प्रणाली को गहराई से जानिए। हर स्तर (level) पर क्लिक करें और वैज्ञानिक कारण (Reasoning) व उदाहरणों के साथ समझें कि Pigeon को उस स्तर में क्यों रखा गया है।</p>
+</section>
+
+<div class="container">
+
+<!-- DOMAIN -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/eukarya?lock=1" alt="Domain">
+            <div>
+                <div class="rank">Domain</div><div class="name">Eukarya</div>
+                <div class="scientific"><strong>जटिल कोशिका वाले जीव -> </strong>Eukarya में वे सभी जीव आते हैं जिनकी कोशिकाओं में स्पष्ट nucleus होता है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Domain में पृथ्वी के वे सभी जीव आते हैं जिनकी कोशिकाओं (cells) में एक स्पष्ट और झिल्लीदार केंद्रक (membrane-bound nucleus) होता है। इसमें Plants, Animals, Fungi और Protists शामिल हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी कोशिकाओं की संरचना बहुत जटिल (complex cell structure) होती है। इनका आनुवंशिक पदार्थ यानी DNA nucleus के अंदर सुरक्षित रहता है और इनकी कोशिकाओं में विभिन्न organelles होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Pigeon को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">Pigeon का शरीर जटिल कोशिकाओं (eukaryotic cells) से बना है। इसकी हर cell के अंदर स्पष्ट nucleus और अन्य organelles मौजूद होते हैं, इसीलिए इसे Eukarya Domain का हिस्सा माना जाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Eukarya के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/pigeon"><div class="creature-body"><h3>Pigeon</h3><p>शहरी वातावरण का पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/human"><div class="creature-body"><h3>Human</h3><p>सबसे बुद्धिमान प्राणी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog"><div class="creature-body"><h3>Dog</h3><p>वफादार और समझदार जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tree"><div class="creature-body"><h3>Tree (पौधे)</h3><p>Photosynthesis करने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mushroom"><div class="creature-body"><h3>Mushroom</h3><p>Fungi जगत का सदस्य।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bird"><div class="creature-body"><h3>Bird</h3><p>आसमान में उड़ने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/fish"><div class="creature-body"><h3>Fish</h3><p>पानी में रहने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog"><div class="creature-body"><h3>Frog</h3><p>Amphibian जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/butterfly"><div class="creature-body"><h3>Butterfly</h3><p>रंगीन और सुंदर कीट।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/rose"><div class="creature-body"><h3>Rose</h3><p>फूलों वाला सुंदर पौधा।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- KINGDOM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/animal?lock=2" alt="Kingdom">
+            <div>
+                <div class="rank">Kingdom</div><div class="name">Animalia</div>
+                <div class="scientific"><strong>जंतु जगत -> </strong>Animalia Kingdom में वे जीव आते हैं जो अपना भोजन स्वयं नहीं बनाते।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Kingdom में सभी बहुकोशिकीय (multicellular) जंतु आते हैं। इस समूह के जीव अपना भोजन खुद नहीं बना सकते (Plants की तरह) बल्कि भोजन के लिए दूसरे जीवों या पदार्थों पर निर्भर रहते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">ये परपोषी (heterotrophic) होते हैं। इनकी cells के बाहर पौधों जैसी कठोर cell wall नहीं होती है। इस Kingdom के अधिकांश जीव अपने जीवन के किसी न किसी चरण में स्वेच्छा से गति (locomotion) कर सकते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Pigeon को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">Pigeon एक multicellular जीव है जो अपना भोजन स्वयं नहीं बना सकता। यह भोजन के लिए बीज, अनाज और फलों पर निर्भर होता है। इसमें हवा में उड़ने और चलने-फिरने की क्षमता (locomotion) है, अतः यह पूर्ण रूप से एक Animal है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Animalia के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/pigeon,eating"><div class="creature-body"><h3>Pigeon</h3><p>बीज खाने वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lion"><div class="creature-body"><h3>Lion</h3><p>जंगल का शक्तिशाली राजा।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant"><div class="creature-body"><h3>Elephant</h3><p>सबसे बड़ा स्थलीय जानवर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark"><div class="creature-body"><h3>Shark</h3><p>समुद्र का खतरनाक शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle"><div class="creature-body"><h3>Eagle</h3><p>तेज़ नज़र वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/spider"><div class="creature-body"><h3>Spider</h3><p>जाल बुनने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake"><div class="creature-body"><h3>Snake</h3><p>रेंगने वाला विषैला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dolphin"><div class="creature-body"><h3>Dolphin</h3><p>समुद्री बुद्धिमान जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bear"><div class="creature-body"><h3>Bear</h3><p>विशालकाय जंगली जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/penguin"><div class="creature-body"><h3>Penguin</h3><p>बर्फ में रहने वाला पक्षी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PHYLUM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/vertebrate?lock=3" alt="Phylum">
+            <div>
+                <div class="rank">Phylum</div><div class="name">Chordata</div>
+                <div class="scientific"><strong>रज्जुकी संघ -> </strong>Chordata समूह के जीवों में रीढ़ की हड्डी (backbone) होती है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Phylum में वे जीव आते हैं जिनके शरीर में जीवन के किसी न किसी चरण में notochord या रीढ़ की हड्डी (vertebral column) मौजूद होती है। इनमें Fishes, Birds, Reptiles और Mammals आते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इस समूह के जीवों में एक विकसित central nervous system, शरीर को सहारा देने वाली vertebral column, और शरीर के पिछले हिस्से में post-anal tail का होना प्रमुख लक्षण है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Pigeon को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">Pigeon के शरीर में एक लचीली और मजबूत रीढ़ की हड्डी (backbone) होती है जो उसके nervous system की रक्षा करती है। इसके अलावा, उड़ान के दौरान संतुलन बनाने के लिए इसके पास tail feathers होते हैं, इसीलिए इसे Chordata Phylum में रखा गया है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Chordata के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/pigeon,flying"><div class="creature-body"><h3>Pigeon</h3><p>रीढ़ की हड्डी और पंखों वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog,animal"><div class="creature-body"><h3>Dog</h3><p>रीढ़ की हड्डी वाला वफादार जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/monkey"><div class="creature-body"><h3>Monkey</h3><p>पेड़ों पर कूदने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/whale"><div class="creature-body"><h3>Whale</h3><p>समुद्र का विशाल जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle,bird"><div class="creature-body"><h3>Eagle</h3><p>आसमान का शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake,animal"><div class="creature-body"><h3>Snake</h3><p>अत्यधिक लचीली रीढ़ वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog,animal"><div class="creature-body"><h3>Frog</h3><p>जमीन और पानी दोनों में रहने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark,fish"><div class="creature-body"><h3>Shark</h3><p>Cartilage से बनी रीढ़ वाली मछली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/turtle"><div class="creature-body"><h3>Turtle</h3><p>खोल (Shell) के अंदर रीढ़ वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/horse"><div class="creature-body"><h3>Horse</h3><p>तेज़ दौड़ने वाला रीढ़धारी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CLASS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/bird?lock=4" alt="Class">
+            <div>
+                <div class="rank">Class</div><div class="name">Aves</div>
+                <div class="scientific"><strong>पक्षी वर्ग -> </strong>Aves Class में पंखों (feathers) वाले उड़ने वाले जीव आते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Class में वे सभी जीव आते हैं जिनके शरीर पर पंख (feathers) होते हैं, जो उड़ सकते हैं (कुछ अपवादों को छोड़कर), और जो reproduction के लिए अंडे (eggs) देते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी हड्डियां खोखली (hollow bones) होती हैं जिससे इनका वजन कम रहता है और उड़ने में मदद मिलती है। इनके पास भोजन ग्रहण करने के लिए beak (चोंच) होती है और दांत नहीं होते हैं। ये warm-blooded जीव होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Pigeon को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">Pigeon के शरीर पर feathers होते हैं, यह हवा में उड़ (fly) सकता है, और यह कठोर खोल वाले hard-shelled eggs देता है। इसकी beak होती है और हड्डियां hollow होती हैं, इसलिए यह पूर्ण रूप से Aves (Bird) है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Aves के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/pigeon,bird"><div class="creature-body"><h3>Pigeon</h3><p>शहरों में उड़ने वाला Aves।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/parrot"><div class="creature-body"><h3>Parrot</h3><p>रंगीन पंखों वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/owl"><div class="creature-body"><h3>Owl</h3><p>रात में शिकार करने वाला Aves।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sparrow"><div class="creature-body"><h3>Sparrow</h3><p>छोटा और आम पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/peacock"><div class="creature-body"><h3>Peacock</h3><p>सुंदर और बड़े पंखों वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/ostrich"><div class="creature-body"><h3>Ostrich</h3><p>सबसे बड़ा (न उड़ पाने वाला) पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/crow"><div class="creature-body"><h3>Crow</h3><p>बेहद बुद्धिमान पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/flamingo"><div class="creature-body"><h3>Flamingo</h3><p>गुलाबी रंग और लंबी टांगों वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/hummingbird"><div class="creature-body"><h3>Hummingbird</h3><p>सबसे छोटा पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/swan"><div class="creature-body"><h3>Swan</h3><p>पानी में तैरने वाला सुंदर पक्षी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ORDER -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/dove?lock=5" alt="Order">
+            <div>
+                <div class="rank">Order</div><div class="name">Columbiformes</div>
+                <div class="scientific"><strong>कपोत गण -> </strong> Columbiformes Order में कबूतर (pigeons) और फाख्ता (doves) आते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Order में ऐसे जीव आते हैं जिनका शरीर गठीला (plump body), सिर छोटा (small head), और beak (चोंच) छोटी होती है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">ये पक्षी पानी पीते समय उसे चूसकर (sucking) पीते हैं, जो अन्य पक्षियों से अलग है (ज्यादातर पक्षी पानी मुंह में लेकर सिर ऊपर उठाते हैं)। ये अपने नवजात बच्चों के पोषण के लिए "crop milk" (कबूतर का दूध) का उत्पादन करते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Pigeon को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">Pigeon पानी को चूसकर (suck) पीता है और अपने बच्चों (squabs) के पोषण के लिए crop milk बनाता है। इसका plump body और छोटा सिर इसे पूरी तरह से Columbiformes Order में रखता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Columbiformes के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/pigeon,bird"><div class="creature-body"><h3>Pigeon</h3><p>आम शहरी कबूतर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mourning,dove"><div class="creature-body"><h3>Mourning Dove</h3><p>दुख भरी आवाज़ निकालने वाला फाख्ता।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/turtle,dove"><div class="creature-body"><h3>Turtle Dove</h3><p>छोटा और सुंदर फाख्ता।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/fruit,dove"><div class="creature-body"><h3>Fruit Dove</h3><p>रंगीन और फल खाने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/nicobar,pigeon"><div class="creature-body"><h3>Nicobar Pigeon</h3><p>चमकीले पंखों वाला दुर्लभ Pigeon।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/crowned,pigeon"><div class="creature-body"><h3>Crowned Pigeon</h3><p>सिर पर कलगी (crest) वाला बड़ा कबूतर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dodo"><div class="creature-body"><h3>Dodo (Extinct)</h3><p>विलुप्त हो चुका एक बड़ा Columbiformes।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/collared,dove"><div class="creature-body"><h3>Collared Dove</h3><p>गर्दन पर काली पट्टी वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/imperial,pigeon"><div class="creature-body"><h3>Imperial Pigeon</h3><p>जंगलों का विशाल कबूतर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/ground,dove"><div class="creature-body"><h3>Ground Dove</h3><p>ज़मीन पर रहने वाला छोटा dove।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAMILY -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/columbidae?lock=6" alt="Family">
+            <div>
+                <div class="rank">Family</div><div class="name">Columbidae</div>
+                <div class="scientific"><strong>कपोत कुल -> </strong> Columbidae Family में सभी प्रकार के pigeons और doves आते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस Family में दुनिया भर में पाए जाने वाले सभी pigeons (कबूतर) और doves (फाख्ता) शामिल हैं। आमतौर पर बड़े आकार वाले पक्षियों को pigeon और छोटों को dove कहा जाता है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी चोंच (beak) के आधार पर एक मांसल (fleshy) हिस्सा होता है जिसे cere कहते हैं। इनके पैर छोटे और flight muscles बहुत मजबूत होती हैं, जो इन्हें तेज़ गति से उड़ने में मदद करती हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: Pigeon को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">Pigeon की चोंच पर स्पष्ट cere होता है और इसके शरीर की बनावट (मजबूत flight muscles, गठीला शरीर) इसे Columbidae Family का प्रमुख सदस्य बनाती है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Columbidae के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/rock,dove"><div class="creature-body"><h3>Rock Dove</h3><p>आम जंगली और शहरी कबूतर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/wood,pigeon"><div class="creature-body"><h3>Wood Pigeon</h3><p>जंगलों में रहने वाला बड़ा कबूतर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/diamond,dove"><div class="creature-body"><h3>Diamond Dove</h3><p>छोटा और खूबसूरत पालतू पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/band,tailed,pigeon"><div class="creature-body"><h3>Band-tailed Pigeon</h3><p>पूंछ पर पट्टी वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/green,pigeon"><div class="creature-body"><h3>Green Pigeon</h3><p>हरे रंग का हरियल कबूतर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bronzewing,pigeon"><div class="creature-body"><h3>Bronzewing Pigeon</h3><p>चमकीले पंखों वाला ऑस्ट्रेलियाई पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snow,pigeon"><div class="creature-body"><h3>Snow Pigeon</h3><p>पहाड़ों पर पाया जाने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/white,dove"><div class="creature-body"><h3>White Dove</h3><p>शांति का प्रतीक सफेद फाख्ता।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/passenger,pigeon"><div class="creature-body"><h3>Passenger Pigeon (Extinct)</h3><p>उत्तरी अमेरिका का विलुप्त कबूतर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/spinifex,pigeon"><div class="creature-body"><h3>Spinifex Pigeon</h3><p>सिर पर लंबी कलगी वाला।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- GENUS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/pigeon,genus?lock=7" alt="Genus">
+            <div>
+                <div class="rank">Genus</div><div class="name">Columba</div>
+                <div class="scientific"><strong>कपोत वंश -> </strong> Columba Genus में आम या विशिष्ट कबूतर शामिल हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">Columba वंश में मुख्य रूप से पुरानी दुनिया (Old World) के कबूतर आते हैं। इसमें कई सामान्य और जानी-मानी प्रजातियां शामिल हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">ये आकार में मध्यम से बड़े होते हैं। इनके शरीर का रंग आमतौर पर स्लेटी (grey), भूरा (brown), या काला (black) होता है, और गर्दन के हिस्से पर चमक (iridescence) होती है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: हमारे यहाँ के Pigeon को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">हमारे आस-पास दिखने वाले Pigeon की गर्दन पर चमकीला (iridescent) रंग होता है और इसका मध्यम आकार व स्लेटी (grey) रंग इसे Columba Genus में सटीक रूप से वर्गीकृत करता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Columba के कुछ मुख्य प्रकार और विशेषताएं</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/rock,dove"><div class="creature-body"><h3>Rock Dove</h3><p>शहरी कबूतरों का पूर्वज (C. livia)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/stock,dove"><div class="creature-body"><h3>Stock Dove</h3><p>पेड़ों के सुराख में रहने वाला (C. oenas)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/wood,pigeon"><div class="creature-body"><h3>Common Wood Pigeon</h3><p>बड़ा यूरोपीय कबूतर (C. palumbus)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/speckled,pigeon"><div class="creature-body"><h3>Speckled Pigeon</h3><p>धब्बेदार पंखों वाला अफ्रीकी कबूतर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/white,collared,pigeon"><div class="creature-body"><h3>White-collared Pigeon</h3><p>गर्दन पर सफेद पट्टी वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/pigeon,iridescence"><div class="creature-body"><h3>Iridescence</h3><p>गर्दन पर हरा-बैंगनी चमकीला रंग।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/pigeon,cooing"><div class="creature-body"><h3>Cooing Sound</h3><p>गले से 'गुटर-गूं' की आवाज़ निकालना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/pigeon,nest"><div class="creature-body"><h3>Flattish Nest</h3><p>तिनकों से बना साधारण घोंसला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/pigeon,flock"><div class="creature-body"><h3>Flock Behavior</h3><p>समूह (flock) में उड़ना और दाना चुगना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/homing,pigeon"><div class="creature-body"><h3>Navigation</h3><p>रास्ता खोजने की अद्भुत क्षमता।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SPECIES -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/rock%20dove?lock=8" alt="Species">
+            <div>
+                <div class="rank">Species</div><div class="name">Columba livia</div>
+                <div class="scientific"><strong>रॉक डव / आम कबूतर -> </strong> यह हमारे शहरों और इमारतों के आस-पास सबसे ज्यादा पाया जाने वाला Pigeon है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">यह वर्गीकरण का अंतिम और सबसे सटीक स्तर है। इसमें विशेष रूप से 'Rock dove' या 'Common pigeon' आता है, जो पूरी दुनिया के शहरों में फैल चुका है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी मुख्य विशेषता इनका शहरी माहौल में आसानी से ढल जाना (urban adaptation) है। जंगली अवस्था में ये चट्टानों (cliffs) पर रहते हैं, लेकिन शहरों में ये ऊंची इमारतों को चट्टान मानकर अपना घोंसला (nest) बनाते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: इस Pigeon को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">शहरों में दिखने वाले Pigeon का genetic makeup, स्लेटी रंग, पंखों पर दो काली पट्टियां (two black wing bars), और इसका व्यवहार इसे विज्ञान में <strong>'Columba livia'</strong> के रूप में एक विशिष्ट Species बनाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Columba livia (Common Pigeon) की 10 खास बातें</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/feral,pigeon"><div class="creature-body"><h3>Feral Pigeon</h3><p>शहरी वातावरण में रहने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/pigeon,wing,bars"><div class="creature-body"><h3>Two Black Bars</h3><p>पंखों पर दो विशिष्ट काली पट्टियां।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/pigeon,feeding"><div class="creature-body"><h3>Urban Adaptation</h3><p>इंसानों के आस-पास भोजन ढूंढने की कला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/messenger,pigeon"><div class="creature-body"><h3>Messenger Pigeon</h3><p>प्राचीन काल में संदेश (message) ले जाने वाले।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/pigeon,squab"><div class="creature-body"><h3>Squab (बच्चा)</h3><p>कबूतर के नवजात बच्चे को squab कहते हैं।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/pigeon,milk"><div class="creature-body"><h3>Crop Milk</h3><p>बच्चों के लिए विशेष तरल (fluid) का निर्माण।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/pigeon,eyes"><div class="creature-body"><h3>Excellent Vision</h3><p>अत्यंत तेज़ और रंगीन दृष्टि।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/pigeon,magnetoreception"><div class="creature-body"><h3>Magnetoreception</h3><p>पृथ्वी के चुंबकीय क्षेत्र (magnetic field) को महसूस करना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/white,pigeon"><div class="creature-body"><h3>White Form</h3><p>सफेद रंग में भी पाए जाने वाले 'Dove'।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/pigeon,lifespan"><div class="creature-body"><h3>Lifespan (जीवनकाल)</h3><p>जंगल में 3-5 साल, कैद में 15 साल तक।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<footer>Beautiful Detailed Taxonomy Explorer (Pigeon Edition)</footer>
+
+<!-- =========================   JAVASCRIPT========================= -->
+<script>
+const cards = document.querySelectorAll(".taxonomy-card");
+cards.forEach(card=>{
+    const header = card.querySelector(".taxonomy-header");
+    header.addEventListener("click",()=>{
+        card.classList.toggle("active");
+        const content = card.querySelector(".content");
+        if(content.style.maxHeight){
+            content.style.maxHeight = null;
+        }else{
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    });
+});
+
+const observer = new IntersectionObserver((entries)=>{
+    entries.forEach((entry)=>{
+        if(entry.isIntersecting){
+            entry.target.classList.add("show");
+        }
+    });
+});
+const hiddenElements = document.querySelectorAll(".hidden");
+hiddenElements.forEach((el)=>observer.observe(el));
+
+document.querySelectorAll('.creature img').forEach(img=>{
+ const wrap=document.createElement('div');
+ wrap.className='image-wrap';
+ img.parentNode.insertBefore(wrap,img);
+ wrap.appendChild(img);
+
+ const tools=document.createElement('div');
+ tools.className='img-tools';
+
+ const r=document.createElement('button');
+ r.className='img-tool-btn';
+ r.innerHTML='🔄';
+
+ const s=document.createElement('button');
+ s.className='img-tool-btn';
+ s.innerHTML='🌐';
+
+ tools.appendChild(r);
+ tools.appendChild(s);
+ wrap.appendChild(tools);
+
+ const original=(img.src.split('/300/')[1]||'animal').split('?')[0];
+
+ r.onclick=(e)=>{
+   e.stopPropagation();
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+Date.now();
+ };
+
+ s.onclick=(e)=>{
+   e.stopPropagation();
+   window.open('https://commons.wikimedia.org/w/index.php?search='+encodeURIComponent(original),'_blank');
+ };
+
+ img.onerror=()=>{
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+(Date.now()+1);
+ };
+});
+
+
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('img').forEach((img,i)=>{
+   if(img.src.includes('loremflickr.com')){
+      const base=img.src.split('?')[0];
+      img.src=base+'?lock='+(Date.now()+i);
+   }
+ });
+});
+</script>
+
+
+<script>
+document.querySelectorAll('img').forEach(img=>{
+  img.onerror=function(){
+    this.onerror=null;
+    this.src='https://loremflickr.com/400/300/pigeon?lock='+Date.now();
+  };
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.image-wrap').forEach(w=>{
+   const tools=w.querySelector('.img-tools');
+   const card=w.closest('.creature');
+   const title=card ? card.querySelector('.creature-body h3') : null;
+   if(tools && title){
+      title.insertAdjacentElement('afterend', tools);
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.padding='0';
+      tools.style.background='transparent';
+      tools.style.verticalAlign='middle';
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const title=card.querySelector('.creature-body h3');
+   const tools=card.querySelector('.img-tools');
+   if(title && tools){
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.verticalAlign='middle';
+      tools.style.background='transparent';
+      tools.style.padding='0';
+      tools.style.position='static';
+
+      title.appendChild(tools);
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.taxonomy-header .left img').forEach(img=>{
+   if(img.parentElement.querySelector('.header-tools')) return;
+
+   const tools=document.createElement('div');
+   tools.className='header-tools';
+   tools.style.display='flex';
+   tools.style.justifyContent='center';
+   tools.style.gap='6px';
+   tools.style.marginTop='4px';
+
+   const r=document.createElement('button');
+   r.textContent='🔄';
+
+   const g=document.createElement('button');
+   g.textContent='🌐';
+
+   r.onclick=(e)=>{
+      e.stopPropagation();
+      img.src=img.src.split('?')[0]+'?v='+Date.now();
+   };
+
+   g.onclick=(e)=>{
+      e.stopPropagation();
+      const q=img.alt || 'animal';
+      window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+
+   const wrap=document.createElement('div');
+   wrap.style.display='flex';
+   wrap.style.flexDirection='column';
+   wrap.style.alignItems='center';
+
+   img.parentNode.insertBefore(wrap,img);
+   wrap.appendChild(img);
+   wrap.appendChild(tools);
+   tools.appendChild(r);
+   tools.appendChild(g);
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+
+document.querySelectorAll('.header-tools button:last-child').forEach(btn=>{
+ btn.onclick=(e)=>{
+  e.stopPropagation();
+  const card=btn.closest('.taxonomy-card');
+  const q=[
+   card?.querySelector('.rank')?.innerText||'',
+   card?.querySelector('.name')?.innerText||'',
+   card?.querySelector('.scientific')?.innerText||''
+  ].join(' ');
+  window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+ };
+});
+
+document.querySelectorAll('.creature').forEach(card=>{
+ const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+ if(globe){
+   globe.onclick=(e)=>{
+    e.stopPropagation();
+    const q=(card.querySelector('h3')?.innerText||'')+' '+(card.querySelector('p')?.innerText||'');
+    window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+ }
+});
+
+});
+</script>
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+   if(!globe) return;
+
+   globe.onclick=(e)=>{
+     e.stopPropagation();
+
+     const titleNode = card.querySelector('h3');
+     let title='';
+     if(titleNode){
+       title=(titleNode.childNodes[0]?.textContent || titleNode.textContent || '').trim();
+       title=title.replace('🔄','').replace('🌐','').trim();
+     }
+
+     const desc=(card.querySelector('p')?.innerText || '').trim();
+
+     const taxonomyCard=card.closest('.taxonomy-card');
+     const rank=(taxonomyCard?.querySelector('.rank')?.innerText || '').trim();
+     const taxonomyName=(taxonomyCard?.querySelector('.name')?.innerText || '').trim();
+
+     const query=(rank+' '+taxonomyName+' '+title+' '+desc).replace(/\s+/g,' ').trim();
+
+     window.open(
+       'https://www.google.com/search?tbm=isch&q='+encodeURIComponent(query),
+       '_blank'
+     );
+   };
+ });
+});
+</script>
+
+</body>
+</html>

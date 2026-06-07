@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Human Taxonomy Explorer - Detailed</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* =========================   BASIC========================= */
+*{margin:0; padding:0; box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{    font-family:'Poppins',sans-serif;    background:linear-gradient(to bottom right,#fff8fb,#eef5ff,#ffffff);    color:#1c2430; overflow-x:hidden;}
+
+/* =========================   HERO========================= */
+.hero{    display:flex; align-items:center;    justify-content:center; flex-direction:column;    text-align:center; padding:40px 20px;    position:relative; overflow:hidden;}
+.hero::before, .hero::after{    content:""; position:absolute;    border-radius:50%;}
+.hero::before{    width:700px; height:700px; top:-250px; left:-200px;    background:radial-gradient(circle,#8fd3ff55,transparent 70%);    animation:float1 8s ease-in-out infinite;}
+.hero::after{    width:600px; height:600px; bottom:-250px; right:-200px;    background:radial-gradient(circle,#bca7ff44,transparent 70%);    animation:float2 10s ease-in-out infinite;}
+@keyframes float1{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(30px);} }
+@keyframes float2{ 0%,100%{transform:translateY(0px);} 50%{transform:translateY(-30px);} }
+.hero h1{    font-size:70px; font-weight:700; z-index:2;    background:linear-gradient(to right,#00b09b,#96c93d);    -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+.hero p{    margin-top:20px; font-size:20px; color:#5c6773;    max-width:1200px; line-height:1.8; z-index:2;}
+
+/* =========================   CONTAINER & CARDS========================= */
+.container{ width:95%; max-width:1250px; margin:auto; padding-bottom:80px; }
+.taxonomy-card{    background:white; margin-bottom:30px; border-radius:30px;    overflow:hidden; border:1px solid #dde8f5;    box-shadow:0 10px 30px rgba(0,0,0,0.05); transition:0.5s;}
+.taxonomy-card:hover{ transform:translateY(-6px); box-shadow:0 18px 40px rgba(0,0,0,0.08); }
+.taxonomy-header{    padding:25px; display:flex; align-items:center;    justify-content:space-between; cursor:pointer; transition:0.3s;}
+.taxonomy-header:hover{ background:#f7fbff; }
+.left{ display:flex; align-items:center; gap:22px; }
+.left img{    width:95px; height:95px; border-radius:24px;    object-fit:cover; border:4px solid #eef5ff; transition:0.4s;}
+.taxonomy-card:hover .left img{ transform:scale(1.05) rotate(2deg); }
+.rank{ font-size:13px; text-transform:uppercase; letter-spacing:3px; color:#008f7a; font-weight:600; }
+.name{ font-size:34px; font-weight:700; margin-top:4px; }
+.scientific{ margin-top:7px; color:#637082; font-size:16px; }
+.arrow{ font-size:38px; color:#008f7a; transition:0.5s; }
+.taxonomy-card.active .arrow{ transform:rotate(180deg); }
+
+/* =========================   CONTENT & DETAILED DESC========================= */
+.content{ max-height:0; overflow:hidden; transition:max-height 0.8s ease; }
+.content-inner{ padding:35px; border-top:1px solid #edf3fa; }
+
+.detailed-desc {    background: #fdfdff;    padding: 25px;    border-radius: 20px;    border-left: 5px solid #008f7a;    margin-bottom: 35px;}
+.desc-item {    margin-bottom: 18px;}
+.desc-item:last-child {    margin-bottom: 0;}
+.desc-label {    display: block;    font-size: 17px;    font-weight: 600;    color: #006052;    margin-bottom: 5px;}
+.desc-text {    font-size: 16px;    line-height: 1.8;    color: #465260;}
+
+.section-title{ font-size:30px; margin-bottom:25px; color:#006052; }
+
+/* =========================   GRID & CREATURES========================= */
+.creatures{    display:grid; gap:25px;    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));}
+.creature{    background:#ffffff; border-radius:20px; overflow:hidden;    border:1px solid #e8eef7; transition:0.5s;}
+.creature:hover{ transform:translateY(-10px) scale(1.02); box-shadow:0 15px 30px rgba(0,0,0,0.08); }
+.creature img{ width:100%; height:160px; object-fit:cover; transition:0.5s; }
+.creature:hover img{ transform:scale(1.08); }
+.creature-body{ padding:15px; }
+.creature h3{ font-size:18px; margin-bottom:8px; color: #1c2430;}
+.creature p{ color:#66717d; line-height:1.5; font-size:14px; }
+
+/* =========================   UTILITIES========================= */
+.hidden{ opacity:0; transform:translateY(50px); transition:all 1s; }
+.show{ opacity:1; transform:translateY(0px); }
+footer{ padding:40px 20px; text-align:center; color:#607080; font-size:15px; }
+
+@media(max-width:800px){    .hero h1{font-size:44px;} .hero p{font-size:17px;}    .name{font-size:26px;} .left{align-items:flex-start;}    .left img{width:75px; height:75px;}    .taxonomy-header{padding:20px;} .content-inner{padding:25px;}}
+
+.image-wrap{position:relative;display:flex;flex-direction:column}
+.img-tools{position:static;display:flex;gap:6px;justify-content:center;padding:8px 0;background:#fff}
+.img-tool-btn{border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;background:rgba(255,255,255,.9)}
+
+</style>
+
+<style>
+.header-tools button,.img-tool-btn,.img-tools button{
+border:none!important;
+outline:none!important;
+background:transparent!important;
+box-shadow:none!important;
+padding:0!important;
+cursor:pointer;
+font-size:20px;
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+    <h1>Human Taxonomy</h1>
+    <p>इंसान (Human) की पूरी जैविक वर्गीकरण प्रणाली को गहराई से जानिए। हर स्तर पर क्लिक करें और वैज्ञानिक कारण (Reasoning) व उदाहरणों के साथ समझें कि इंसान को उस स्तर में क्यों रखा गया है।</p>
+</section>
+
+<div class="container">
+
+<!-- DOMAIN -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/eukarya?lock=1" alt="Domain">
+            <div>
+                <div class="rank">Domain (डोमेन)</div><div class="name">Eukarya</div>
+                <div class="scientific"><strong>जटिल कोशिका वाले जीव -> </strong>Eukarya में वे सभी जीव आते हैं जिनकी कोशिकाओं में स्पष्ट membrane-bound nucleus होता है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस डोमेन में पृथ्वी के वे सभी जीव आते हैं जिनकी कोशिकाओं (cells) में एक स्पष्ट और झिल्लीदार केंद्रक (membrane-bound nucleus) होता है। इसमें पौधे, जानवर, कवक (fungi) और प्रोटिस्ट शामिल हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी कोशिकाओं की संरचना बहुत जटिल (complex cell structure) होती है। इनका आनुवंशिक पदार्थ यानी DNA केंद्रक के अंदर सुरक्षित रहता है और इनकी कोशिकाओं में विभिन्न membrane-bound organelles होते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: इंसान को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">इंसानी शरीर ट्रिलियन्स जटिल कोशिकाओं (eukaryotic cells) से बना है। हर कोशिका के अंदर स्पष्ट nucleus और mitochondria जैसे organelles मौजूद होते हैं, इसीलिए हमें Eukarya डोमेन का हिस्सा माना जाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Eukarya के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/human"><div class="creature-body"><h3>इंसान</h3><p>सबसे बुद्धिमान प्राणी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog"><div class="creature-body"><h3>कुत्ता</h3><p>वफादार और समझदार जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel"><div class="creature-body"><h3>गिलहरी</h3><p>फुर्तीला कुतरने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tree"><div class="creature-body"><h3>पेड़ (पौधे)</h3><p>प्रकाश संश्लेषण करने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/mushroom"><div class="creature-body"><h3>मशरूम</h3><p>Fungi जगत का सदस्य।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bird"><div class="creature-body"><h3>पक्षी</h3><p>आसमान में उड़ने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/fish"><div class="creature-body"><h3>मछली</h3><p>पानी में रहने वाले जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog"><div class="creature-body"><h3>मेंढक</h3><p>Amphibian जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/butterfly"><div class="creature-body"><h3>तितली</h3><p>रंगीन और सुंदर कीट।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/rose"><div class="creature-body"><h3>गुलाब</h3><p>फूलों वाला सुंदर पौधा।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- KINGDOM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/animal?lock=2" alt="Kingdom">
+            <div>
+                <div class="rank">Kingdom (जगत)</div><div class="name">Animalia</div>
+                <div class="scientific"><strong>जंतु जगत -> </strong>Animalia kingdom में वे जीव आते हैं जो अपना भोजन स्वयं synthesize नहीं करते।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+            
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस जगत में सभी बहुकोशिकीय (multicellular) जंतु आते हैं। इस समूह के जीव अपना भोजन खुद नहीं बना सकते (पौधों की तरह) बल्कि पोषण के लिए दूसरे जीवों पर निर्भर रहते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">ये heterotrophic होते हैं और aerobic respiration के लिए ऑक्सीजन की आवश्यकता होती है। इनकी कोशिकाओं के बाहर कठोर cell wall नहीं होती है, और ये voluntary movement कर सकते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: इंसान को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">इंसान एक multicellular जीव है जो अपना भोजन स्वयं नहीं बना सकता। हम ऊर्जा के लिए organic material (पौधे और जानवर) पर निर्भर होते हैं, इसीलिए हम Animalia जगत में आते हैं।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Animalia के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/human,walking"><div class="creature-body"><h3>इंसान</h3><p>Social animal.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lion"><div class="creature-body"><h3>शेर</h3><p>जंगल का शक्तिशाली राजा।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant"><div class="creature-body"><h3>हाथी</h3><p>सबसे बड़ा स्थलीय जानवर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark"><div class="creature-body"><h3>शार्क</h3><p>समुद्र का खतरनाक शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle"><div class="creature-body"><h3>गरुड़ (Eagle)</h3><p>तेज़ नज़र वाला पक्षी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/spider"><div class="creature-body"><h3>मकड़ी</h3><p>जाल बुनने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake"><div class="creature-body"><h3>सांप</h3><p>रेंगने वाला विषैला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dolphin"><div class="creature-body"><h3>डॉल्फिन</h3><p>समुद्री बुद्धिमान जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bear"><div class="creature-body"><h3>भालू</h3><p>विशालकाय जंगली जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/penguin"><div class="creature-body"><h3>पेंगुइन</h3><p>बर्फ में रहने वाला पक्षी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PHYLUM -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/vertebrate?lock=3" alt="Phylum">
+            <div>
+                <div class="rank">Phylum (संघ)</div><div class="name">Chordata</div>
+                <div class="scientific"><strong>रज्जुकी संघ -> </strong>Chordata समूह के जीवों में central nervous system को सुरक्षित रखने वाली रीढ़ की हड्डी होती है।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस संघ में वे जीव आते हैं जिनके शरीर में embryonic development के दौरान notochord मौजूद होती है। इनमें मछलियां, पक्षी, सरीसृप (reptiles) और स्तनधारी आते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इस समूह के जीवों में एक विकसित central nervous system, शरीर को सहारा देने वाली vertebral column (रीढ़ की हड्डी), और pharyngeal slits का होना प्रमुख लक्षण है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: इंसान को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">भ्रूण अवस्था (embryonic stage) के दौरान इंसानों में notochord विकसित होती है, जो बाद में vertebral column (रीढ़ की हड्डी) में बदल जाती है। यह हमारे spinal cord की रक्षा करती है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Chordata के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/human,back"><div class="creature-body"><h3>इंसान</h3><p>मजबूत रीढ़ की हड्डी वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dog,animal"><div class="creature-body"><h3>कुत्ता</h3><p>रीढ़ की हड्डी वाला वफादार जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/monkey"><div class="creature-body"><h3>बंदर</h3><p>पेड़ों पर कूदने वाला जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/whale"><div class="creature-body"><h3>व्हेल</h3><p>समुद्र का विशाल जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/eagle,bird"><div class="creature-body"><h3>चील</h3><p>आसमान का शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/snake,animal"><div class="creature-body"><h3>सांप</h3><p>अत्यधिक लचीली रीढ़ वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/frog,animal"><div class="creature-body"><h3>मेंढक</h3><p>जमीन और पानी दोनों में रहने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/shark,fish"><div class="creature-body"><h3>शार्क</h3><p>Cartilage से बनी रीढ़ वाली मछली।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/turtle"><div class="creature-body"><h3>कछुआ</h3><p>Shell के अंदर रीढ़ वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/horse"><div class="creature-body"><h3>घोड़ा</h3><p>तेज़ दौड़ने वाला रीढ़धारी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CLASS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/mammal?lock=4" alt="Class">
+            <div>
+                <div class="rank">Class (वर्ग)</div><div class="name">Mammalia</div>
+                <div class="scientific"><strong>स्तनधारी वर्ग -> </strong>Mammalia वर्ग के जीव अपने बच्चों को दूध पिलाते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस वर्ग में वे सभी जीव आते हैं जो अंडे देने के बजाय सीधे बच्चों को जन्म देते हैं और उन्हें अपना दूध पिलाकर पालते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">मादाओं में mammary glands होती हैं जिनसे नवजात के पोषण के लिए दूध निकलता है। इनके शरीर पर hair या fur पाए जाते हैं, और ये endothermic (warm-blooded) जीव होते हैं जो अपने शरीर का तापमान नियंत्रित रख सकते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: इंसान को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">इंसान अपने बच्चों को जन्म देते हैं (live young) और माताएं शिशुओं को अपना दूध (milk) पिलाती हैं। हम warm-blooded हैं और हमारी त्वचा पर hair follicles होते हैं, इसलिए हम पूरी तरह Mammals हैं।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Mammalia के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/human,baby"><div class="creature-body"><h3>इंसान</h3><p>सामाजिक स्तनधारी प्राणी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tiger"><div class="creature-body"><h3>बाघ</h3><p>भारत का राष्ट्रीय स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/elephant,wild"><div class="creature-body"><h3>हाथी</h3><p>सबसे भारी स्थलीय स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/whale,ocean"><div class="creature-body"><h3>ब्लू व्हेल</h3><p>पानी में रहने वाली स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bat"><div class="creature-body"><h3>चमगादड़</h3><p>उड़ने वाला एकमात्र स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/kangaroo"><div class="creature-body"><h3>कंगारू</h3><p>पाउच (Pouch) वाला स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bear,wild"><div class="creature-body"><h3>भालू</h3><p>घने बालों वाला स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/dolphin,sea"><div class="creature-body"><h3>डॉल्फिन</h3><p>समुद्री बुद्धिमान स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/cow"><div class="creature-body"><h3>गाय</h3><p>दूध देने वाली घरेलू स्तनधारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/squirrel,fur"><div class="creature-body"><h3>गिलहरी</h3><p>बालों वाली छोटी स्तनधारी।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ORDER -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/primate?lock=5" alt="Order">
+            <div>
+                <div class="rank">Order (गण)</div><div class="name">Primates</div>
+                <div class="scientific"><strong>प्राइमेट गण -> </strong> Primates समूह में उन्नत दृष्टि (stereoscopic vision) और बड़े मस्तिष्क वाले जीव आते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस गण (Order) में बंदर, लंगूर, वनमानुष (Apes) और इंसान जैसे बुद्धिमान स्तनधारी आते हैं, जिनका विकास पेड़ों पर रहने (arboreal lifestyle) के अनुकूल हुआ था।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी आँखें सामने की तरफ होती हैं जो बेहतरीन 3D depth perception (stereoscopic vision) देती हैं। इनके अंगूठे बाकी उंगलियों के विपरीत (opposable thumbs) होते हैं, और शरीर के आकार की तुलना में इनका मस्तिष्क (cranial capacity) बड़ा होता है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: इंसान को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">हमारे पास वस्तुओं को बारीकी से पकड़ने के लिए opposable thumbs हैं। हमारी आँखें चेहरे पर सामने हैं जो depth perception में मदद करती हैं, और हमारा विकसित मस्तिष्क हमें Primates गण का एक उन्नत सदस्य बनाता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Primates के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/human,hands"><div class="creature-body"><h3>इंसान</h3><p>सर्वाधिक विकसित Primate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/chimpanzee"><div class="creature-body"><h3>चिंपैंजी (Chimpanzee)</h3><p>इंसानों का करीबी रिश्तेदार।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/gorilla"><div class="creature-body"><h3>गोरिल्ला (Gorilla)</h3><p>सबसे बड़ा जीवित Primate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/orangutan"><div class="creature-body"><h3>ओरांगुटान (Orangutan)</h3><p>पेड़ों पर रहने वाला बड़ा वानर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/baboon"><div class="creature-body"><h3>बबून (Baboon)</h3><p>जमीन पर रहने वाला मजबूत बंदर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/macaque"><div class="creature-body"><h3>मकाक (Macaque)</h3><p>आम तौर पर दिखने वाला बंदर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/lemur"><div class="creature-body"><h3>लेमूर (Lemur)</h3><p>मेडागास्कर का विशेष Primate.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tarsier"><div class="creature-body"><h3>टार्सियर (Tarsier)</h3><p>बड़ी आँखों वाला छोटा जीव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/gibbon"><div class="creature-body"><h3>गिब्बन (Gibbon)</h3><p>लंबे हाथों वाला वानर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/spidermonkey"><div class="creature-body"><h3>स्पाइडर मंकी</h3><p>अत्यधिक लंबी पूंछ और हाथ वाला।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAMILY -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/ape?lock=6" alt="Family">
+            <div>
+                <div class="rank">Family (कुल)</div><div class="name">Hominidae</div>
+                <div class="scientific"><strong>Great Apes -> </strong> Hominidae परिवार में बिना पूंछ वाले बड़े और बुद्धिमान वानर शामिल हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">इस परिवार में 'Great Apes' शामिल हैं। इनमें इंसान, चिंपैंजी, गोरिल्ला और ओरांगुटान आते हैं। ये सभी विकासवादी (evolutionary) दृष्टिकोण से एक-दूसरे के बहुत करीब हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी सबसे बड़ी पहचान यह है कि इनमें पूंछ (tail) नहीं होती है। इनका robust skeletal structure होता है, और ये अत्यधिक जटिल सामाजिक व्यवहार (complex social behaviors) प्रदर्शित करते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: इंसान को इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">इंसानों की पूंछ नहीं होती है। हम अन्य Hominids (जैसे चिंपैंजी और गोरिल्ला) के साथ बहुत अधिक DNA समानता (genetic similarity) साझा करते हैं, और हमारे सामाजिक ढांचे बेहद जटिल होते हैं।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Hominidae के 10 उदाहरण</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/human,modern"><div class="creature-body"><h3>इंसान (Modern Human)</h3><p>सर्वाधिक विकसित Hominid.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/chimpanzee,ape"><div class="creature-body"><h3>चिंपैंजी</h3><p>उपकरण (Tools) का उपयोग करने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/bonobo"><div class="creature-body"><h3>बोनोबो (Bonobo)</h3><p>बेहद शांत और सामाजिक वानर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/westerngorilla"><div class="creature-body"><h3>पश्चिमी गोरिल्ला</h3><p>अफ्रीका के जंगलों का निवासी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/easterngorilla"><div class="creature-body"><h3>पूर्वी गोरिल्ला</h3><p>दुनिया का सबसे बड़ा जीवित वानर।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/borneanorangutan"><div class="creature-body"><h3>बोर्नियन ओरांगुटान</h3><p>बोर्नियो द्वीप का निवासी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/sumatranorangutan"><div class="creature-body"><h3>सुमात्रान ओरांगुटान</h3><p>इंडोनेशिया में पाया जाने वाला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/tapanuliorangutan"><div class="creature-body"><h3>तपनौली ओरांगुटान</h3><p>दुर्लभ ओरांगुटान प्रजाति।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/neanderthal"><div class="creature-body"><h3>नियंडरथल (Neanderthal)</h3><p>इंसानों का विलुप्त करीबी रिश्तेदार।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/australopithecus"><div class="creature-body"><h3>ऑस्ट्रेलोपिथेकस (Extinct)</h3><p>शुरुआती प्राचीन Hominid.</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- GENUS -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/earlyhuman?lock=7" alt="Genus">
+            <div>
+                <div class="rank">Genus (वंश)</div><div class="name">Homo</div>
+                <div class="scientific"><strong>मानव वंश -> </strong> Homo वंश में पूरी तरह से दो पैरों पर चलने वाले (bipedal) जीव शामिल हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">Homo वंश में आधुनिक इंसान (Modern Humans) और हमारे विलुप्त हो चुके सबसे करीबी पूर्वज (extinct ancestors) शामिल हैं, जिन्होंने पत्थरों से औजार बनाना शुरू किया था।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी सबसे बड़ी पहचान strict bipedalism (लगातार दो पैरों पर सीधा चलना) है। इनके braincase का आकार काफी बड़ा होता है और इनमें significant tool-making capabilities पाई जाती हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: हमें इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">हमारा शरीर स्थायी रूप से दो पैरों पर चलने (bipedal locomotion) के लिए अनुकूलित है। हमारा मस्तिष्क काफी बड़ा है और हम जटिल उपकरणों (complex tools) का निर्माण और उपयोग करते हैं, जो Homo वंश की विशेषता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Homo वंश की प्रजातियां (जीवित और विलुप्त)</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/human,modern"><div class="creature-body"><h3>Homo sapiens</h3><p>एकमात्र जीवित प्रजाति (हम)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/caveman,neanderthal"><div class="creature-body"><h3>Homo neanderthalensis</h3><p>यूरोप के मजबूत विलुप्त मानव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/evolution,homo"><div class="creature-body"><h3>Homo erectus</h3><p>आग का उपयोग करने वाले पहले मानव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/homohabilis"><div class="creature-body"><h3>Homo habilis</h3><p>'Handy man' (औजार बनाने वाले)।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/homoheidelbergensis"><div class="creature-body"><h3>Homo heidelbergensis</h3><p>सर्दियों में रहने वाले शिकारी।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/homofloresiensis"><div class="creature-body"><h3>Homo floresiensis</h3><p>'Hobbit' - छोटे कद वाले मानव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/homonaledi"><div class="creature-body"><h3>Homo naledi</h3><p>दक्षिण अफ्रीका में मिली प्रजाति।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/homoluzonensis"><div class="creature-body"><h3>Homo luzonensis</h3><p>फिलीपींस में पाई गई प्रजाति।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/homoantecessor"><div class="creature-body"><h3>Homo antecessor</h3><p>यूरोप के शुरुआती मानव।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/homorudolfensis"><div class="creature-body"><h3>Homo rudolfensis</h3><p>बड़े मस्तिष्क वाले प्राचीन मानव।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SPECIES -->
+<div class="taxonomy-card hidden">
+    <div class="taxonomy-header">
+        <div class="left">
+            <img src="https://loremflickr.com/400/300/humanface?lock=8" alt="Species">
+            <div>
+                <div class="rank">Species (प्रजाति)</div><div class="name">Homo sapiens</div>
+                <div class="scientific"><strong>बुद्धिमान मानव -> </strong> यह पृथ्वी पर मौजूद एकमात्र जीवित Homo प्रजाति है, जिसे हम 'आधुनिक इंसान' कहते हैं।</div>
+            </div>
+        </div>
+        <div class="arrow">⌄</div>
+    </div>
+    <div class="content">
+        <div class="content-inner">
+
+            <div class="detailed-desc">
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर (Level) में किस प्रकार के जीव आते हैं?</span>
+                    <p class="desc-text">यह वर्गीकरण का अंतिम और सबसे सटीक स्तर है। इसमें आज पृथ्वी पर मौजूद सभी आधुनिक इंसान (Modern Humans) आते हैं।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">इस स्तर की मुख्य characteristics क्या हैं?</span>
+                    <p class="desc-text">इनकी मुख्य विशेषता highly advanced cognitive abilities (उच्च संज्ञानात्मक क्षमता), abstract reasoning (अमूर्त सोच), और complex communication (जटिल भाषा) है।</p>
+                </div>
+                <div class="desc-item">
+                    <span class="desc-label">Reasoning: हमें इसी स्तर में क्यों रखा गया है?</span>
+                    <p class="desc-text">हम जटिल और संरचित भाषा (structured language) का उपयोग करते हैं, उन्नत सभ्यता और संस्कृति (culture) का निर्माण करते हैं, और उच्च तकनीक विकसित करते हैं, जो हमें Homo sapiens के रूप में अन्य सभी जीवों से अलग करता है।</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Homo sapiens की 10 खास बातें</h2>
+            <div class="creatures">
+                <div class="creature"><img src="https://loremflickr.com/400/300/brain"><div class="creature-body"><h3>Large Brain (विशाल मस्तिष्क)</h3><p>अत्यधिक विकसित prefrontal cortex.</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/walking,human"><div class="creature-body"><h3>Bipedalism (दो पैरों पर चलना)</h3><p>सीधे खड़े होकर लंबी दूरी तय करना।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/language,communication"><div class="creature-body"><h3>Complex Language</h3><p>बोलने और लिखने की अद्भुत क्षमता।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/technology,tools"><div class="creature-body"><h3>Tool Mastery</h3><p>पत्थर से लेकर कंप्यूटर तक का निर्माण।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/globe,earth"><div class="creature-body"><h3>Global Distribution</h3><p>पृथ्वी के हर कोने में अनुकूलन।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/art,culture"><div class="creature-body"><h3>Culture & Art</h3><p>संस्कृति, कला और संगीत का विकास।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/agriculture"><div class="creature-body"><h3>Agriculture (कृषि)</h3><p>अनाज उगाने और खेती करने की कला।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/food,omnivore"><div class="creature-body"><h3>Omnivorous Diet</h3><p>विभिन्न प्रकार का भोजन पचाने की क्षमता।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/oldperson"><div class="creature-body"><h3>Long Lifespan</h3><p>दवाइयों और सुरक्षा के कारण लंबा जीवन।</p></div></div>
+                <div class="creature"><img src="https://loremflickr.com/400/300/baby,human"><div class="creature-body"><h3>Altricial Young</h3><p>लंबे समय तक माता-पिता पर निर्भर शिशु।</p></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<footer>Beautiful Detailed Taxonomy Explorer (Human Edition)</footer>
+
+<!-- =========================   JAVASCRIPT========================= -->
+<script>
+const cards = document.querySelectorAll(".taxonomy-card");
+cards.forEach(card=>{
+    const header = card.querySelector(".taxonomy-header");
+    header.addEventListener("click",()=>{
+        card.classList.toggle("active");
+        const content = card.querySelector(".content");
+        if(content.style.maxHeight){
+            content.style.maxHeight = null;
+        }else{
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    });
+});
+
+const observer = new IntersectionObserver((entries)=>{
+    entries.forEach((entry)=>{
+        if(entry.isIntersecting){
+            entry.target.classList.add("show");
+        }
+    });
+});
+const hiddenElements = document.querySelectorAll(".hidden");
+hiddenElements.forEach((el)=>observer.observe(el));
+
+document.querySelectorAll('.creature img').forEach(img=>{
+ const wrap=document.createElement('div');
+ wrap.className='image-wrap';
+ img.parentNode.insertBefore(wrap,img);
+ wrap.appendChild(img);
+
+ const tools=document.createElement('div');
+ tools.className='img-tools';
+
+ const r=document.createElement('button');
+ r.className='img-tool-btn';
+ r.innerHTML='🔄';
+
+ const s=document.createElement('button');
+ s.className='img-tool-btn';
+ s.innerHTML='🌐';
+
+ tools.appendChild(r);
+ tools.appendChild(s);
+ wrap.appendChild(tools);
+
+ const original=(img.src.split('/300/')[1]||'animal').split('?')[0];
+
+ r.onclick=(e)=>{
+   e.stopPropagation();
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+Date.now();
+ };
+
+ s.onclick=(e)=>{
+   e.stopPropagation();
+   window.open('https://commons.wikimedia.org/w/index.php?search='+encodeURIComponent(original),'_blank');
+ };
+
+ img.onerror=()=>{
+   img.src='https://loremflickr.com/400/300/'+original+'?lock='+(Date.now()+1);
+ };
+});
+
+
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('img').forEach((img,i)=>{
+   if(img.src.includes('loremflickr.com')){
+      const base=img.src.split('?')[0];
+      img.src=base+'?lock='+(Date.now()+i);
+   }
+ });
+});
+</script>
+
+
+<script>
+document.querySelectorAll('img').forEach(img=>{
+  img.onerror=function(){
+    this.onerror=null;
+    this.src='https://loremflickr.com/400/300/human?lock='+Date.now();
+  };
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.image-wrap').forEach(w=>{
+   const tools=w.querySelector('.img-tools');
+   const card=w.closest('.creature');
+   const title=card ? card.querySelector('.creature-body h3') : null;
+   if(tools && title){
+      title.insertAdjacentElement('afterend', tools);
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.padding='0';
+      tools.style.background='transparent';
+      tools.style.verticalAlign='middle';
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const title=card.querySelector('.creature-body h3');
+   const tools=card.querySelector('.img-tools');
+   if(title && tools){
+      tools.style.display='inline-flex';
+      tools.style.gap='4px';
+      tools.style.marginLeft='6px';
+      tools.style.verticalAlign='middle';
+      tools.style.background='transparent';
+      tools.style.padding='0';
+      tools.style.position='static';
+
+      title.appendChild(tools);
+   }
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.taxonomy-header .left img').forEach(img=>{
+   if(img.parentElement.querySelector('.header-tools')) return;
+
+   const tools=document.createElement('div');
+   tools.className='header-tools';
+   tools.style.display='flex';
+   tools.style.justifyContent='center';
+   tools.style.gap='6px';
+   tools.style.marginTop='4px';
+
+   const r=document.createElement('button');
+   r.textContent='🔄';
+
+   const g=document.createElement('button');
+   g.textContent='🌐';
+
+   r.onclick=(e)=>{
+      e.stopPropagation();
+      img.src=img.src.split('?')[0]+'?v='+Date.now();
+   };
+
+   g.onclick=(e)=>{
+      e.stopPropagation();
+      const q=img.alt || 'animal';
+      window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+
+   const wrap=document.createElement('div');
+   wrap.style.display='flex';
+   wrap.style.flexDirection='column';
+   wrap.style.alignItems='center';
+
+   img.parentNode.insertBefore(wrap,img);
+   wrap.appendChild(img);
+   wrap.appendChild(tools);
+   tools.appendChild(r);
+   tools.appendChild(g);
+ });
+});
+</script>
+
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+
+document.querySelectorAll('.header-tools button:last-child').forEach(btn=>{
+ btn.onclick=(e)=>{
+  e.stopPropagation();
+  const card=btn.closest('.taxonomy-card');
+  const q=[
+   card?.querySelector('.rank')?.innerText||'',
+   card?.querySelector('.name')?.innerText||'',
+   card?.querySelector('.scientific')?.innerText||''
+  ].join(' ');
+  window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+ };
+});
+
+document.querySelectorAll('.creature').forEach(card=>{
+ const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+ if(globe){
+   globe.onclick=(e)=>{
+    e.stopPropagation();
+    const q=(card.querySelector('h3')?.innerText||'')+' '+(card.querySelector('p')?.innerText||'');
+    window.open('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q),'_blank');
+   };
+ }
+});
+
+});
+</script>
+
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ document.querySelectorAll('.creature').forEach(card=>{
+   const globe=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('🌐'));
+   if(!globe) return;
+
+   globe.onclick=(e)=>{
+     e.stopPropagation();
+
+     const titleNode = card.querySelector('h3');
+     let title='';
+     if(titleNode){
+       title=(titleNode.childNodes[0]?.textContent || titleNode.textContent || '').trim();
+       title=title.replace('🔄','').replace('🌐','').trim();
+     }
+
+     const desc=(card.querySelector('p')?.innerText || '').trim();
+
+     const taxonomyCard=card.closest('.taxonomy-card');
+     const rank=(taxonomyCard?.querySelector('.rank')?.innerText || '').trim();
+     const taxonomyName=(taxonomyCard?.querySelector('.name')?.innerText || '').trim();
+
+     const query=(rank+' '+taxonomyName+' '+title+' '+desc).replace(/\s+/g,' ').trim();
+
+     window.open(
+       'https://www.google.com/search?tbm=isch&q='+encodeURIComponent(query),
+       '_blank'
+     );
+   };
+ });
+});
+</script>
+
+</body>
+</html>

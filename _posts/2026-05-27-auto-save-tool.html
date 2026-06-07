@@ -1,0 +1,18 @@
+---
+layout: post
+title: "Auto Save Tool for Document Editors"
+description: "Automatically save your work in notepad or other editors at fixed intervals using AHK v2."
+filename: "AutoSaveTool.ahk"
+categories: [Automation]
+subcategories: "Windows Tools"
+---
+; AutoHotkey v2 - Auto Save Tool
+#Requires AutoHotkey v2.0
+Persistent()
+SetTimer(SaveWork, 30000) ; हर 30 सेकंड में सेव करेगा
+
+SaveWork() {
+    if WinActive("ahk_class Notepad") {
+        Send("^s")
+    }
+}
