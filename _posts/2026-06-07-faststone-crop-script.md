@@ -7,6 +7,7 @@ categories: [Automation]
 subcategories: "FastStone"
 ---
 
+```ahk
 ; AutoHotkey v2 script
 #Requires AutoHotkey v2.0
 
@@ -39,3 +40,4 @@ F2::
 
     Send("x")
 }
+```
