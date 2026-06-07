@@ -7,9 +7,7 @@ categories: [Automation]
 subcategories: "FastStone"
 ---
 
-यहाँ FastStone Image Viewer के लिए AutoHotkey v2 स्क्रिप्ट दी गई है। इसे इस्तेमाल करने के लिए स्क्रिप्ट को `.ahk` फाइल में सेव करें और रन करें।
-
-```autohotkey
+{% highlight autohotkey %}
 ; AutoHotkey v2 script
 #Requires AutoHotkey v2.0
 
@@ -42,3 +40,4 @@ F2::
 
     Send("x")
 }
+{% endhighlight %}
