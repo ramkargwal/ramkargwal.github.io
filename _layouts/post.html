@@ -73,9 +73,16 @@ function getCodeText() {
 
 function copyCode() {
   navigator.clipboard.writeText(getCodeText())
-    .then(() => {
-      alert("Code Copied Successfully!");
-    });
+  .then(() => {
+  const btn = document.querySelector(".copy-btn");
+  const originalText = btn.innerText;
+
+  btn.innerText = "Copied ✓";
+
+  setTimeout(() => {
+    btn.innerText = originalText;
+  }, 1500);
+});
 }
 
 function downloadAHK() {
