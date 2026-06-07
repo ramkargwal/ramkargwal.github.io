@@ -1,16 +1,11 @@
 ---
 layout: post
-title: "Professional & Easy AutoHotkey Script for Cropping Multiple Images in FastStone Image Viewer"
-description: "Professional & Easy AutoHotkey Script for Cropping Multiple Images in FastStone Image Viewer easily with automation tricks."
+title: "AHK Script for Cropping Multiple Images in FastStone Image Viewer"
+description: "Cropping Multiple Images in FastStone Image Viewer easily with automation tricks."
 filename: "FastStoneCropScript.ahk"
 categories: [Automation]
 subcategories: "FastStone"
 ---
-
-इस स्क्रिप्ट का उपयोग करके आप FastStone Image Viewer में कई इमेजेज को आसानी से क्रॉप कर सकते हैं। यह आपके काम को पूरी तरह ऑटोमेट (Automate) कर देती है। 
-
-नीचे ऑफिशियल कोड एडिटर फॉर्मेट में पूरी स्क्रिप्ट दी गई है:
-
 ```autohotkey
 ; AutoHotkey v2 script
 #Requires AutoHotkey v2.0
