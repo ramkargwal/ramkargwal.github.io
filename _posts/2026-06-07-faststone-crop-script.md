@@ -1,10 +1,11 @@
 ---
 layout: post
-title: "AHK Script for Crop Images"
+title: ".ahk Script for Crop Images"
 description: "Cropping Multiple Images in FastStone Image Viewer easily with automation tricks."
 filename: "FastStoneCropScript.ahk"
+language: "AutoHotkey - v2"
 categories: [Automation]
-subcategories: "FastStone"
+subcategories: "AutoHotkey"
 ---
 
 ```ahk
