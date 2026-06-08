@@ -254,6 +254,19 @@ nav a:hover {
   background: #f8fafc;
 }
 
+.post-category{
+  font-size:14px;
+  font-weight:600;
+  opacity:.9;
+  margin-bottom:8px;
+}
+
+.post-meta{
+  margin-top:10px;
+  font-size:14px;
+  opacity:.9;
+}
+
 /* =====================================
    MAIN LAYOUT
 ===================================== */
