@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Raman Download Manager"
-description: "A powerful Python download manager with multi-threaded downloading, pause/resume support, speed monitoring, automatic file organization, and batch downloads."
+description: "A powerful Python download manager with automatic file organization, and batch downloads."
 filename: "RamanADM.py"
 language: "Python 3"
 categories: [Software]
