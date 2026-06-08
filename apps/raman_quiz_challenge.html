@@ -457,24 +457,104 @@ Never generate fewer than 50 questions.
 
 ### CRITICAL REQUIREMENT 2: Language Rules
 
-* All questions and options must be written in Hindi.
+* All questions must be written primarily in Hindi.
 * All technical terms, scientific names, programming concepts, tools, software names, acronyms, units, formulas, elements, and specialized terminology must remain strictly in English.
 * Never translate technical words into Hindi.
+* Embed English technical terms naturally within Hindi sentences whenever appropriate.
 
 Examples:
 
 * HTML
 * CSS
 * JavaScript
-* Variable
-* Database
-* Array
-* Electron
-* CPU
 * Python
+* Database
+* CPU
+* RAM
+* API
+* SQL
+* Algorithm
 
 Correct Example:
+
 "इस Array का मुख्य कार्य क्या है?"
+
+### CRITICAL REQUIREMENT 2A: Bilingual Content Rule
+
+The quiz must use a bilingual Hindi-English format wherever reasonably possible.
+
+#### Question Rules
+
+* Questions should primarily be written in Hindi.
+* Whenever a commonly used English term exists and helps learning, include it in brackets.
+
+Examples:
+
+* "पृथ्वी (Earth) सूर्य (Sun) के चारों ओर कितने समय में चक्कर लगाती है?"
+* "कंप्यूटर (Computer) का मुख्य कार्य क्या है?"
+
+#### Answer Option Rules
+
+* Whenever possible, every answer option must be written in BOTH Hindi and English.
+
+Examples:
+
+* "पृथ्वी (Earth)"
+
+* "मंगल (Mars)"
+
+* "बृहस्पति (Jupiter)"
+
+* "शुक्र (Venus)"
+
+* "शिक्षक (Teacher)"
+
+* "छात्र (Student)"
+
+* "विद्यालय (School)"
+
+* "पुस्तक (Book)"
+
+#### Technical Term Exception
+
+The following types of terms should normally remain in English only unless a widely accepted bilingual form naturally exists:
+
+* Programming languages
+* Software names
+* Hardware names
+* Scientific names
+* Chemical symbols
+* Formulas
+* Units
+* Acronyms
+* Technical standards
+* Database terminology
+* Networking terminology
+* Engineering terminology
+
+Examples:
+
+* HTML
+* CSS
+* JavaScript
+* Python
+* CPU
+* RAM
+* SSD
+* Database
+* Algorithm
+* API
+* SQL
+
+#### Priority Order
+
+Use the following preference:
+
+1. Hindi + English (Preferred)
+2. English Only (For technical/specialized terms)
+3. Hindi Only (Only when no meaningful English equivalent is commonly used)
+
+The bilingual format should be applied consistently throughout the quiz to help learners understand terminology in both Hindi and English.
 
 ### CRITICAL REQUIREMENT 3: Question Quality
 
@@ -489,6 +569,8 @@ Distribute questions approximately as follows:
 
 Avoid repetition.
 
+Do not ask the same concept in multiple ways unless absolutely necessary.
+
 ### CRITICAL REQUIREMENT 4: Options Quality
 
 Each question must contain exactly 4 options.
@@ -497,13 +579,35 @@ Requirements:
 
 * Only one option should be correct.
 * Incorrect options should be believable.
-* Avoid obvious wrong answers.
+* Avoid obviously wrong answers.
 * Randomize the position of the correct answer.
 
-Correct answer distribution should be balanced across:
-0, 1, 2, and 3.
+Balance correct answer positions across all questions:
 
-### CRITICAL REQUIREMENT 5: Output Format
+* Around 25% with answer index 0
+* Around 25% with answer index 1
+* Around 25% with answer index 2
+* Around 25% with answer index 3
+
+### CRITICAL REQUIREMENT 5: Content Coverage
+
+Cover as many concepts from the source content as possible.
+
+Include a mix of:
+
+* Facts
+* Definitions
+* Functions
+* Features
+* Advantages
+* Disadvantages
+* Examples
+* Comparisons
+* Applications
+* Cause and effect
+* Real-life usage
+
+### CRITICAL REQUIREMENT 6: Output Format
 
 Return ONLY raw quiz objects.
 
@@ -516,6 +620,8 @@ Do NOT write:
 * Code blocks
 * Introductory text
 * Summary text
+* Any text before the first question
+* Any text after the last question
 
 Strict Format:
 
@@ -523,14 +629,22 @@ Strict Format:
 
 Rules:
 
-1. q = Question
-2. o = Exactly 4 options
-3. a = Correct option index (0-3)
+1. q = Question text
+2. o = Array containing EXACTLY 4 options
+3. a = Correct option index (0–3)
 4. Every object must end with a comma
-5. Do NOT wrap objects inside []
-6. Do NOT generate any extra text before or after the quiz
+5. Do NOT wrap objects inside square brackets [ ]
+6. Do NOT generate JSON formatting
+7. Do NOT generate numbering
+8. Do NOT generate markdown
+9. Do NOT generate comments
+10. Output must be directly copy-paste compatible with a quiz engine
 
-If you understand these instructions, respond only with:
+### FINAL INSTRUCTION
+
+After receiving any topic, lesson, article, transcript, document, notes, or subject name, immediately generate EXACTLY 50 UNIQUE multiple-choice questions following ALL rules above.
+
+If you understand these instructions, respond ONLY with:
 
 Ready for your topic/content!
 `;
