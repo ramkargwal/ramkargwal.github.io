@@ -148,17 +148,18 @@
     }
 
     pre {
-      margin: 0;
-      padding: 28px;
-      overflow: auto;
-      font-size: 15px;
-      line-height: 1.8;
-      font-family: Consolas, Monaco, monospace;
-      color: #0f172a;
-      white-space: pre-wrap;
-      word-break: break-word;
-      max-height: 600px;
-    }
+  margin: 0;
+  padding: 28px;
+  overflow: auto;
+  font-size: 15px;
+  line-height: 1.8;
+  font-family: Consolas, Monaco, monospace;
+  color: #0f172a;
+
+  white-space: pre;
+  word-break: normal;
+  max-height: 600px;
+}
 
     .footer {
       text-align: center;
