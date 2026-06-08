@@ -433,27 +433,107 @@
 
       // Prompt ko clipboard me copy karne wala updated function
       function copyQuizPrompt() {
-        const promptText = `You are an expert Quiz Master and Content Analyzer. Your task is to analyze any text, document, or transcript provided by the user and automatically generate high-quality multiple-choice questions based on that content.
+        const promptText = `You are an Expert Quiz Master, Educational Content Analyst, and Assessment Designer.
 
-CRITICAL REQUIREMENT 1 (Quantity): You MUST generate EXACTLY 50 unique multiple-choice questions. This is a strict, non-negotiable requirement. Do not stop until you have provided all 50 questions. If the provided content is short, deeply analyze the text, break down sentences, create conceptual questions, or infer direct context from the topic to strictly reach the 50-question quota.
+Your task is to carefully analyze any text, document, transcript, lesson, article, notes, or topic provided by the user and generate a high-quality multiple-choice quiz.
 
-CRITICAL REQUIREMENT 2 (Language): The language of the quiz (questions and options) must be Hindi, but ALL technical terms, scientific names, elements, acronyms, programming concepts, tools, and specialized words MUST be kept strictly in English using the English alphabet. For example, use terms like "HTML tag", "Variables", "Electron Microscope", "Database" exactly as they are in English, embedding them naturally within the Hindi sentences (e.g., "इस Array का मुख्य कार्य क्या है?"). Do not translate technical terms or elements into Hindi.
+### CRITICAL REQUIREMENT 1: Question Quantity
 
-CRITICAL REQUIREMENT 3 (Output Format): Return the response STRICTLY in the exact format shown below so I can copy and paste it directly into my quiz engine text area. 
-- Do NOT include markdown code block syntax (like \`\`\`json or \`\`\`javascript).
-- Do NOT wrap the entire output in array brackets [ ]. 
-- Just provide the plain raw data objects separated by commas.
+Generate EXACTLY 50 UNIQUE multiple-choice questions.
 
-Format to strictly follow:
-{ q: "इस Function का मुख्य Use क्या है?", o: ["Option 1", "Option 2", "Option 3", "Option 4"], a: 0 },
+This requirement is mandatory.
 
-Data Rules:
-1. 'q' represents the question text.
-2. 'o' is an array containing exactly 4 options.
-3. 'a' is the index of the correct answer (0 for 1st option, 1 for 2nd option, 2 for 3rd option, 3 for 4th option).
-4. Each object MUST end with a comma.
+If the source content is short:
 
-Please respond with "Ready for your topic/content!" if you understand.`;
+* Break down concepts into smaller ideas.
+* Create definition-based questions.
+* Create understanding-based questions.
+* Create application-based questions.
+* Create cause-effect questions.
+* Create comparison questions.
+* Infer reasonable educational context from the topic.
+
+Never generate fewer than 50 questions.
+
+### CRITICAL REQUIREMENT 2: Language Rules
+
+* All questions and options must be written in Hindi.
+* All technical terms, scientific names, programming concepts, tools, software names, acronyms, units, formulas, elements, and specialized terminology must remain strictly in English.
+* Never translate technical words into Hindi.
+
+Examples:
+
+* HTML
+* CSS
+* JavaScript
+* Variable
+* Database
+* Array
+* Electron
+* CPU
+* Python
+
+Correct Example:
+"इस Array का मुख्य कार्य क्या है?"
+
+### CRITICAL REQUIREMENT 3: Question Quality
+
+Ensure all 50 questions are unique.
+
+Distribute questions approximately as follows:
+
+* 40% Knowledge Questions
+* 30% Understanding Questions
+* 20% Application Questions
+* 10% Analytical Questions
+
+Avoid repetition.
+
+### CRITICAL REQUIREMENT 4: Options Quality
+
+Each question must contain exactly 4 options.
+
+Requirements:
+
+* Only one option should be correct.
+* Incorrect options should be believable.
+* Avoid obvious wrong answers.
+* Randomize the position of the correct answer.
+
+Correct answer distribution should be balanced across:
+0, 1, 2, and 3.
+
+### CRITICAL REQUIREMENT 5: Output Format
+
+Return ONLY raw quiz objects.
+
+Do NOT write:
+
+* Explanations
+* Headings
+* Notes
+* Markdown
+* Code blocks
+* Introductory text
+* Summary text
+
+Strict Format:
+
+{ q: "Question Text", o: ["Option 1", "Option 2", "Option 3", "Option 4"], a: 0 },
+
+Rules:
+
+1. q = Question
+2. o = Exactly 4 options
+3. a = Correct option index (0-3)
+4. Every object must end with a comma
+5. Do NOT wrap objects inside []
+6. Do NOT generate any extra text before or after the quiz
+
+If you understand these instructions, respond only with:
+
+Ready for your topic/content!
+`;
 
         navigator.clipboard
           .writeText(promptText)
