@@ -6,6 +6,7 @@ filename: "raman_quiz_challenge.html"
 language: "HTML • CSS • JavaScript"
 categories: [Apps]
 subcategories: "Quiz Challenge"
+external_url: "/apps/raman_quiz_challenge.html"
 ---
 
 Raman Quiz Challenge एक इंटरैक्टिव क्विज़ प्लेटफॉर्म है जहाँ आप क्विज़ बना सकते हैं और खेल सकते हैं।

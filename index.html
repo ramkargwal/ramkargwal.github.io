@@ -168,8 +168,14 @@ title: Home
       {% endif %}
       
       <h2 class="post-title">
-        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-      </h2>
+
+{% if post.external_url %}
+  <a href="{{ post.external_url }}">{{ post.title }}</a>
+{% else %}
+  <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+{% endif %}
+
+</h2>
       
       <p class="post-excerpt">
         {{ post.description | default: post.excerpt | strip_html | truncatewords: 35 }}
