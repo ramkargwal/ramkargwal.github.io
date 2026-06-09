@@ -4,6 +4,7 @@ layout: post
 title: "Morse Code Studio"
 description: "Convert text to Morse code and decode Morse messages instantly with a built-in reference table and copy tools."
 filename: "Morse_code.html"
+author: "Ram Kargwal"
 language: "HTML • CSS • JavaScript"
 categories: [Apps]
 subcategories: "Communication Tools"
