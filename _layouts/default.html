@@ -16,7 +16,14 @@
   <body>
     <header>
       <div class="nav-container">
-        <a href="{{ '/' | relative_url }}" class="logo">Ram Kargwal</a>
+        <a href="{{ '/' | relative_url }}" class="logo">
+          <img
+            src="{{ '/assets/images/profile.jpg' | relative_url }}"
+            alt="Ram Kargwal"
+            class="profile-pic"
+          />
+          <span>Ram Kargwal</span>
+        </a>
         <nav>
           <ul>
             <li><a href="#">Game</a></li>
@@ -79,7 +86,8 @@
               >
             </li>
             <li>
-              <a href="{{ '/apps/game/raman_quiz_challenge.html' | relative_url }}"
+              <a
+                href="{{ '/apps/game/raman_quiz_challenge.html' | relative_url }}"
                 >Raman Quiz Challenge<span>🏆</span></a
               >
             </li>
