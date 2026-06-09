@@ -5,12 +5,12 @@ title: Home
 
 <style>
   /* --- SUPER PARENT BACKGROUND FIX --- */
-  *:has(> .posts-container), 
-  .posts-container, 
-  .main-content, 
-  .wrapper, 
-  .page-content, 
-  .home, 
+  *:has(> .posts-container),
+  .posts-container,
+  .main-content,
+  .wrapper,
+  .page-content,
+  .home,
   article {
     background-color: transparent !important;
     background: transparent !important;
@@ -29,20 +29,24 @@ title: Home
     background: #ffffff !important;
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05) !important;
+    box-shadow:
+      0 4px 6px -1px rgb(0 0 0 / 0.05),
+      0 2px 4px -2px rgb(0 0 0 / 0.05) !important;
     border: 2px solid rgba(226, 232, 240, 0.6) !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .post-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1) !important;
+    box-shadow:
+      0 20px 25px -5px rgb(0 0 0 / 0.1),
+      0 8px 10px -6px rgb(0 0 0 / 0.1) !important;
   }
 
   .post-image-wrapper {
     height: 12px;
     background: linear-gradient(90deg, #8b5cf6, #ee9977);
-}
+  }
 
   .post-image {
     width: 100%;
@@ -155,34 +159,37 @@ title: Home
 </style>
 
 <div class="posts-container" id="posts-container">
-  
   {% for post in site.posts %}
-  <article class="post-card" data-title="{{ post.title | downcase }}" data-excerpt="{{ post.description | default: post.excerpt | strip_html | downcase }}">
-    <div class="post-image-wrapper">
-      
-    </div>
-    
+  <article
+    class="post-card"
+    data-title="{{ post.title | downcase }}"
+    data-excerpt="{{ post.description | default: post.excerpt | strip_html | downcase }}"
+  >
+    <div class="post-image-wrapper"></div>
+
     <div class="post-content">
       {% if post.categories.size > 0 %}
-        <span class="category-tag">{{ post.categories | first }}</span>
+      <span class="category-tag">{{ post.categories | first }}</span>
       {% endif %}
-      
+
       <h2 class="post-title">
+        {% if post.external_url %}
+        <a href="{{ post.external_url }}">{{ post.title }}</a>
+        {% else %}
+        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        {% endif %}
+      </h2>
 
-{% if post.external_url %}
-  <a href="{{ post.external_url }}">{{ post.title }}</a>
-{% else %}
-  <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-{% endif %}
-
-</h2>
-      
       <p class="post-excerpt">
-        {{ post.description | default: post.excerpt | strip_html | truncatewords: 35 }}
+        {{ post.description | default: post.excerpt | strip_html |
+        truncatewords: 35 }}
       </p>
-      
+
       <div class="post-meta">
-        <span>By <strong>{{ post.author | default: "Sudarshan Kumar" }}</strong></span>
+        <span
+          >By
+          <strong>{{ post.author | default: "Sudarshan Kumar" }}</strong></span
+        >
         <span>{{ post.date | date: "%B %d, %Y" }}</span>
       </div>
     </div>
@@ -193,23 +200,23 @@ title: Home
 </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
+  document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.querySelector(".search-box");
     const postCards = Array.from(document.querySelectorAll(".post-card"));
     const paginationContainer = document.getElementById("pagination-controls");
-    
+
     const postsPerPage = 3; // एक पेज पर 3 पोस्ट दिखेंगे
     let currentPage = 1;
-    let filteredCards = [...postCards]; 
+    let filteredCards = [...postCards];
 
     function displayPage(page) {
       currentPage = page;
       const startIndex = (page - 1) * postsPerPage;
       const endIndex = startIndex + postsPerPage;
 
-      postCards.forEach(card => card.style.display = "none");
+      postCards.forEach((card) => (card.style.display = "none"));
 
-      filteredCards.slice(startIndex, endIndex).forEach(card => {
+      filteredCards.slice(startIndex, endIndex).forEach((card) => {
         card.style.display = "";
       });
 
@@ -220,7 +227,7 @@ title: Home
       paginationContainer.innerHTML = "";
       const totalPages = Math.ceil(filteredCards.length / postsPerPage);
 
-      if (totalPages <= 1) return; 
+      if (totalPages <= 1) return;
 
       if (currentPage > 1) {
         const prevBtn = document.createElement("a");
@@ -248,10 +255,10 @@ title: Home
     }
 
     if (searchInput) {
-      searchInput.addEventListener("keyup", function(e) {
+      searchInput.addEventListener("keyup", function (e) {
         const searchTerm = e.target.value.toLowerCase().trim();
 
-        filteredCards = postCards.filter(card => {
+        filteredCards = postCards.filter((card) => {
           const title = card.getAttribute("data-title");
           const excerpt = card.getAttribute("data-excerpt");
           return title.includes(searchTerm) || excerpt.includes(searchTerm);

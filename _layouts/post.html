@@ -2,39 +2,29 @@
 layout: default
 ---
 
-<div class="header" style="text-align:center;">
-
-  <div class="header" style="text-align:center;">
-<h1>{{ page.title }}</h1>
-<p>{{ page.description }}</p>
-</div>
-
+<div class="header" style="text-align: center">
+  <div class="header" style="text-align: center">
+    <h1>{{ page.title }}</h1>
+    <p>{{ page.description }}</p>
+  </div>
 </div>
 
 <div class="content">
   <div class="toolbar">
     {% if page.language %}
-<div class="language">
-  {{ page.language }}
-</div>
-{% endif %}
+    <div class="language">{{ page.language }}</div>
+    {% endif %}
 
     <div class="buttons">
-      <button class="copy-btn" onclick="copyCode()">
-        📋 Copy
-      </button>
+      <button class="copy-btn" onclick="copyCode()">📋 Copy</button>
 
-      <button class="download-btn" onclick="downloadAHK()">
-        ⬇ Download
-      </button>
+      <button class="download-btn" onclick="downloadAHK()">⬇ Download</button>
     </div>
   </div>
 
   <div class="code-container">
     <div class="code-header">
-      <div class="file-name" id="script-filename">
-        {{ page.filename }}
-      </div>
+      <div class="file-name" id="script-filename">{{ page.filename }}</div>
 
       <div class="dots">
         <div class="dot red"></div>
@@ -43,84 +33,73 @@ layout: default
       </div>
     </div>
 
-    <div id="code">
-Loading code...
-</div>
+    <div id="code">Loading code...</div>
   </div>
 </div>
 
 <div class="footer">
-  📅 दिनांक: {{ page.date | date: "%d-%m-%Y" }}
-
-  {% if page.categories.size > 0 %}
-    | 📁 कैटेगरी: {{ page.categories | join: ", " }}
-  {% endif %}
-
-  {% if page.subcategories %}
-    | 🏷️ सब-कैटेगरी: {{ page.subcategories }}
-  {% endif %}
+  📅 दिनांक: {{ page.date | date: "%d-%m-%Y" }} {% if page.categories.size > 0
+  %} | 📁 कैटेगरी: {{ page.categories | join: ", " }} {% endif %} {% if
+  page.subcategories %} | 🏷️ सब-कैटेगरी: {{ page.subcategories }} {% endif %}
 </div>
 
 <script>
-
   const sourceFile = "{{ page.source_file }}";
 
-if(sourceFile){
-  fetch(sourceFile)
-    .then(response => response.text())
-    .then(code => {
+  if (sourceFile) {
+    fetch(sourceFile)
+      .then((response) => response.text())
+      .then((code) => {
+        code = code
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
 
-      code = code
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;");
+        document.getElementById("code").innerHTML =
+          `<pre><code>${code}</code></pre>`;
+      });
+  }
+  const fileName = "{{ page.filename }}";
 
-      document.getElementById("code").innerHTML =
-        `<pre><code>${code}</code></pre>`;
-    });
-}
-const fileName = "{{ page.filename }}";
+  function getCodeText() {
+    const codeElement = document.querySelector("#code code");
 
-function getCodeText() {
-  const codeElement = document.querySelector("#code code");
+    if (codeElement) {
+      return codeElement.innerText;
+    }
 
-  if (codeElement) {
-    return codeElement.innerText;
+    return document.getElementById("code").innerText;
   }
 
-  return document.getElementById("code").innerText;
-}
+  function copyCode() {
+    navigator.clipboard.writeText(getCodeText()).then(() => {
+      const btn = document.querySelector(".copy-btn");
+      const originalText = btn.innerText;
 
-function copyCode() {
-  navigator.clipboard.writeText(getCodeText())
-  .then(() => {
-  const btn = document.querySelector(".copy-btn");
-  const originalText = btn.innerText;
+      btn.innerText = "Copied ✓";
 
-  btn.innerText = "Copied ✓";
+      setTimeout(() => {
+        btn.innerText = originalText;
+      }, 1500);
+    });
+  }
 
-  setTimeout(() => {
-    btn.innerText = originalText;
-  }, 1500);
-});
-}
+  function downloadAHK() {
+    const codeText = getCodeText();
 
-function downloadAHK() {
-  const codeText = getCodeText();
+    const blob = new Blob([codeText], {
+      type: "text/plain",
+    });
 
-  const blob = new Blob([codeText], {
-    type: "text/plain"
-  });
+    const link = document.createElement("a");
 
-  const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName || "script.ahk";
 
-  link.href = URL.createObjectURL(blob);
-  link.download = fileName || "script.ahk";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-
-  URL.revokeObjectURL(link.href);
-}
+    URL.revokeObjectURL(link.href);
+  }
 </script>
