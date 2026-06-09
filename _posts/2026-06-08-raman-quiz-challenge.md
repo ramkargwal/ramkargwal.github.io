@@ -4,9 +4,9 @@ title: "Raman Quiz Challenge"
 description: "Create and play interactive quizzes with a modern challenge-based platform."
 filename: "raman_quiz_challenge.html"
 language: "HTML • CSS • JavaScript"
-categories: [Apps]
+categories: [Games]
 subcategories: "Quiz Challenge"
-external_url: "/apps/raman_quiz_challenge.html"
+external_url: "/apps/game/raman_quiz_challenge.html"
 ---
 
 Raman Quiz Challenge एक इंटरैक्टिव क्विज़ प्लेटफॉर्म है जहाँ आप क्विज़ बना सकते हैं और खेल सकते हैं।
