@@ -1,1097 +1,1187 @@
 <!doctype html>
 <html lang="hi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Raman Quiz Challenge</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <style>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raman Quiz Challenge</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --card: #ffffff;
+      --accent: #2563eb;
+      --correct: #16a34a;
+      --wrong: #dc2626;
+      --text: #1e293b;
+      --muted: #64748b;
+      --bg: #f8fafc;
+      --border: #e2e8f0;
+      --option-bg: #ffffff;
+      --option-hover: #fffbeb;
+      --header-from: #2563eb;
+      --header-to: #4f46e5;
+      --progress-bg: #e5e7eb;
+      --timer-normal: #0ca806;
+      --timer-warn: #f59e0b;
+      --timer-danger: #dc2626;
+    }
+
+    @media (prefers-color-scheme: dark) {
       :root {
-        --card: #ffffff;
-        --accent: #2563eb;
-        --correct: #16a34a;
-        --wrong: #dc2626;
-        --text: #1e293b;
-        --muted: #64748b;
+        --card: #1e293b;
+        --text: #f1f5f9;
+        --muted: #94a3b8;
+        --bg: #0f172a;
+        --border: #334155;
+        --option-bg: #1e293b;
+        --option-hover: #2d3748;
+        --progress-bg: #334155;
       }
+    }
 
-      * {
-        font-family: "Poppins", sans-serif;
-      }
+    * { font-family: "Poppins", sans-serif; box-sizing: border-box; }
 
-      /* Quiz Card CSS */
-      .quiz-card {
-        width: 100%;
-        max-width: 1200px;
-        background: var(--card);
-        border-radius: 25px;
-        overflow: hidden;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
-      }
+    body {
+      background: linear-gradient(135deg, #d1fae5 0%, #cffafe 40%, #dbeafe 100%);
+      min-height: 100vh;
+      margin: 0; padding: 0;
+    }
 
-      .header {
-        padding: 25px;
-        background: linear-gradient(135deg, #2563eb, #4f46e5);
-        color: white;
-      }
+    @media (prefers-color-scheme: dark) {
+      body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+    }
 
-      .top-row {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: relative;
-      }
+    /* ── Quiz Card ── */
+    .quiz-card {
+      width: 100%;
+      max-width: 1200px;
+      background: var(--card);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.13);
+    }
 
-      .title {
-        font-size: 24px;
-        font-weight: 700;
-        text-align: center;
-      }
+    /* ── Header ── */
+    .header {
+      padding: 20px 24px;
+      background: linear-gradient(135deg, var(--header-from), var(--header-to));
+      color: white;
+    }
 
-      .score {
-        position: absolute;
-        right: 0;
-        background: white;
-        color: #111;
-        padding: 10px 18px;
-        border-radius: 999px;
-        font-weight: 600;
-      }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
 
-      .progress-area {
-        padding: 20px 25px 0;
-      }
+    .quiz-controls { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
 
-      .progress-info {
-        display: flex;
-        justify-content: space-between;
-        font-size: 14px;
-        margin-bottom: 10px;
-        color: var(--muted);
-      }
+    #numQuestions {
+      width: 60px; padding: 5px 8px;
+      border: 2px solid rgba(255,255,255,0.5);
+      border-radius: 8px; font-size: 15px;
+      font-weight: 600; text-align: center;
+      background: rgba(255,255,255,0.2); color: white; outline: none;
+    }
+    #numQuestions:focus { border-color: white; background: rgba(255,255,255,0.3); }
 
-      .progress-bar {
-        height: 20px;
-        background: #e5e7eb;
-        border-radius: 999px;
-        overflow: hidden;
-      }
+    #startBtn {
+      padding: 5px 14px; border: none; border-radius: 8px;
+      background: white; color: #2563eb;
+      font-weight: 700; font-size: 15px; cursor: pointer; transition: 0.2s;
+    }
+    #startBtn:hover { background: #f0f4ff; transform: scale(1.04); }
 
-      .progress-fill {
-        height: 100%;
-        width: 0%;
-        background: linear-gradient(90deg, #2563eb, #3b82f6, #60a5fa);
-        transition: 0.3s;
-      }
+    .title { font-size: 24px; font-weight: 700; text-align: center; flex: 1; min-width: 160px; }
 
-      .content {
-        padding: 30px;
-      }
+    .score-box {
+      background: white; color: #111;
+      padding: 6px 16px; border-radius: 999px;
+      font-weight: 700; font-size: 14px; flex-shrink: 0;
+    }
 
-      .question-wrapper {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 15px;
-        margin-bottom: 25px;
-      }
+    /* ── Progress ── */
+    .progress-area { padding: 16px 24px 0; }
 
-      .question {
-        font-size: 28px;
-        font-weight: 700;
-        line-height: 1.4;
-        color: var(--text);
-        flex: 1;
-        transition: 1.3s;
-      }
+    .progress-info {
+      display: flex; justify-content: space-between;
+      font-size: 13px; margin-bottom: 8px; color: var(--muted);
+    }
 
-      .speak-btn {
-        width: 40px;
-        height: 40px;
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        font-size: 28px;
-        background: linear-gradient(135deg, #2563eb, #4f46e5);
-        color: white;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
-      }
+    .progress-bar {
+      height: 20px; background: var(--progress-bg);
+      border-radius: 999px; overflow: hidden;
+    }
 
-      .speak-btn:hover {
-        transform: translateY(-3px) scale(1.05);
-        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
-        background: linear-gradient(135deg, #3b82f6, #6366f1);
-      }
+    .progress-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, #2563eb, #60a5fa);
+      transition: width 0.4s ease;
+    }
 
-      .speak-btn:active {
-        transform: translateY(2px) scale(0.95);
-        box-shadow: 0 2px 5px rgba(37, 99, 235, 0.3);
-      }
+    /* ── Timer ── */
+    .timer-row {
+      display: flex; align-items: center;
+      gap: 10px; padding: 10px 24px 0;
+    }
 
-      .options {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-      }
+    .timer-bar-wrap {
+      flex: 1; height: 8px;
+      background: var(--progress-bg);
+      border-radius: 999px; overflow: hidden;
+    }
 
-      .option {
-        padding: 18px;
-        border: 2px solid #dbeafe;
-        border-radius: 18px;
-        cursor: pointer;
-        font-size: 18px;
-        font-weight: 500;
-        background: white;
-        transition: all 0.25s ease;
-      }
+    .timer-bar {
+      height: 100%; width: 100%;
+      background: var(--timer-normal);
+      transition: width 1s linear, background 0.3s;
+      border-radius: 999px;
+    }
 
-      .option.correct {
-        background: #dcfce7;
-        border-color: var(--correct);
-        animation: correctPulse 0.6s;
-        background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-        border-color: #16a34a;
-        box-shadow:
-          0 0 10px rgba(22, 163, 74, 0.35),
-          0 0 25px rgba(22, 163, 74, 0.25);
-      }
+    .timer-count {
+      font-size: 14px; font-weight: 700;
+      min-width: 28px; text-align: right;
+      color: var(--timer-normal);
+      transition: color 0.3s;
+    }
 
-      @keyframes correctPulse {
-        0% {
-          transform: scale(0.95);
-        }
-        50% {
-          transform: scale(1.05);
-        }
-        100% {
-          transform: scale(1);
-        }
-      }
+    .timer-count.warn { color: var(--timer-warn); }
+    .timer-count.danger { color: var(--timer-danger); }
+    .timer-bar.warn { background: var(--timer-warn); }
+    .timer-bar.danger { background: var(--timer-danger); }
 
-      .option.wrong {
-        background: #fee2e2;
-        border-color: var(--wrong);
-      }
+    /* ── Content ── */
+    .content { padding: 24px 24px 20px; }
 
-      .option:hover:not(.correct):not(.wrong) {
-        background: linear-gradient(135deg, #fff8e1, #ffe082);
-        transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 15px 30px rgba(37, 99, 235, 0.18);
-      }
+    .question-wrapper {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; gap: 12px; margin-bottom: 20px;
+    }
 
-      .feedback {
-        margin-top: 20px;
-        font-size: 18px;
-        font-weight: 700;
-        min-height: 30px;
-      }
+    .question {
+      font-size: 28px; font-weight: 700;
+      line-height: 1.5; color: var(--text); flex: 1;
+    }
 
-      .result {
-        display: none;
-        padding: 40px;
-        text-align: center;
-      }
+    @media (max-width: 480px) {
+      .question { font-size: 16px; }
+    }
 
-      .restart {
-        border: none;
-        padding: 14px 28px;
-        font-size: 18px;
-        border-radius: 999px;
-        cursor: pointer;
-        background: linear-gradient(135deg, #2563eb, #4f46e5);
-        color: white;
-        font-weight: 600;
-        margin: 6px;
-      }
+    .speak-btn {
+      width: 40px; height: 40px; border: none; border-radius: 50%;
+      cursor: pointer; font-size: 20px; flex-shrink: 0;
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      color: white; transition: all 0.25s;
+      box-shadow: 0 4px 10px rgba(37,99,235,0.25);
+    }
+    .speak-btn:hover { transform: translateY(-2px) scale(1.06); box-shadow: 0 8px 20px rgba(37,99,235,0.4); }
+    .speak-btn:active { transform: scale(0.95); }
 
-      #questionNumber,
-      #remaining {
-        background: #eef2ff;
-        padding: 6px 12px;
-        border-radius: 999px;
-        font-weight: 600;
-      }
+    /* ── Options ── */
+    .options { display: flex; flex-direction: column; gap: 12px; }
 
-      .option.disabled {
-        opacity: 0.75;
-        cursor: not-allowed;
-      }
+    .option {
+      padding: 14px 18px;
+      border: 2px solid var(--border);
+      border-radius: 16px; cursor: pointer;
+      font-size: 18px; font-weight: 500;
+      background: var(--option-bg);
+      color: var(--text);
+      transition: all 0.22s ease;
+      display: flex; align-items: center; gap: 12px;
+    }
 
-      .score.pop {
-        animation: pop 0.4s;
-      }
+    .option-label {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: #eff6ff; color: #2563eb;
+      font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: 0.2s;
+    }
 
-      @keyframes pop {
-        50% {
-          transform: scale(1.15);
-        }
-        100% {
-          transform: scale(1);
-        }
-      }
+    .option:hover:not(.correct):not(.wrong):not(.disabled) {
+      background: var(--option-hover);
+      transform: translateY(-2px) scale(1.015);
+      box-shadow: 0 10px 24px rgba(37,99,235,0.14);
+      border-color: #93c5fd;
+    }
 
-      #finalScore {
-        font-size: 64px;
-        color: #2563eb;
-      }
+    .option:hover:not(.correct):not(.wrong):not(.disabled) .option-label {
+      background: #2563eb; color: white;
+    }
 
-      .quiz-controls {
-        position: absolute;
-        left: 0;
-        display: flex;
-        gap: 10px;
-        align-items: center;
-      }
+    .option.correct {
+      background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+      border-color: var(--correct);
+      box-shadow: 0 0 0 3px rgba(22,163,74,0.2);
+      animation: correctPulse 0.5s;
+    }
 
-      #numQuestions {
-        width: 65px;
-        padding: 6px;
-        border: 2px solid rgba(255, 255, 255, 0.5);
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 600;
-        text-align: center;
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        outline: none;
-      }
+    .option.correct .option-label { background: #16a34a; color: white; }
 
-      #numQuestions:focus {
-        border-color: white;
-        background: rgba(255, 255, 255, 0.3);
-      }
+    .option.wrong {
+      background: #fee2e2; border-color: var(--wrong);
+      box-shadow: 0 0 0 3px rgba(220,38,38,0.15);
+    }
 
-      #startBtn {
-        padding: 6px 14px;
-        border: none;
-        border-radius: 8px;
-        background: white;
-        color: #2563eb;
-        font-weight: 700;
-        font-size: 16px;
-        cursor: pointer;
-        transition: 0.3s;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
+    .option.wrong .option-label { background: #dc2626; color: white; }
 
-      #startBtn:hover {
-        background: #f8fafc;
-        transform: scale(1.05);
-      }
-    </style>
-  </head>
+    .option.disabled { opacity: 0.7; cursor: not-allowed; pointer-events: none; }
 
-  <body
-    class="bg-gradient-to-br from-green-100 via-cyan-100 to-blue-200 min-h-screen m-0 p-0"
-  >
-    <div
-      id="homePage"
-      class="h-screen p-4 sm:p-6 lg:p-8 flex flex-col justify-center items-center"
-    >
-      <div class="w-full max-w-7xl flex flex-col flex-grow py-8 h-full">
-        <div
-          class="flex flex-col mb-6 text-center bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 p-8 rounded-2xl shadow-2xl relative overflow-hidden border border-blue-400"
-        >
-          <div
-            class="absolute -top-6 -right-6 text-white opacity-10 text-9xl transform rotate-12 pointer-events-none"
-          >
-            🧩
-          </div>
-          <div
-            class="absolute -bottom-8 -left-8 text-white opacity-10 text-8xl transform -rotate-12 pointer-events-none"
-          >
-            ✨
-          </div>
+    @keyframes correctPulse {
+      0% { transform: scale(0.97); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
 
-          <h2
-            class="text-4xl font-extrabold text-white mb-3 relative z-10 tracking-tight drop-shadow-lg"
-          >
-            📝 Create a Quiz
-          </h2>
-          <p class="text-lg text-blue-100 font-medium relative z-10">
-            Paste Q&A Data Use Copy Prompt to generate data from any AI, then
-            paste it here.
-          </p>
+    /* ── Next Button ── */
+    .next-btn {
+      display: none;
+      margin-top: 18px;
+      padding: 12px 32px;
+      font-size: 16px; font-weight: 700;
+      border: none; border-radius: 999px; cursor: pointer;
+      background: linear-gradient(135deg, #2563eb, #4f46e5);
+      color: white; transition: all 0.25s;
+      box-shadow: 0 4px 14px rgba(37,99,235,0.3);
+    }
+
+    .next-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(37,99,235,0.4); }
+    .next-btn:active { transform: scale(0.97); }
+
+    /* ── Feedback ── */
+    .feedback {
+      margin-top: 14px;
+      font-size: 16px; font-weight: 700;
+      min-height: 28px; color: var(--text);
+    }
+
+    /* ── Result Screen ── */
+    .result {
+      display: none; padding: 36px 28px;
+      text-align: center; color: var(--text);
+    }
+
+    .result-score-ring {
+      width: 130px; height: 130px;
+      border-radius: 50%; margin: 0 auto 16px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      font-size: 36px; font-weight: 700;
+      color: white;
+    }
+
+    .result-score-ring .sub { font-size: 13px; font-weight: 500; opacity: 0.85; }
+
+    .stats-row {
+      display: flex; justify-content: center;
+      gap: 12px; flex-wrap: wrap; margin: 16px 0;
+    }
+
+    .stat-pill {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 12px; padding: 10px 18px;
+      font-size: 13px; font-weight: 600; color: var(--muted);
+    }
+
+    .stat-pill span { display: block; font-size: 22px; font-weight: 700; color: var(--text); }
+
+    .grade-badge {
+      display: inline-block;
+      padding: 6px 24px; border-radius: 999px;
+      font-size: 20px; font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .result-actions {
+      display: flex; justify-content: center;
+      gap: 10px; flex-wrap: wrap; margin-top: 22px;
+    }
+
+    .btn-action {
+      border: none; padding: 11px 22px;
+      font-size: 15px; border-radius: 999px;
+      cursor: pointer; background: linear-gradient(135deg, #2563eb, #4f46e5);
+      color: white; font-weight: 600; transition: all 0.2s;
+    }
+
+    .btn-action:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(37,99,235,0.3); }
+    .btn-action.amber { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .btn-action.rose { background: linear-gradient(135deg, #f43f5e, #e11d48); }
+
+    /* ── Review ── */
+    #reviewAnswers { text-align: left; margin-top: 20px; }
+
+    .review-item {
+      margin-bottom: 12px; padding: 14px;
+      background: #fef2f2; border-left: 4px solid #dc2626;
+      border-radius: 10px;
+    }
+
+    .review-item .rq { font-weight: 600; margin-bottom: 6px; color: var(--text); font-size: 14px; }
+    .review-item .ra { color: #16a34a; font-weight: 600; font-size: 14px; }
+
+    /* ── Home Page ── */
+    #homePage textarea {
+      font-family: monospace; font-size: 14px;
+      background: rgba(255,255,255,0.9);
+      border: 1.5px solid #cbd5e1;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+    #homePage textarea:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+      background: white;
+    }
+
+    
+
+    /* ── Saved Quizzes ── */
+    .saved-list { margin-top: 10px; }
+    .saved-item {
+      background: white; border: 1px solid #dbeafe;
+      border-radius: 10px; padding: 10px 14px;
+      margin-bottom: 8px; display: flex;
+      justify-content: space-between; align-items: center;
+      cursor: pointer; transition: 0.2s;
+    }
+    .saved-item:hover { background: #eff6ff; border-color: #93c5fd; }
+    .saved-item .si-name { font-weight: 600; font-size: 14px; color: #1e293b; }
+    .saved-item .si-meta { font-size: 12px; color: #64748b; }
+    .del-btn {
+      background: none; border: none; cursor: pointer;
+      color: #dc2626; font-size: 18px; padding: 0 4px; line-height: 1;
+    }
+
+    /* ── Animations ── */
+    .score-box.pop { animation: popAnim 0.35s; }
+    @keyframes popAnim { 50% { transform: scale(1.18); } 100% { transform: scale(1); } }
+  </style>
+</head>
+
+<body>
+
+<!-- ══════════════════════════════════════════════
+     HOME PAGE
+══════════════════════════════════════════════ -->
+<div id="homePage" class="min-h-screen p-4 sm:p-6 flex flex-col justify-center items-center">
+  <div class="w-full max-w-7xl flex flex-col py-6 gap-4" style="min-height: 90vh;">
+
+    <!-- Header Banner -->
+    <div class="flex flex-col text-center bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 p-6 rounded-2xl shadow-xl relative overflow-hidden border border-blue-400">
+      <div class="absolute -top-5 -right-5 text-white opacity-10 text-8xl rotate-12 pointer-events-none">🧩</div>
+      <div class="absolute -bottom-6 -left-6 text-white opacity-10 text-7xl -rotate-12 pointer-events-none">✨</div>
+      <h1 class="text-3xl font-extrabold text-white mb-1 relative z-10 drop-shadow-lg">📝 Create a Quiz</h1>
+      <p class="text-blue-100 font-medium relative z-10 text-sm">AI से data generate करें, यहाँ paste करें और quiz शुरू करें।</p>
+    </div>
+
+    <!-- Textarea -->
+    <textarea id="quizInput" wrap="off" rows="12"
+      placeholder='{ q: "Question", o:["A","B","C","D"], a:0 },'
+      class="w-full p-4 border rounded-xl shadow-sm resize-none outline-none text-sm leading-relaxed overflow-x-auto"
+      style="flex-grow:1; min-height: 200px;"></textarea>
+
+    <!-- Save Name + Buttons -->
+    <div class="flex gap-3 items-center flex-wrap">
+      <input id="quizName" type="text" placeholder="Quiz का नाम (optional)"
+        class="flex-1 min-w-[160px] px-4 py-3 rounded-xl border border-gray-300 text-sm font-medium outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-200 bg-white/90"/>
+
+      <button onclick="copyQuizPrompt()" id="copyPromptBtn"
+        class="px-5 py-3 rounded-xl font-bold text-white text-sm transition-all shadow bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 hover:-translate-y-0.5">
+        📋 Copy Prompt
+      </button>
+
+      <button onclick="saveQuizToStorage()"
+        class="px-5 py-3 rounded-xl font-bold text-white text-sm transition-all shadow bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700 hover:-translate-y-0.5">
+        💾 Save Quiz
+      </button>
+
+      <button onclick="createQuizFromText()"
+        class="px-5 py-3 rounded-xl font-bold text-white text-sm transition-all shadow bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 hover:-translate-y-0.5">
+        🚀 Start Quiz
+      </button>
+    </div>
+
+    <!-- Saved Quizzes -->
+    <div id="savedSection" style="display:none;">
+      <p class="text-sm font-bold text-gray-600 mb-2">💾 Saved Quizzes</p>
+      <div id="savedList" class="saved-list"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MAIN QUIZ WRAPPER
+══════════════════════════════════════════════ -->
+<div id="mainQuizWrapper" class="w-full min-h-screen flex items-center justify-center p-4" style="display:none !important;">
+  <div class="quiz-card" id="mainQuiz">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="header-row">
+        <div class="quiz-controls">
+          <input type="number" id="numQuestions" min="1" title="Number of Questions" />
+          <button id="startBtn" onclick="startQuiz()">▶ Start</button>
         </div>
-
-        <textarea
-          id="quizInput"
-          wrap="off"
-          placeholder='{ q: "Question", o:["A","B","C","D"], a:0 },'
-          class="w-full h-full flex-grow p-6 border border-gray-300 rounded-xl shadow-sm bg-white/90 focus:outline-none focus:ring-4 focus:ring-blue-400 focus:bg-white resize-none text-lg font-mono transition-all mb-6 overflow-x-auto"
-        ></textarea>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-          <button
-            id="copyPromptBtn"
-            class="w-full py-4 text-xl font-bold rounded-xl transition-all shadow-lg bg-gradient-to-r from-emerald-500 to-teal-600 text-white hover:from-emerald-600 hover:to-teal-700 hover:shadow-xl hover:-translate-y-1"
-            onclick="copyQuizPrompt()"
-          >
-            📋 Copy Prompt
-          </button>
-
-          <button
-            class="w-full py-4 text-xl font-bold rounded-xl transition-all shadow-lg bg-gradient-to-r from-blue-600 to-indigo-700 text-white hover:from-blue-700 hover:to-indigo-800 hover:shadow-xl hover:-translate-y-1"
-            onclick="createQuizFromText()"
-          >
-            🚀 Create Quiz
-          </button>
-        </div>
+        <div class="title">🏆 Raman Quiz Challenge 🏆</div>
+        <div class="score-box" id="scoreBox">Score: 0</div>
       </div>
     </div>
 
-    <div
-      id="mainQuizWrapper"
-      class="w-full min-h-screen flex items-center justify-center p-5"
-      style="display: none"
-    >
-      <div class="quiz-card" id="mainQuiz">
-        <div class="header">
-          <div class="top-row">
-            <div class="quiz-controls">
-              <input
-                type="number"
-                id="numQuestions"
-                min="1"
-                title="Number of Questions"
-              />
-              <button id="startBtn" onclick="startQuiz()">Start</button>
-            </div>
+    <!-- Quiz Screen -->
+    <div id="quizScreen">
 
-            <div class="title">🏆 Raman Quiz Challenge 🏆</div>
-            <div class="score" id="scoreBox">Score : 0</div>
-          </div>
+      <!-- Progress -->
+      <div class="progress-area">
+        <div class="progress-info">
+          <span id="questionNumber"></span>
+          <span id="remaining"></span>
         </div>
-        <div id="quizScreen">
-          <div class="progress-area">
-            <div class="progress-info">
-              <span id="questionNumber"></span><span id="remaining"></span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" id="progressFill"></div>
-            </div>
-          </div>
-          <div class="content">
-            <div class="question-wrapper">
-              <div class="question" id="question"></div>
-              <button id="speakBtn" class="speak-btn">🔊</button>
-            </div>
-            <div class="options" id="options"></div>
-            <div class="feedback" id="feedback"></div>
-          </div>
-        </div>
-        <div class="result" id="result">
-          <h2 id="finalScore"></h2>
-          <p id="message"></p>
-          <h3 id="grade"></h3>
-
-          <div
-            style="
-              display: flex;
-              justify-content: center;
-              gap: 10px;
-              flex-wrap: wrap;
-              margin-top: 20px;
-            "
-          >
-            <button
-              class="restart"
-              id="toggleReviewBtn"
-              style="
-                display: none;
-                background: linear-gradient(135deg, #f59e0b, #d97706);
-              "
-            >
-              👁️ Show Wrong Answers
-            </button>
-            <button class="restart" onclick="startQuiz()">Try Again</button>
-            <button
-              class="restart"
-              id="retryBtn"
-              style="display: none"
-              onclick="retryWrongAnswers()"
-            >
-              🔄 Wrong Answer Only
-            </button>
-          </div>
-
-          <div
-            id="reviewAnswers"
-            style="text-align: left; margin-top: 25px; display: none"
-          ></div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
         </div>
       </div>
-    </div>
 
-    <script>
-      let quiz = [];
+      <!-- Timer -->
+      <div class="timer-row">
+        <span style="font-size:13px; color:var(--muted);">⏱</span>
+        <div class="timer-bar-wrap">
+          <div class="timer-bar" id="timerBar"></div>
+        </div>
+        <span class="timer-count" id="timerCount">30</span>
+      </div>
 
-      // Prompt ko clipboard me copy karne wala updated function
-      function copyQuizPrompt() {
-        const promptText = `You are an Expert Quiz Master, Educational Content Analyst, and Assessment Designer.
+      <!-- Content -->
+      <div class="content">
+        <div class="question-wrapper">
+          <div class="question" id="question"></div>
+          <button id="speakBtn" class="speak-btn" title="सवाल सुनें (Space)">🔊</button>
+        </div>
+        <div class="options" id="options"></div>
+        <div class="feedback" id="feedback"></div>
+      </div>
+
+
+    </div><!-- /quizScreen -->
+
+    <!-- Result Screen -->
+    <div class="result" id="result">
+
+      <div class="result-score-ring" id="scoreRing">
+        <div id="finalScore"></div>
+        <div class="sub" id="finalFraction"></div>
+      </div>
+
+      <div class="grade-badge" id="gradeBadge"></div>
+      <p id="gradeMsg" style="font-size:15px; color:var(--muted); margin:4px 0 0;"></p>
+
+      <div class="stats-row">
+        <div class="stat-pill">Accuracy<span id="statAccuracy">—</span></div>
+        <div class="stat-pill">Correct<span id="statCorrect">—</span></div>
+        <div class="stat-pill">Wrong<span id="statWrong">—</span></div>
+        <div class="stat-pill">Skipped<span id="statSkipped">—</span></div>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn-action amber" id="toggleReviewBtn" style="display:none;" onclick="toggleReview()">👁 Wrong Answers</button>
+        <button class="btn-action rose" id="retryBtn" style="display:none;" onclick="retryWrongAnswers()">🔄 Retry Wrong</button>
+        <button class="btn-action" onclick="startQuiz()">▶ Try Again</button>
+        <button class="btn-action" onclick="goHome()" style="background: linear-gradient(135deg,#475569,#334155);">🏠 Home</button>
+      </div>
+
+      <div id="reviewAnswers"></div>
+    </div><!-- /result -->
+
+  </div><!-- /quiz-card -->
+</div><!-- /mainQuizWrapper -->
+
+<script>
+/* ═══════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════ */
+let quiz = [];
+let activeQuiz = [];
+let wrongQuestions = [];
+let current = 0, score = 0, skipped = 0;
+let locked = false;
+let timerInterval = null;
+let timeLeft = 30;
+const TIMER_SECONDS = 30;
+
+/* ═══════════════════════════════════════════════
+   SAFE PARSER  (replaces eval)
+   Converts:  { q:"...", o:[...], a:N }, ...
+   into a proper JS array safely via JSON.
+═══════════════════════════════════════════════ */
+function safeParseQuiz(raw) {
+  /*
+   * Token-aware parser — safely converts the AI quiz format to JSON.
+   *
+   * Input example:
+   *   { q: "PowerShell का उद्देश्य?", o: ["A (B)", "C", "D", "E"], a: 0 },
+   *
+   * Strategy: walk char-by-char, skipping over string contents entirely,
+   * so we only transform KEYS (unquoted identifiers before ':') and
+   * single-quoted strings — never touching text inside double-quoted strings.
+   */
+  let s = raw.trim();
+  if (s.endsWith(',')) s = s.slice(0, -1);
+
+  let out = '[';
+  let i = 0;
+  const len = s.length;
+
+  while (i < len) {
+    const ch = s[i];
+
+    // ── double-quoted string: copy verbatim ──────────────────────────
+    if (ch === '"') {
+      out += ch; i++;
+      while (i < len) {
+        const c = s[i];
+        out += c; i++;
+        if (c === '\\') { out += s[i] ?? ''; i++; continue; } // escape
+        if (c === '"') break;
+      }
+      continue;
+    }
+
+    // ── single-quoted string: convert to double-quoted ───────────────
+    if (ch === "'") {
+      out += '"'; i++;
+      while (i < len) {
+        const c = s[i]; i++;
+        if (c === '\\' && s[i] === "'") { out += "'"; i++; continue; }
+        if (c === "'") break;
+        if (c === '"') { out += '\\"'; continue; } // escape inner "
+        out += c;
+      }
+      out += '"';
+      continue;
+    }
+
+    // ── bare identifier key (letters/digits/_) followed by ':' ───────
+    // Only treat as a key when preceded by '{' or ',' (possibly with whitespace)
+    if (/[a-zA-Z_]/.test(ch)) {
+      // Collect the full identifier
+      let ident = '';
+      let j = i;
+      while (j < len && /[\w]/.test(s[j])) { ident += s[j]; j++; }
+      // Peek past whitespace for ':'
+      let k = j;
+      while (k < len && (s[k] === ' ' || s[k] === '\t')) k++;
+      if (s[k] === ':') {
+        // It's a key — emit quoted
+        out += `"${ident}"`;
+        i = j;
+        continue;
+      }
+      // Not a key (e.g. a value like true/false/null/number) — emit as-is
+      out += ident;
+      i = j;
+      continue;
+    }
+
+    // ── everything else: copy as-is ──────────────────────────────────
+    out += ch;
+    i++;
+  }
+
+  out += ']';
+  return JSON.parse(out);
+}
+
+/* ═══════════════════════════════════════════════
+   LOCAL STORAGE
+═══════════════════════════════════════════════ */
+function saveQuizToStorage() {
+  const txt = document.getElementById('quizInput').value.trim();
+  if (!txt) { alert('कृपया पहले quiz data paste करें।'); return; }
+  let name = document.getElementById('quizName').value.trim();
+  if (!name) name = 'Quiz ' + new Date().toLocaleDateString('hi-IN');
+  const saved = JSON.parse(localStorage.getItem('savedQuizzes') || '[]');
+  saved.unshift({ name, data: txt, date: new Date().toISOString() });
+  // Keep max 10 saved quizzes
+  if (saved.length > 10) saved.pop();
+  localStorage.setItem('savedQuizzes', JSON.stringify(saved));
+  renderSavedList();
+  alert('✅ Quiz save हो गई: ' + name);
+}
+
+function renderSavedList() {
+  const saved = JSON.parse(localStorage.getItem('savedQuizzes') || '[]');
+  const section = document.getElementById('savedSection');
+  const list = document.getElementById('savedList');
+  if (saved.length === 0) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  list.innerHTML = '';
+  saved.forEach((item, idx) => {
+    const div = document.createElement('div');
+    div.className = 'saved-item';
+    div.innerHTML = `
+      <div>
+        <div class="si-name">${item.name}</div>
+        <div class="si-meta">${new Date(item.date).toLocaleString('hi-IN')}</div>
+      </div>
+      <button class="del-btn" title="Delete" onclick="deleteSavedQuiz(${idx}, event)">🗑</button>
+    `;
+    div.onclick = (e) => {
+      if (e.target.classList.contains('del-btn')) return;
+      document.getElementById('quizInput').value = item.data;
+      document.getElementById('quizName').value = item.name;
+    };
+    list.appendChild(div);
+  });
+}
+
+function deleteSavedQuiz(idx, e) {
+  e.stopPropagation();
+  const saved = JSON.parse(localStorage.getItem('savedQuizzes') || '[]');
+  saved.splice(idx, 1);
+  localStorage.setItem('savedQuizzes', JSON.stringify(saved));
+  renderSavedList();
+}
+
+/* ═══════════════════════════════════════════════
+   COPY PROMPT
+═══════════════════════════════════════════════ */
+function copyQuizPrompt() {
+  const promptText = `You are an Expert Quiz Master, Educational Content Analyst, and Assessment Designer.
 
 Your task is to carefully analyze any text, document, transcript, lesson, article, notes, or topic provided by the user and generate a high-quality multiple-choice quiz.
 
 ### CRITICAL REQUIREMENT 1: Question Quantity
-
-Generate EXACTLY 50 UNIQUE multiple-choice questions.
-
-This requirement is mandatory.
-
-If the source content is short:
-
-* Break down concepts into smaller ideas.
-* Create definition-based questions.
-* Create understanding-based questions.
-* Create application-based questions.
-* Create cause-effect questions.
-* Create comparison questions.
-* Infer reasonable educational context from the topic.
-
-Never generate fewer than 50 questions.
+Generate EXACTLY 50 UNIQUE multiple-choice questions. If source content is short, break down concepts, create definition/understanding/application/cause-effect questions. Never generate fewer than 50 questions.
 
 ### CRITICAL REQUIREMENT 2: Language Rules
-
 * All questions must be written primarily in Hindi.
-* All technical terms, scientific names, programming concepts, tools, software names, acronyms, units, formulas, elements, and specialized terminology must remain strictly in English.
-* Never translate technical words into Hindi.
-* Embed English technical terms naturally within Hindi sentences whenever appropriate.
-
-Examples:
-
-* HTML
-* CSS
-* JavaScript
-* Python
-* Database
-* CPU
-* RAM
-* API
-* SQL
-* Algorithm
-
-Correct Example:
-
-"इस Array का मुख्य कार्य क्या है?"
-
-### CRITICAL REQUIREMENT 2A: Bilingual Content Rule
-
-The quiz must use a bilingual Hindi-English format wherever reasonably possible.
-
-#### Question Rules
-
-* Questions should primarily be written in Hindi.
-* Whenever a commonly used English term exists and helps learning, include it in brackets.
-
-Examples:
-
-* "पृथ्वी (Earth) सूर्य (Sun) के चारों ओर कितने समय में चक्कर लगाती है?"
-* "कंप्यूटर (Computer) का मुख्य कार्य क्या है?"
-
-#### Answer Option Rules
-
-* Whenever possible, every answer option must be written in BOTH Hindi and English.
-
-Examples:
-
-* "पृथ्वी (Earth)"
-
-* "मंगल (Mars)"
-
-* "बृहस्पति (Jupiter)"
-
-* "शुक्र (Venus)"
-
-* "शिक्षक (Teacher)"
-
-* "छात्र (Student)"
-
-* "विद्यालय (School)"
-
-* "पुस्तक (Book)"
-
-#### Technical Term Exception
-
-The following types of terms should normally remain in English only unless a widely accepted bilingual form naturally exists:
-
-* Programming languages
-* Software names
-* Hardware names
-* Scientific names
-* Chemical symbols
-* Formulas
-* Units
-* Acronyms
-* Technical standards
-* Database terminology
-* Networking terminology
-* Engineering terminology
-
-Examples:
-
-* HTML
-* CSS
-* JavaScript
-* Python
-* CPU
-* RAM
-* SSD
-* Database
-* Algorithm
-* API
-* SQL
-
-#### Priority Order
-
-Use the following preference:
-
-1. Hindi + English (Preferred)
-2. English Only (For technical/specialized terms)
-3. Hindi Only (Only when no meaningful English equivalent is commonly used)
-
-The bilingual format should be applied consistently throughout the quiz to help learners understand terminology in both Hindi and English.
+* All technical terms, scientific names, programming concepts, tools, software, acronyms, units, formulas must remain in English.
+* Use bilingual format: "पृथ्वी (Earth) सूर्य (Sun) के चारों ओर कितने समय में चक्कर लगाती है?"
+* Answer options also bilingual where possible: "पृथ्वी (Earth)", "मंगल (Mars)"
 
 ### CRITICAL REQUIREMENT 3: Question Quality
-
-Ensure all 50 questions are unique.
-
-Distribute questions approximately as follows:
-
-* 40% Knowledge Questions
-* 30% Understanding Questions
-* 20% Application Questions
-* 10% Analytical Questions
-
-Avoid repetition.
-
-Do not ask the same concept in multiple ways unless absolutely necessary.
+50 unique questions distributed as: 40% Knowledge, 30% Understanding, 20% Application, 10% Analytical.
 
 ### CRITICAL REQUIREMENT 4: Options Quality
-
-Each question must contain exactly 4 options.
-
-Requirements:
-
-* Only one option should be correct.
+* Exactly 4 options per question. Only one correct.
 * Incorrect options should be believable.
-* Avoid obviously wrong answers.
-* Randomize the position of the correct answer.
+* Balance correct answer positions: ~25% each at index 0, 1, 2, 3.
 
-Balance correct answer positions across all questions:
-
-* Around 25% with answer index 0
-* Around 25% with answer index 1
-* Around 25% with answer index 2
-* Around 25% with answer index 3
-
-### CRITICAL REQUIREMENT 5: Content Coverage
-
-Cover as many concepts from the source content as possible.
-
-Include a mix of:
-
-* Facts
-* Definitions
-* Functions
-* Features
-* Advantages
-* Disadvantages
-* Examples
-* Comparisons
-* Applications
-* Cause and effect
-* Real-life usage
-
-### CRITICAL REQUIREMENT 6: Output Format
-
-Return ONLY raw quiz objects.
-
-Do NOT write:
-
-* Explanations
-* Headings
-* Notes
-* Markdown
-* Code blocks
-* Introductory text
-* Summary text
-* Any text before the first question
-* Any text after the last question
+### CRITICAL REQUIREMENT 5: Output Format
+Return ONLY raw quiz objects. NO explanations, headings, notes, markdown, code blocks.
 
 Strict Format:
-
 { q: "Question Text", o: ["Option 1", "Option 2", "Option 3", "Option 4"], a: 0 },
 
 Rules:
-
 1. q = Question text
-2. o = Array containing EXACTLY 4 options
+2. o = Array with EXACTLY 4 options
 3. a = Correct option index (0–3)
-4. Every object must end with a comma
-5. Do NOT wrap objects inside square brackets [ ]
-6. Do NOT generate JSON formatting
-7. Do NOT generate numbering
-8. Do NOT generate markdown
-9. Do NOT generate comments
-10. Output must be directly copy-paste compatible with a quiz engine
+4. Every object ends with a comma
+5. Do NOT wrap in square brackets [ ]
+6. Do NOT use JSON formatting or numbering
 
-### FINAL INSTRUCTION
+If you understand, respond ONLY with: Ready for your topic/content!`;
 
-After receiving any topic, lesson, article, transcript, document, notes, or subject name, immediately generate EXACTLY 50 UNIQUE multiple-choice questions following ALL rules above.
+  navigator.clipboard.writeText(promptText).then(() => {
+    const btn = document.getElementById('copyPromptBtn');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✅ Copied!';
+    btn.classList.add('from-green-600', 'to-emerald-700');
+    setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('from-green-600', 'to-emerald-700'); }, 2000);
+  }).catch(() => alert('Clipboard access नहीं मिला।'));
+}
 
-If you understand these instructions, respond ONLY with:
+/* ═══════════════════════════════════════════════
+   CREATE QUIZ FROM TEXT
+═══════════════════════════════════════════════ */
+function createQuizFromText(sourceData) {
 
-Ready for your topic/content!
-`;
+    const txt =
+        sourceData ||
+        document.getElementById("quizInput").value.trim();
 
-        navigator.clipboard
-          .writeText(promptText)
-          .then(() => {
-            const btn = document.getElementById("copyPromptBtn");
-            const originalText = btn.innerHTML;
+    if (!txt) {
+        alert("कृपया Quiz Data Paste करें");
+        return;
+    }
 
-            // Visual Feedback for User
-            btn.innerHTML = "✅ Prompt Copied!";
-            btn.classList.remove("from-emerald-500", "to-teal-600");
-            btn.classList.add("from-green-600", "to-emerald-700");
+    let validQuestions = [];
+    let skippedQuestions = 0;
 
-            setTimeout(() => {
-              btn.innerHTML = originalText;
-              btn.classList.remove("from-green-600", "to-emerald-700");
-              btn.classList.add("from-emerald-500", "to-teal-600");
-            }, 2000);
-          })
-          .catch((err) => {
-            alert("Prompt copy karne me दिक्कत आयी: " + err);
-          });
-      }
+    const objects =
+        txt.match(/\{[\s\S]*?\}(?=\s*,|\s*$)/g) || [];
 
-      function createQuizFromText() {
-        const txt = document.getElementById("quizInput").value.trim();
-        if (!txt) {
-          alert("कृपया प्रश्न पेस्ट करें");
-          return;
-        }
+    objects.forEach((obj) => {
+
         try {
-          // कोड को Array में बदलने की कोशिश
-          quiz = eval("[" + txt + "]");
-          document.getElementById("homePage").style.display = "none";
-          document.getElementById("mainQuizWrapper").style.display = "flex";
 
-          document.getElementById("numQuestions").value = quiz.length;
-          document.getElementById("numQuestions").max = quiz.length;
-          startQuiz();
-        } catch (e) {
-          // बेहतर Error Handling लॉजिक
-          let errorMessage = "Quiz Format में कोई गलती है।\n\n";
+            const result = safeParseQuiz(obj);
 
-          // JavaScript का असली Error Message दिखाएं
-          errorMessage += "System Error: " + e.message + "\n\n";
-
-          // Brackets की गिनती चेक करें
-          let openBraces = (txt.match(/\{/g) || []).length;
-          let closeBraces = (txt.match(/\}/g) || []).length;
-          let openBrackets = (txt.match(/\[/g) || []).length;
-          let closeBrackets = (txt.match(/\]/g) || []).length;
-
-          // अगर Brackets मैच नहीं कर रहे हैं, तो यूजर को बताएं
-          if (openBraces !== closeBraces) {
-            errorMessage += `⚠️ Curly Braces { } बराबर नहीं हैं! (Open: ${openBraces}, Close: ${closeBraces})\n`;
-          }
-          if (openBrackets !== closeBrackets) {
-            errorMessage += `⚠️ Square Brackets [ ] बराबर नहीं हैं! (Open: ${openBrackets}, Close: ${closeBrackets})\n`;
-          }
-
-          errorMessage +=
-            "\nकृपया अपना Code चेक करें, शायद कहीं कोई Comma (,) या Bracket छूट गया है।";
-
-          // पूरा Error Message Alert में दिखाएं
-          alert(errorMessage);
-        }
-      }
-
-      quiz = [
-        {
-          q: "यह 📌 इमोजी किस काम के लिए इस्तेमाल किया जाता है?",
-          o: [
-            "मैसेज डिलीट करने के लिए",
-            "मैसेज को पिन (Pin) करने के लिए",
-            "लोकेशन भेजने के लिए",
-            "सिलाई करने के लिए",
-          ],
-          a: 1,
-        },
-        {
-          q: "यह इमोजी ♻️ किस प्रक्रिया को दर्शाता है?",
-          o: [
-            "वीडियो प्ले करना",
-            "रीसायकल या पुनर्चक्रण (Recycle)",
-            "रास्ता भटकना",
-            "डिलीट करना",
-          ],
-          a: 1,
-        },
-        {
-          q: "टेक्स्ट करते समय 🚫 इमोजी का क्या अर्थ होता है?",
-          o: ["आगे बढ़ें", "निषेध या मनाही (Prohibited)", "पार्किंग", "खतरा"],
-          a: 1,
-        },
-      ];
-
-      let activeQuiz = [],
-        wrongQuestions = [],
-        current = 0,
-        score = 0,
-        locked = false;
-
-      function shuffleArray(arr) {
-        const a = [...arr];
-        for (let i = a.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [a[i], a[j]] = [a[j], a[i]];
-        }
-        return a;
-      }
-
-      function prepareQuiz(source = quiz) {
-        activeQuiz = shuffleArray(JSON.parse(JSON.stringify(source)));
-        activeQuiz.forEach((q) => {
-          const opts = q.o.map((t, i) => ({
-            t,
-            ok: i === q.a,
-          }));
-          const s = shuffleArray(opts);
-          q.o = s.map((x) => x.t);
-          q.a = s.findIndex((x) => x.ok);
-        });
-      }
-
-      const question = document.getElementById("question");
-      const options = document.getElementById("options");
-
-      // ब्राउज़र को आवाज़ें बैकग्राउंड में तैयार रखने के लिए ट्रिगर करें
-      if (speechSynthesis.onvoiceschanged !== undefined) {
-        speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
-      }
-
-      function speakQuestion() {
-        if (window.speechSynthesis) {
-          window.speechSynthesis.pause();
-          window.speechSynthesis.cancel();
-        }
-
-        let originalText = activeQuiz[current].q;
-        // इमोजी को हटाने का कोड ताकि वह उन्हें न पढ़े
-        let cleanText = originalText.replace(
-          /[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu,
-          "",
-        );
-
-        const u = new SpeechSynthesisUtterance(cleanText);
-
-        // स्पीड और पिच सेट करें
-        u.rate = 0.85;
-        u.pitch = 1;
-        u.lang = "hi-IN";
-
-        // क्लिक होने पर उसी समय आवाज़ों की ताज़ा लिस्ट लें
-        let voices = window.speechSynthesis.getVoices();
-
-        if (voices.length > 0) {
-          // सबसे बेहतरीन हिंदी आवाज़ ढूँढने का सुरक्षित तरीका
-          let bestVoice =
-            voices.find(
-              (v) => v.lang === "hi-IN" && v.name.includes("Google"),
-            ) ||
-            voices.find((v) => v.lang.includes("hi")) || // अगर 'hi-IN' न मिले तो सिर्फ 'hi' ढूँढे
-            voices[0]; // अगर कुछ न मिले तो सिस्टम की डिफ़ॉल्ट आवाज़ ले ले
-
-          if (bestVoice) {
-            u.voice = bestVoice;
-          }
-        }
-
-        window.speechSynthesis.speak(u);
-      }
-      document.getElementById("speakBtn").onclick = speakQuestion;
-
-      function loadQuestion() {
-        locked = false;
-        let q = activeQuiz[current];
-        question.textContent = q.q;
-        document.getElementById("questionNumber").textContent =
-          `Question ${current + 1} of ${activeQuiz.length}`;
-        document.getElementById("remaining").textContent =
-          `${activeQuiz.length - current} left`;
-        document.getElementById("progressFill").style.width =
-          `${(current / activeQuiz.length) * 100}%`;
-        options.innerHTML = "";
-
-        q.o.forEach((opt, index) => {
-          let btn = document.createElement("div");
-          btn.className = "option";
-          btn.textContent = opt;
-
-          // Hover Sound का इवेंट लिसनर
-          btn.addEventListener("mouseenter", () => {
-            // आवाज़ तभी आएगी जब कोई ऑप्शन लॉक न हो (यानी जवाब न दिया गया हो)
-            if (!locked) playSound("hover");
-          });
-
-          btn.onclick = () => checkAnswer(btn, index);
-          options.appendChild(btn);
-        });
-      }
-
-      function checkAnswer(btn, index) {
-        if (locked) return;
-        locked = true;
-        speechSynthesis.cancel();
-
-        const correct = activeQuiz[current].a;
-        document.querySelectorAll(".option").forEach((o, i) => {
-          o.classList.add("disabled");
-          o.style.pointerEvents = "none";
-          if (i === correct) o.classList.add("correct");
-        });
-
-        if (index === correct) {
-          score++;
-          playSound("correct");
-        } else {
-          btn.classList.add("wrong");
-          wrongQuestions.push(activeQuiz[current]);
-          playSound("wrong");
-        }
-
-        document.getElementById("scoreBox").textContent = `Score : ${score}`;
-        setTimeout(() => {
-          current++;
-          current >= activeQuiz.length ? showResult() : loadQuestion();
-        }, 1200);
-      }
-
-      function showResult() {
-        document.getElementById("quizScreen").style.display = "none";
-        document.getElementById("result").style.display = "block";
-        document.getElementById("finalScore").textContent =
-          `${score} / ${activeQuiz.length}`;
-        document.getElementById("message").textContent =
-          `Wrong Answers: ${wrongQuestions.length}`;
-
-        const reviewContainer = document.getElementById("reviewAnswers");
-        const toggleBtn = document.getElementById("toggleReviewBtn");
-        const retryBtn = document.getElementById("retryBtn");
-
-        reviewContainer.innerHTML = "";
-        reviewContainer.style.display = "none";
-        toggleBtn.innerHTML = "👁️ Show Wrong Answers";
-
-        if (wrongQuestions.length > 0) {
-          toggleBtn.style.display = "inline-block";
-          retryBtn.style.display = "inline-block";
-
-          let reviewHTML =
-            "<h3 style='color: #1e293b; margin-bottom: 10px;'>Review Wrong Answers:</h3>";
-          wrongQuestions.forEach((q) => {
-            let correctAnswerText = q.o[q.a];
-            correctAnswerText = String(correctAnswerText)
-              .replace(/</g, "&lt;")
-              .replace(/>/g, "&gt;");
-
-            reviewHTML += `<div style="margin-bottom: 15px; padding: 15px; background: #fef2f2; border-left: 5px solid #dc2626; border-radius: 8px;">
-                                  <div style="font-weight: 600; margin-bottom: 8px; color: #1e293b;">Q: ${q.q}</div>
-                                  <div style="color: #16a34a; font-weight: 600;">✔ Correct Answer: ${correctAnswerText}</div>
-                               </div>`;
-          });
-          reviewContainer.innerHTML = reviewHTML;
-
-          toggleBtn.onclick = () => {
-            if (reviewContainer.style.display === "none") {
-              reviewContainer.style.display = "block";
-              toggleBtn.innerHTML = "🙈 Hide Wrong Answers";
+            if (
+                result[0] &&
+                result[0].q &&
+                Array.isArray(result[0].o) &&
+                result[0].o.length === 4 &&
+                typeof result[0].a === "number"
+            ) {
+                validQuestions.push(result[0]);
             } else {
-              reviewContainer.style.display = "none";
-              toggleBtn.innerHTML = "👁️ Show Wrong Answers";
+                skippedQuestions++;
             }
-          };
-        } else {
-          toggleBtn.style.display = "none";
-          retryBtn.style.display = "none";
+
+        } catch (err) {
+
+            skippedQuestions++;
+
+            console.warn(
+                "Skipped Question:",
+                obj,
+                err
+            );
         }
-      }
 
-      function playSound(type) {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContext) return;
+    });
 
-        const ctx = new AudioContext();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
+    if (validQuestions.length === 0) {
+        alert("कोई भी Valid Question नहीं मिला");
+        return;
+    }
 
-        osc.connect(gain);
-        gain.connect(ctx.destination);
+    quiz = validQuestions;
 
-        if (type === "correct") {
-          osc.type = "sine";
-          osc.frequency.setValueAtTime(600, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(
-            1200,
-            ctx.currentTime + 0.1,
-          );
-          gain.gain.setValueAtTime(0.5, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
-          osc.start(ctx.currentTime);
-          osc.stop(ctx.currentTime + 0.2);
-        } else if (type === "wrong") {
-          osc.type = "sawtooth";
-          osc.frequency.setValueAtTime(300, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(
-            100,
-            ctx.currentTime + 0.2,
-          );
-          gain.gain.setValueAtTime(0.5, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-          osc.start(ctx.currentTime);
-          osc.stop(ctx.currentTime + 0.3);
-        } else if (type === "hover") {
-          // Hover के लिए बहुत ही हल्की और छोटी आवाज़
-          osc.type = "sine";
-          osc.frequency.setValueAtTime(800, ctx.currentTime); // आवाज़ की पिच
-          gain.gain.setValueAtTime(0.03, ctx.currentTime); // Volume बहुत कम (0.03) रखा है ताकि इरिटेट न करे
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05); // बहुत छोटी अवधि (0.05s)
-          osc.start(ctx.currentTime);
-          osc.stop(ctx.currentTime + 0.05);
-        }
-      }
-      function startQuiz() {
-        let requestedNum = parseInt(
-          document.getElementById("numQuestions").value,
+    if (skippedQuestions > 0) {
+
+        alert(
+            `${skippedQuestions} खराब Questions Skip कर दिए गए।\n\n` +
+            `${validQuestions.length} Questions Quiz में शामिल किए गए।`
         );
+    }
 
-        if (isNaN(requestedNum) || requestedNum < 1) requestedNum = quiz.length;
-        if (requestedNum > quiz.length) requestedNum = quiz.length;
+    document.getElementById("homePage").style.display = "none";
+    document.getElementById("mainQuizWrapper").style.display = "flex";
 
-        document.getElementById("numQuestions").value = requestedNum;
+    document.getElementById("numQuestions").value =
+        quiz.length;
 
-        let allQuestionsShuffled = shuffleArray(
-          JSON.parse(JSON.stringify(quiz)),
-        );
-        let selectedSource = allQuestionsShuffled.slice(0, requestedNum);
+    document.getElementById("numQuestions").max =
+        quiz.length;
 
-        prepareQuiz(selectedSource);
-        wrongQuestions = [];
-        current = 0;
-        score = 0;
+    startQuiz();
+}
 
-        document.getElementById("scoreBox").textContent = "Score : 0";
-        document.getElementById("result").style.display = "none";
-        document.getElementById("quizScreen").style.display = "block";
+/* ═══════════════════════════════════════════════
+   SHUFFLE
+═══════════════════════════════════════════════ */
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* ═══════════════════════════════════════════════
+   PREPARE QUIZ
+═══════════════════════════════════════════════ */
+function prepareQuiz(source) {
+  activeQuiz = shuffleArray(JSON.parse(JSON.stringify(source)));
+  activeQuiz.forEach(q => {
+    const opts = q.o.map((t, i) => ({ t, ok: i === q.a }));
+    const s = shuffleArray(opts);
+    q.o = s.map(x => x.t);
+    q.a = s.findIndex(x => x.ok);
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   START QUIZ
+═══════════════════════════════════════════════ */
+function startQuiz() {
+  let n = parseInt(document.getElementById('numQuestions').value);
+  if (isNaN(n) || n < 1) n = quiz.length;
+  if (n > quiz.length) n = quiz.length;
+  document.getElementById('numQuestions').value = n;
+
+  prepareQuiz(shuffleArray(JSON.parse(JSON.stringify(quiz))).slice(0, n));
+  wrongQuestions = []; current = 0; score = 0; skipped = 0;
+
+  document.getElementById('scoreBox').textContent = 'Score: 0';
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('quizScreen').style.display = 'block';
+  loadQuestion();
+}
+
+/* ═══════════════════════════════════════════════
+   TIMER
+═══════════════════════════════════════════════ */
+function startTimer() {
+  clearInterval(timerInterval);
+  timeLeft = TIMER_SECONDS;
+  updateTimerUI();
+
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerUI();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      if (!locked) timeUp();
+    }
+  }, 1000);
+}
+
+function updateTimerUI() {
+  const bar = document.getElementById('timerBar');
+  const count = document.getElementById('timerCount');
+  const pct = (timeLeft / TIMER_SECONDS) * 100;
+  bar.style.width = pct + '%';
+  count.textContent = timeLeft;
+
+  bar.className = 'timer-bar';
+  count.className = 'timer-count';
+
+  if (timeLeft <= 5) {
+    bar.classList.add('danger');
+    count.classList.add('danger');
+  } else if (timeLeft <= 10) {
+    bar.classList.add('warn');
+    count.classList.add('warn');
+  }
+}
+
+function timeUp() {
+  locked = true;
+  skipped++;
+  speechSynthesis.cancel();
+
+  const correct = activeQuiz[current].a;
+  document.querySelectorAll('.option').forEach((o, i) => {
+    o.classList.add('disabled');
+    if (i === correct) o.classList.add('correct');
+  });
+
+  document.getElementById('feedback').innerHTML = '<span style="color:#dc2626">⏰ समय खत्म! सही जवाब हाइलाइट किया गया।</span>';
+  wrongQuestions.push({ ...activeQuiz[current], _timedOut: true });
+  playSound('wrong');
+  setTimeout(() => {
+    goNext();
+}, 1200);
+}
+
+/* ═══════════════════════════════════════════════
+   LOAD QUESTION
+═══════════════════════════════════════════════ */
+function loadQuestion() {
+  locked = false;
+  document.getElementById('feedback').textContent = '';
+
+  const q = activeQuiz[current];
+  document.getElementById('question').textContent = q.q;
+  document.getElementById('questionNumber').textContent = `प्रश्न ${current + 1} / ${activeQuiz.length}`;
+  document.getElementById('remaining').textContent = `${activeQuiz.length - current} बाकी`;
+  document.getElementById('progressFill').style.width = `${(current / activeQuiz.length) * 100}%`;
+
+  const labels = ['1', '2', '3', '4'];
+  const optContainer = document.getElementById('options');
+  optContainer.innerHTML = '';
+
+  q.o.forEach((opt, index) => {
+    const btn = document.createElement('div');
+    btn.className = 'option';
+    btn.setAttribute('role', 'button');
+    btn.setAttribute('aria-label', `Option ${labels[index]}: ${opt}`);
+    btn.setAttribute('tabindex', '0');
+
+    btn.innerHTML = `<div class="option-label">${labels[index]}</div><span>${opt}</span>`;
+
+    btn.addEventListener('mouseenter', () => { if (!locked) playSound('hover'); });
+    btn.onclick = () => checkAnswer(btn, index);
+    btn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') checkAnswer(btn, index); });
+    optContainer.appendChild(btn);
+  });
+
+  startTimer();
+}
+
+/* ═══════════════════════════════════════════════
+   CHECK ANSWER
+═══════════════════════════════════════════════ */
+function checkAnswer(btn, index) {
+  if (locked) return;
+  locked = true;
+  clearInterval(timerInterval);
+  speechSynthesis.cancel();
+
+  const correct = activeQuiz[current].a;
+  document.querySelectorAll('.option').forEach((o, i) => {
+    o.classList.add('disabled');
+    if (i === correct) o.classList.add('correct');
+  });
+
+  const fb = document.getElementById('feedback');
+  if (index === correct) {
+    score++;
+    fb.innerHTML = '<span style="color:#16a34a">✅ सही जवाब!</span>';
+    playSound('correct');
+  } else {
+    btn.classList.add('wrong');
+    wrongQuestions.push(activeQuiz[current]);
+    fb.innerHTML = '<span style="color:#dc2626">❌ गलत जवाब!</span>';
+    playSound('wrong');
+  }
+
+  const sb = document.getElementById('scoreBox');
+  sb.textContent = `Score: ${score}`;
+  sb.classList.remove('pop');
+  void sb.offsetWidth;
+  sb.classList.add('pop');
+
+  setTimeout(() => {
+    goNext();
+}, 1200);
+}
+
+function goNext() {
+    current++;
+
+    if (current >= activeQuiz.length) {
+        showResult();
+    } else {
         loadQuestion();
-      }
+    }
+}
 
-      function retryWrongAnswers() {
-        if (wrongQuestions.length === 0) return;
+/* ═══════════════════════════════════════════════
+   SHOW RESULT
+═══════════════════════════════════════════════ */
+function showResult() {
+  clearInterval(timerInterval);
+  document.getElementById('quizScreen').style.display = 'none';
+  document.getElementById('result').style.display = 'block';
 
-        prepareQuiz(wrongQuestions);
-        wrongQuestions = [];
-        current = 0;
-        score = 0;
-        document.getElementById("scoreBox").textContent = "Score : 0";
-        document.getElementById("result").style.display = "none";
-        document.getElementById("quizScreen").style.display = "block";
-        loadQuestion();
-      }
+  const total = activeQuiz.length;
+  const accuracy = total > 0 ? Math.round((score / total) * 100) : 0;
+  const wrongCount = wrongQuestions.filter(q => !q._timedOut).length;
+  const timedOut = wrongQuestions.filter(q => q._timedOut).length;
 
-      document.addEventListener("keydown", (e) => {
-        // अगर यूजर Textarea (सवाल पेस्ट करने वाली जगह) या Input Box में टाइप कर रहा है,
-        // तो कीबोर्ड शॉर्टकट्स काम नहीं करने चाहिए, वरना टाइपिंग में दिक्कत होगी।
-        if (e.target.tagName === "TEXTAREA" || e.target.tagName === "INPUT") {
-          return;
-        }
+  // Score ring color
+  const ring = document.getElementById('scoreRing');
+  const colors =
+    accuracy >= 80 ? ['#16a34a','#15803d'] :
+    accuracy >= 60 ? ['#2563eb','#1d4ed8'] :
+    accuracy >= 40 ? ['#f59e0b','#d97706'] :
+                     ['#dc2626','#b91c1c'];
+  ring.style.background = `linear-gradient(135deg, ${colors[0]}, ${colors[1]})`;
 
-        // Spacebar दबाने पर पेज नीचे Scroll हो जाता है, इसे रोकने के लिए:
-        if (e.code === "Space") {
-          e.preventDefault();
-        }
+  document.getElementById('finalScore').textContent = score;
+  document.getElementById('finalFraction').textContent = `/ ${total}`;
 
-        const key = e.key.toLowerCase();
+  // Grade
+  const { grade, msg } = getGrade(accuracy);
+  const gb = document.getElementById('gradeBadge');
+  gb.textContent = grade;
+  gb.style.background = colors[0];
+  gb.style.color = 'white';
+  document.getElementById('gradeMsg').textContent = msg;
 
-        // 1. Spacebar (स्पेस) - सवाल पढ़ने के लिए (Speak Question)
-        if (e.code === "Space") {
-          const speakBtn = document.getElementById("speakBtn");
-          if (speakBtn) speakBtn.click();
-          return;
-        }
+  // Stats
+  document.getElementById('statAccuracy').textContent = accuracy + '%';
+  document.getElementById('statCorrect').textContent = score;
+  document.getElementById('statWrong').textContent = wrongCount;
+  document.getElementById('statSkipped').textContent = timedOut;
 
-        // 2. 1, 2, 3, 4 - जवाब चुनने के लिए (Select Options)
-        if (!locked && ["1", "2", "3", "4"].includes(key)) {
-          const optionsNodes = document.querySelectorAll(".option");
-          const index = parseInt(key) - 1;
-          if (optionsNodes[index]) optionsNodes[index].click();
-          return;
-        }
+  // Review / Retry buttons
+  const toggleBtn = document.getElementById('toggleReviewBtn');
+  const retryBtn = document.getElementById('retryBtn');
+  const reviewDiv = document.getElementById('reviewAnswers');
+  reviewDiv.innerHTML = '';
+  reviewDiv.style.display = 'none';
 
-        // 3. Enter - क्विज़ बनाने या दोबारा शुरू करने के लिए (Create/Try Again)
-        if (key === "enter") {
-          if (document.getElementById("homePage").style.display !== "none") {
-            createQuizFromText(); // होम पेज से Create Quiz
-          } else if (
-            document.getElementById("result").style.display === "block"
-          ) {
-            startQuiz(); // रिजल्ट पेज से Try Again
-          }
-          return;
-        }
+  if (wrongQuestions.length > 0) {
+    toggleBtn.style.display = 'inline-block';
+    toggleBtn.textContent = '👁 Wrong Answers दिखाएं';
+    retryBtn.style.display = 'inline-block';
 
-        // 4. 'S' Key - क्विज़ स्टार्ट करने के लिए (Start Button)
-        if (key === "s") {
-          const startBtn = document.getElementById("startBtn");
-          if (startBtn) startBtn.click();
-          return;
-        }
+    let html = '<h3 style="font-weight:700;margin-bottom:12px;color:var(--text);">गलत जवाब:</h3>';
+    wrongQuestions.forEach(q => {
+      const ans = String(q.o[q.a]).replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      html += `<div class="review-item">
+        <div class="rq">Q: ${q.q}</div>
+        <div class="ra">✔ सही जवाब: ${ans}</div>
+      </div>`;
+    });
+    reviewDiv.innerHTML = html;
+  } else {
+    toggleBtn.style.display = 'none';
+    retryBtn.style.display = 'none';
+  }
+}
 
-        // 5. 'R' Key - गलत जवाबों का Review देखने/छुपाने के लिए
-        if (
-          key === "r" &&
-          document.getElementById("result").style.display === "block"
-        ) {
-          const toggleBtn = document.getElementById("toggleReviewBtn");
-          if (toggleBtn && toggleBtn.style.display !== "none") {
-            toggleBtn.click();
-          }
-          return;
-        }
+function getGrade(acc) {
+  if (acc >= 90) return { grade: 'A+', msg: 'शानदार! आप बहुत होशियार हैं 🎉' };
+  if (acc >= 80) return { grade: 'A',  msg: 'बहुत अच्छा! बस थोड़ा और मेहनत करें 👏' };
+  if (acc >= 70) return { grade: 'B',  msg: 'अच्छा प्रदर्शन! और बेहतर हो सकते हैं 👍' };
+  if (acc >= 60) return { grade: 'C',  msg: 'ठीक है, और पढ़ाई करें 📚' };
+  if (acc >= 40) return { grade: 'D',  msg: 'थोड़ा और ध्यान दें 🔁' };
+  return { grade: 'F', msg: 'हिम्मत रखें! फिर कोशिश करें 💪' };
+}
 
-        // 6. 'W' Key - सिर्फ गलत जवाबों का टेस्ट दोबारा देने के लिए (Wrong Answers Only)
-        if (
-          key === "w" &&
-          document.getElementById("result").style.display === "block"
-        ) {
-          const retryBtn = document.getElementById("retryBtn");
-          if (retryBtn && retryBtn.style.display !== "none") {
-            retryBtn.click();
-          }
-          return;
-        }
+/* ═══════════════════════════════════════════════
+   TOGGLE REVIEW
+═══════════════════════════════════════════════ */
+function toggleReview() {
+  const rd = document.getElementById('reviewAnswers');
+  const btn = document.getElementById('toggleReviewBtn');
+  if (rd.style.display === 'none') {
+    rd.style.display = 'block';
+    btn.textContent = '🙈 छुपाएं';
+  } else {
+    rd.style.display = 'none';
+    btn.textContent = '👁 Wrong Answers दिखाएं';
+  }
+}
 
-        // 7. 'M' Key - आवाज़ को चुप (Mute) करने के लिए
-        if (key === "m") {
-          if (window.speechSynthesis) {
-            window.speechSynthesis.pause();
-            window.speechSynthesis.cancel();
-          }
-          return;
-        }
-      });
+/* ═══════════════════════════════════════════════
+   RETRY WRONG
+═══════════════════════════════════════════════ */
+function retryWrongAnswers() {
+  if (wrongQuestions.length === 0) return;
+  const src = wrongQuestions.map(q => { const c = {...q}; delete c._timedOut; return c; });
+  quiz = src;
+  document.getElementById('numQuestions').value = src.length;
+  document.getElementById('numQuestions').max = src.length;
+  prepareQuiz(src);
+  wrongQuestions = []; current = 0; score = 0; skipped = 0;
+  document.getElementById('scoreBox').textContent = 'Score: 0';
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('quizScreen').style.display = 'block';
+  loadQuestion();
+}
 
-      document.getElementById("numQuestions").value = quiz.length;
-      document.getElementById("numQuestions").max = quiz.length;
-    </script>
-  </body>
+/* ═══════════════════════════════════════════════
+   HOME
+═══════════════════════════════════════════════ */
+function goHome() {
+  clearInterval(timerInterval);
+  speechSynthesis.cancel();
+  document.getElementById('mainQuizWrapper').style.display = 'none';
+  document.getElementById('homePage').style.display = 'flex';
+}
+
+/* ═══════════════════════════════════════════════
+   SPEECH
+═══════════════════════════════════════════════ */
+if (speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+}
+
+function speakQuestion() {
+  speechSynthesis.cancel();
+  if (!activeQuiz[current]) return;
+  const clean = activeQuiz[current].q.replace(/[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu, '');
+  const u = new SpeechSynthesisUtterance(clean);
+  u.rate = 0.85; u.pitch = 1; u.lang = 'hi-IN';
+  const voices = speechSynthesis.getVoices();
+  const best = voices.find(v => v.lang === 'hi-IN' && v.name.includes('Google'))
+            || voices.find(v => v.lang.startsWith('hi'))
+            || voices[0];
+  if (best) u.voice = best;
+  speechSynthesis.speak(u);
+}
+document.getElementById('speakBtn').onclick = speakQuestion;
+
+/* ═══════════════════════════════════════════════
+   SOUNDS
+═══════════════════════════════════════════════ */
+function playSound(type) {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return;
+  const ctx = new AC();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain); gain.connect(ctx.destination);
+
+  if (type === 'correct') {
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(600, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.1);
+    gain.gain.setValueAtTime(0.4, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+    osc.start(); osc.stop(ctx.currentTime + 0.2);
+  } else if (type === 'wrong') {
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(300, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.2);
+    gain.gain.setValueAtTime(0.4, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+    osc.start(); osc.stop(ctx.currentTime + 0.3);
+  } else if (type === 'hover') {
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(800, ctx.currentTime);
+    gain.gain.setValueAtTime(0.025, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+    osc.start(); osc.stop(ctx.currentTime + 0.05);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   KEYBOARD SHORTCUTS
+═══════════════════════════════════════════════ */
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+
+  const key = e.key.toLowerCase();
+
+  if (e.code === 'Space') {
+    e.preventDefault();
+    if (document.getElementById('quizScreen').style.display !== 'none') speakQuestion();
+    return;
+  }
+
+  if (!locked && ['1','2','3','4'].includes(e.key)) {
+    const opts = document.querySelectorAll('.option');
+    const idx = parseInt(e.key) - 1;
+    if (opts[idx]) opts[idx].click();
+    return;
+  }
+
+
+  if (key === 's') { document.getElementById('startBtn')?.click(); return; }
+
+  if (key === 'r' && document.getElementById('result').style.display === 'block') {
+    const t = document.getElementById('toggleReviewBtn');
+    if (t && t.style.display !== 'none') t.click();
+    return;
+  }
+
+  if (key === 'w' && document.getElementById('result').style.display === 'block') {
+    const r = document.getElementById('retryBtn');
+    if (r && r.style.display !== 'none') r.click();
+    return;
+  }
+
+  if (key === 'm') { speechSynthesis.cancel(); return; }
+});
+
+/* ═══════════════════════════════════════════════
+   DEFAULT QUIZ (demo)
+═══════════════════════════════════════════════ */
+quiz = [
+  { q: "यह 📌 इमोजी किस काम के लिए इस्तेमाल किया जाता है?", o: ["मैसेज डिलीट करने के लिए","मैसेज को पिन (Pin) करने के लिए","लोकेशन भेजने के लिए","सिलाई करने के लिए"], a: 1 },
+  { q: "यह इमोजी ♻️ किस प्रक्रिया को दर्शाता है?", o: ["वीडियो प्ले करना","रीसायकल या पुनर्चक्रण (Recycle)","रास्ता भटकना","डिलीट करना"], a: 1 },
+  { q: "टेक्स्ट करते समय 🚫 इमोजी का क्या अर्थ होता है?", o: ["आगे बढ़ें","निषेध या मनाही (Prohibited)","पार्किंग","खतरा"], a: 1 },
+];
+
+/* ═══════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════ */
+document.getElementById('numQuestions').value = quiz.length;
+document.getElementById('numQuestions').max = quiz.length;
+renderSavedList();
+</script>
+</body>
 </html>
