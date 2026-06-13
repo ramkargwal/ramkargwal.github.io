@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Visual Identification Quiz</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <style>
       :root {
         --card: #ffffff;
@@ -20,7 +17,6 @@
         --bg: #f8fafc;
         --border: #e2e8f0;
         --option-bg: #ffffff;
-        --option-hover: #fffbeb;
         --header-from: #2563eb;
         --header-to: #4f46e5;
         --progress-bg: #e5e7eb;
@@ -37,523 +33,106 @@
           --bg: #0f172a;
           --border: #334155;
           --option-bg: #1e293b;
-          --option-hover: #2d3748;
           --progress-bg: #334155;
         }
       }
 
-      * {
-        font-family: "Poppins", sans-serif;
-        box-sizing: border-box;
-      }
+      * { font-family: "Poppins", sans-serif; box-sizing: border-box; }
+      body { background: linear-gradient(135deg, #d1fae5 0%, #cffafe 40%, #dbeafe 100%); min-height: 100vh; margin: 0; padding: 0; }
+      @media (prefers-color-scheme: dark) { body { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); } }
 
-      body {
-        background: linear-gradient(135deg, #d1fae5 0%, #cffafe 40%, #dbeafe 100%);
-        min-height: 100vh;
-        margin: 0;
-        padding: 0;
-      }
+      .quiz-card { width: 100%; max-width: 1200px; background: var(--card); border-radius: 24px; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.13); margin: auto; }
+      .header { padding: 20px 24px; background: linear-gradient(135deg, var(--header-from), var(--header-to)); color: white; }
+      .header-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+      .quiz-controls { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
 
-      @media (prefers-color-scheme: dark) {
-        body {
-          background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-        }
-      }
+      #fullscreenBtn { padding: 5px 12px; border: none; border-radius: 8px; background: rgba(255, 255, 255, 0.2); color: white; font-size: 18px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+      #fullscreenBtn:hover { background: rgba(255, 255, 255, 0.3); transform: scale(1.05); }
 
-      /* ── Quiz Card ── */
-      .quiz-card {
-        width: 100%;
-        max-width: 1200px;
-        background: var(--card);
-        border-radius: 24px;
-        overflow: hidden;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.13);
-        margin: auto; /* यह जादुई कोड है! */
-      }
+      #numQuestions { width: 60px; padding: 5px 8px; border: 2px solid rgba(255, 255, 255, 0.5); border-radius: 8px; font-size: 15px; font-weight: 600; text-align: center; background: rgba(255, 255, 255, 0.2); color: white; outline: none; }
+      #startBtn { padding: 5px 14px; border: none; border-radius: 8px; background: white; color: #2563eb; font-weight: 700; font-size: 15px; cursor: pointer; transition: 0.2s; }
+      #startBtn:hover { background: #f0f4ff; transform: scale(1.04); }
 
-      /* ── Header ── */
-      .header {
-        padding: 20px 24px;
-        background: linear-gradient(135deg, var(--header-from), var(--header-to));
-        color: white;
-      }
+      .title { font-size: 24px; font-weight: 700; text-align: center; flex: 1; min-width: 160px; }
+      .score-box { background: white; color: #111; padding: 6px 16px; border-radius: 999px; font-weight: 700; font-size: 14px; flex-shrink: 0; transition: transform 0.2s; }
+      .score-box.pop { animation: popAnim 0.35s; }
+      @keyframes popAnim { 50% { transform: scale(1.18); } 100% { transform: scale(1); } }
 
-      .header-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        flex-wrap: wrap;
-      }
+      .progress-area { padding: 16px 24px 0; }
+      .progress-info { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; color: var(--muted); }
+      .progress-bar { height: 20px; background: var(--progress-bg); border-radius: 999px; overflow: hidden; }
+      .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #2563eb, #60a5fa); transition: width 0.4s ease; }
 
-      .quiz-controls {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        flex-shrink: 0;
-      }
-
-      #numQuestions {
-        width: 60px;
-        padding: 5px 8px;
-        border: 2px solid rgba(255, 255, 255, 0.5);
-        border-radius: 8px;
-        font-size: 15px;
-        font-weight: 600;
-        text-align: center;
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        outline: none;
-      }
-
-      #startBtn {
-        padding: 5px 14px;
-        border: none;
-        border-radius: 8px;
-        background: white;
-        color: #2563eb;
-        font-weight: 700;
-        font-size: 15px;
-        cursor: pointer;
-        transition: 0.2s;
-      }
-      #startBtn:hover {
-        background: #f0f4ff;
-        transform: scale(1.04);
-      }
-
-      .title {
-        font-size: 24px;
-        font-weight: 700;
-        text-align: center;
-        flex: 1;
-        min-width: 160px;
-      }
-
-      .score-box {
-        background: white;
-        color: #111;
-        padding: 6px 16px;
-        border-radius: 999px;
-        font-weight: 700;
-        font-size: 14px;
-        flex-shrink: 0;
-        transition: transform 0.2s;
-      }
-
-      .score-box.pop {
-        animation: popAnim 0.35s;
-      }
-      @keyframes popAnim {
-        50% { transform: scale(1.18); }
-        100% { transform: scale(1); }
-      }
-
-      /* ── Progress ── */
-      .progress-area {
-        padding: 16px 24px 0;
-      }
-
-      .progress-info {
-        display: flex;
-        justify-content: space-between;
-        font-size: 13px;
-        margin-bottom: 8px;
-        color: var(--muted);
-      }
-
-      .progress-bar {
-        height: 20px;
-        background: var(--progress-bg);
-        border-radius: 999px;
-        overflow: hidden;
-      }
-
-      .progress-fill {
-        height: 100%;
-        width: 0%;
-        background: linear-gradient(90deg, #2563eb, #60a5fa);
-        transition: width 0.4s ease;
-      }
-
-      /* ── Timer ── */
-      .timer-row {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 24px 0;
-      }
-
-      .timer-bar-wrap {
-        flex: 1;
-        height: 8px;
-        background: var(--progress-bg);
-        border-radius: 999px;
-        overflow: hidden;
-      }
-
-      .timer-bar {
-        height: 100%;
-        width: 100%;
-        background: var(--timer-normal);
-        transition: width 1s linear, background 0.3s;
-        border-radius: 999px;
-      }
-
-      .timer-count {
-        font-size: 14px;
-        font-weight: 700;
-        min-width: 28px;
-        text-align: right;
-        color: var(--timer-normal);
-        transition: color 0.3s;
-      }
-
+      .timer-row { display: flex; align-items: center; gap: 10px; padding: 10px 24px 0; }
+      .timer-bar-wrap { flex: 1; height: 8px; background: var(--progress-bg); border-radius: 999px; overflow: hidden; }
+      .timer-bar { height: 100%; width: 100%; background: var(--timer-normal); transition: width 1s linear, background 0.3s; border-radius: 999px; }
+      .timer-count { font-size: 14px; font-weight: 700; min-width: 28px; text-align: right; color: var(--timer-normal); transition: color 0.3s; }
       .timer-count.warn { color: var(--timer-warn); }
       .timer-count.danger { color: var(--timer-danger); }
       .timer-bar.warn { background: var(--timer-warn); }
       .timer-bar.danger { background: var(--timer-danger); }
 
-      /* ── Content ── */
-      .content {
-        padding: 24px 24px 20px;
-      }
+      .content { padding: 24px 24px 20px; }
+      .question-wrapper { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 20px; }
+      .question { font-size: 32px; font-weight: 800; line-height: 1.3; color: var(--text); text-align: center; flex: 1; }
+      .question .hi-text { font-size: 22px; font-weight: 600; color: #4b5563; display: block; margin-top: 4px; }
 
-      .question-wrapper {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 20px;
-      }
+      .speak-btn { width: 40px; height: 40px; border: none; border-radius: 50%; cursor: pointer; font-size: 20px; flex-shrink: 0; background: linear-gradient(135deg, #0d9488, #0f766e); color: white; transition: all 0.25s; box-shadow: 0 4px 10px rgba(13, 148, 136, 0.25); }
+      .speak-btn:hover { transform: translateY(-2px) scale(1.06); box-shadow: 0 8px 20px rgba(13, 148, 136, 0.4); }
 
-      .question {
-        font-size: 26px;
-        font-weight: 700;
-        line-height: 1.4;
-        color: var(--text);
-        text-align: center;
-        flex: 1;
-      }
+      .options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+      @media (max-width: 900px) { .options { grid-template-columns: repeat(2, 1fr); } }
+      @media (max-width: 500px) { .options { grid-template-columns: 1fr; } }
 
-      .speak-btn {
-        width: 40px;
-        height: 40px;
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        font-size: 20px;
-        flex-shrink: 0;
-        background: linear-gradient(135deg, #0d9488, #0f766e);
-        color: white;
-        transition: all 0.25s;
-        box-shadow: 0 4px 10px rgba(13, 148, 136, 0.25);
-      }
-      .speak-btn:hover {
-        transform: translateY(-2px) scale(1.06);
-        box-shadow: 0 8px 20px rgba(13, 148, 136, 0.4);
-      }
-      .speak-btn:active {
-        transform: scale(0.95);
-      }
+      .option { position: relative; border: 3px solid var(--border); border-radius: 16px; cursor: pointer; background: var(--option-bg); transition: all 0.22s ease; overflow: hidden; padding: 4px; aspect-ratio: 1 / 1; }
+      .option img { width: 100%; height: 100%; object-fit: contain; border-radius: 12px; display: block; }
+      .option-label { position: absolute; top: 12px; left: 12px; width: 32px; height: 32px; border-radius: 50%; background: rgba(255, 255, 255, 0.9); color: #2563eb; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); z-index: 10; transition: 0.2s; }
 
-      /* ── Image Options Grid ── */
-      .options {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
-      }
-
-      @media (max-width: 900px) {
-        .options { grid-template-columns: repeat(2, 1fr); }
-      }
-      @media (max-width: 500px) {
-        .options { grid-template-columns: 1fr; }
-      }
-
-      .option {
-        position: relative;
-        border: 3px solid var(--border);
-        border-radius: 16px;
-        cursor: pointer;
-        background: var(--option-bg);
-        transition: all 0.22s ease;
-        overflow: hidden;
-        padding: 4px;
-        display: flex;
-        flex-direction: column;
-        aspect-ratio: 1 / 1; /* यह कार्ड की लंबाई और चौड़ाई को बराबर (Square) कर देगा */
-      }
-
-      .option img {
-        width: 100%;
-        height: 100%; /* फिक्स 220px हटाकर इसे पूरे बॉक्स में फैला दिया गया है */
-        object-fit: contain; /* इससे फोटो का कोई भी हिस्सा कटेगा नहीं */
-        border-radius: 12px;
-      }
-
-      .option-label {
-        position: absolute;
-        top: 12px;
-        left: 12px;
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.9);
-        color: #2563eb;
-        font-size: 14px;
-        font-weight: 800;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-        z-index: 10;
-        transition: 0.2s;
-      }
-
-      .option:hover:not(.correct):not(.wrong):not(.disabled) {
-        border-color: #fbbf24;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(251, 191, 36, 0.25);
-      }
-      
-      .option:focus-visible:not(.disabled) {
-        border-color: #fbbf24;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(251, 191, 36, 0.25);
-        outline: 3px solid #3b82f6;
-      }
-
-      .option:focus {
-        outline: 3px solid #3b82f6;
-        outline-offset: 2px;
-      }
-
-      .option.correct {
-        border-color: #10b981;
-        background: #d1fae5;
-        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.3);
-      }
+      .option:hover:not(.correct):not(.wrong):not(.disabled) { border-color: #fbbf24; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(251, 191, 36, 0.25); }
+      .option:focus-visible:not(.disabled) { border-color: #fbbf24; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(251, 191, 36, 0.25); outline: 3px solid #3b82f6; }
+      .option.correct { border-color: #10b981; background: #d1fae5; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.3); }
       .option.correct .option-label { background: #16a34a; color: white; }
-
-      .option.wrong {
-        border-color: #ef4444;
-        background: #fee2e2;
-        box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.3);
-      }
+      .option.wrong { border-color: #ef4444; background: #fee2e2; box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.3); }
       .option.wrong .option-label { background: #dc2626; color: white; }
+      .option.disabled { opacity: 0.8; cursor: not-allowed; pointer-events: none; }
 
-      .option.disabled {
-        opacity: 0.8;
-        cursor: not-allowed;
-        pointer-events: none;
-      }
-
-      /* ── Feedback & Results ── */
-      .feedback {
-        margin-top: 16px;
-        font-size: 18px;
-        font-weight: 700;
-        min-height: 28px;
-        text-align: center;
-      }
-
-      .result {
-        display: none;
-        padding: 36px 28px;
-        text-align: center;
-        color: var(--text);
-      }
-
-      .result-score-ring {
-        width: 130px;
-        height: 130px;
-        border-radius: 50%;
-        margin: 0 auto 16px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        font-size: 36px;
-        font-weight: 700;
-        color: white;
-      }
+      .feedback { margin-top: 16px; font-size: 18px; font-weight: 700; min-height: 28px; text-align: center; }
+      .result { display: none; padding: 36px 28px; text-align: center; color: var(--text); }
+      .result-score-ring { width: 130px; height: 130px; border-radius: 50%; margin: 0 auto 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 36px; font-weight: 700; color: white; }
       .result-score-ring .sub { font-size: 13px; font-weight: 500; opacity: 0.85; }
 
-      .grade-badge {
-        display: inline-block;
-        padding: 6px 24px;
-        border-radius: 999px;
-        font-size: 20px;
-        font-weight: 800;
-        margin-bottom: 8px;
-      }
-
-      .stats-row {
-        display: flex;
-        justify-content: center;
-        gap: 12px;
-        flex-wrap: wrap;
-        margin: 16px 0;
-      }
-      .stat-pill {
-        background: var(--bg);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 10px 18px;
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--muted);
-      }
+      .grade-badge { display: inline-block; padding: 6px 24px; border-radius: 999px; font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+      .stats-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+      .stat-pill { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 10px 18px; font-size: 13px; font-weight: 600; color: var(--muted); }
       .stat-pill span { display: block; font-size: 22px; font-weight: 700; color: var(--text); }
 
-      .result-actions {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-top: 22px;
-      }
-      .btn-action {
-        border: none;
-        padding: 11px 22px;
-        font-size: 15px;
-        border-radius: 999px;
-        cursor: pointer;
-        background: linear-gradient(135deg, #2563eb, #4f46e5);
-        color: white;
-        font-weight: 600;
-      }
+      .result-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 22px; }
+      .btn-action { border: none; padding: 11px 22px; font-size: 15px; border-radius: 999px; cursor: pointer; background: linear-gradient(135deg, #2563eb, #4f46e5); color: white; font-weight: 600; }
       .btn-action.amber { background: linear-gradient(135deg, #f59e0b, #d97706); }
       .btn-action.rose { background: linear-gradient(135deg, #f43f5e, #e11d48); }
 
-      /* ── Review ── */
       #reviewAnswers { text-align: left; margin-top: 20px; display: none; }
-      .review-item {
-        margin-bottom: 12px;
-        padding: 14px;
-        background: #fef2f2;
-        border-left: 4px solid #dc2626;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-      }
-      .review-item img {
-        width: 100px;
-        height: 100px;
-        border-radius: 8px;
-        object-fit: cover;
-        border: 2px solid #16a34a;
-      }
+      .review-item { margin-bottom: 12px; padding: 14px; background: #fef2f2; border-left: 4px solid #dc2626; border-radius: 10px; display: flex; align-items: center; gap: 16px; }
+      .review-item img { width: 100px; height: 100px; border-radius: 8px; object-fit: cover; border: 2px solid #16a34a; }
 
-      /* ── Home Page & Saved Quizzes ── */
-      #homePage textarea {
-        font-family: monospace;
-        font-size: 14px;
-        background: rgba(255, 255, 255, 0.9);
-        border: 1.5px solid #cbd5e1;
-      }
-      #homePage textarea:focus {
-        border-color: #0d9488;
-        box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
-        background: white;
-      }
+      #homePage textarea { font-family: monospace; font-size: 14px; background: rgba(255, 255, 255, 0.9); border: 1.5px solid #cbd5e1; }
+      #homePage textarea:focus { border-color: #0d9488; box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15); background: white; }
+      #quizInput.drag-over { border-color: #0d9488 !important; background-color: #f0fdfa !important; box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.2) !important; transform: scale(1.01); transition: all 0.2s ease; }
+
       .saved-list { margin-top: 10px; width: 100%; max-width: 800px; }
-      .saved-item {
-        background: white;
-        border: 1px solid #dbeafe;
-        border-radius: 10px;
-        padding: 10px 14px;
-        margin-bottom: 8px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-        transition: 0.2s;
-      }
+      .saved-item { background: white; border: 1px solid #dbeafe; border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
       .saved-item:hover { background: #eff6ff; border-color: #93c5fd; }
       .saved-item .si-name { font-weight: 600; font-size: 14px; color: #1e293b; }
       .saved-item .si-meta { font-size: 12px; color: #64748b; }
+      .saved-item-actions { display: flex; gap: 10px; align-items: center; }
+      .export-btn { background: none; border: none; cursor: pointer; color: #0ea5e9; font-size: 18px; padding: 0 4px; line-height: 1; transition: 0.2s; }
+      .export-btn:hover { color: #0284c7; transform: scale(1.2); }
       .del-btn { background: none; border: none; cursor: pointer; color: #dc2626; font-size: 18px; padding: 0 4px; line-height: 1; }
-      #fullscreenBtn {
-        padding: 5px 12px;
-        border: none;
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        font-size: 18px;
-        cursor: pointer;
-        transition: 0.2s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      #fullscreenBtn:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: scale(1.05);
-      }
 
-      /* ── Fullscreen Mode Adjustments (Updated) ── */
-      :fullscreen #mainQuizWrapper {
-        /* यह चारो तरफ बैकग्राउंड दिखाने के लिए गैप बनाएगा */
-        padding: 3vh 3vw !important; 
-        height: 100vh;
-        align-items: center;
-      }
-      
-      :fullscreen .quiz-card {
-        /* कार्ड को चौड़ा और लंबा करेगा, लेकिन शेप खराब नहीं होगी */
-        max-width: 1600px; 
-        width: 100%;
-        height: 100%;
-        border-radius: 24px; /* किनारों की गोलाई बरकरार रखेगा */
-        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2);
-        display: flex;
-        flex-direction: column;
-        margin: auto;
-      }
-
-      :fullscreen #quizScreen, 
-      :fullscreen .result {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-      }
-
-      :fullscreen .content {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-      }
-      /* ── Drag and Drop Styles ── */
-      #quizInput.drag-over {
-        border-color: #0d9488 !important;
-        background-color: #f0fdfa !important;
-        box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.2) !important;
-        transform: scale(1.01);
-        transition: all 0.2s ease;
-      }
-      .saved-item-actions {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-      }
-      .export-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: #0ea5e9; /* नीला रंग */
-        font-size: 18px;
-        padding: 0 4px;
-        line-height: 1;
-        transition: 0.2s;
-      }
-      .export-btn:hover {
-        color: #0284c7;
-        transform: scale(1.2);
-      }
+      :fullscreen #mainQuizWrapper { padding: 3vh 3vw !important; height: 100vh; align-items: center; }
+      :fullscreen .quiz-card { max-width: 1600px; width: 100%; height: 100%; border-radius: 24px; box-shadow: 0 25px 70px rgba(0, 0, 0, 0.2); display: flex; flex-direction: column; margin: auto; }
+      :fullscreen #quizScreen, :fullscreen .result { flex: 1; display: flex; flex-direction: column; }
+      :fullscreen .content { flex: 1; display: flex; flex-direction: column; justify-content: center; }
     </style>
   </head>
 
@@ -565,7 +144,7 @@
             🦅 Visual Identification Quiz
           </h1>
           <p class="text-green-100 font-medium relative z-10 text-sm">
-            Paste your JSON Array of Items (Name & Link) below to begin.
+            Paste your JSON Array of Items below or Drag & Drop a File to begin.
           </p>
         </div>
 
@@ -573,7 +152,7 @@
           id="quizInput"
           wrap="off"
           rows="12"
-          placeholder='{"Name": "Item Name", "link": "Image Link Here"},'
+          placeholder='[&#10;  {&#10;    "Name": "English Name",&#10;    "Hindi": "हिंदी नाम",&#10;    "link": "https://..."&#10;  }&#10;]'
           class="w-full p-4 border rounded-xl shadow-sm resize-none outline-none text-sm leading-relaxed overflow-x-auto"
         ></textarea>
         
@@ -620,9 +199,7 @@
               <input type="number" id="numQuestions" min="1" title="Number of Questions" />
               <button id="startBtn" onclick="startQuiz()">▶ Restart</button>
             </div>
-            
-            <div class="title">🏆 Raman Photo Quiz Challenge 🏆</div>
-            
+            <div class="title">Visual ID Challenge</div>
             <div style="display: flex; align-items: center; gap: 12px;">
               <div class="score-box" id="scoreBox">Score: 0</div>
               <button id="fullscreenBtn" onclick="toggleFullscreen()" title="Toggle Fullscreen (F)">⛶</button>
@@ -698,18 +275,29 @@
       const TIMER_SECONDS = 30;
       let timerPaused = false;
 
-      // ── COPY PROMPT (AI Integration) ──
+      // ── COPY PROMPT (UPDATED FOR HINDI & JSON FORMAT) ──
       function copyQuizPrompt() {
-        const promptText = `You are an Expert Educational Content Creator. 
-Your task is to generate a JSON array of 15 items for a Visual Identification Quiz.
+        const promptText = `Act as an Expert Educational Content Creator. I want you to help me generate datasets for a "Visual Identification Quiz".
 
-### CRITICAL REQUIREMENTS:
-1. ALL scientific elements, technical terms, and taxonomy names MUST be provided strictly in English. Do not use Hindi translations for technical names.
-2. Provide direct, publicly accessible, and working image links (e.g., from Wikipedia, Wikimedia Commons, or reliable science sites). Ensure the URL ends in an image extension if possible.
-3. Output ONLY the raw JSON array. Do not wrap in markdown code blocks.
+I will provide a specific topic in my NEXT message. Please DO NOT generate the JSON yet.
 
-Format each object exactly like this:
-{ "Name": "Scientific/Technical Name in English", "link": "https://direct-image-url.jpg" },`;
+When I give you the topic, you must generate a JSON array of 15 items following these CRITICAL RULES:
+1. LANGUAGE (STRICT): All scientific and technical terminology MUST remain in English. Do NOT translate technical terms into Hindi. Provide the common Hindi translation in the "Hindi" field ONLY if applicable, otherwise leave it blank or repeat the English term.
+2. IMAGES: Provide direct, working, and publicly accessible image links. 
+3. FAST LOADING: Always use thumbnail URLs. If using Wikimedia Commons, use the exact API format like this: https://commons.wikimedia.org/wiki/Special:FilePath/Filename.jpg?width=600
+4. CLEAN OUTPUT: Output ONLY the raw JSON array. NO markdown formatting, NO \`\`\`json tags, NO introductory text, and NO trailing commas.
+5. FORMATTING: The JSON MUST be pretty-printed with proper indentation and line breaks.
+
+Data Format Example:
+[
+  {
+    "Name": "English Name",
+    "Hindi": "हिंदी नाम",
+    "link": "https://direct-image-url-1.jpg"
+  }
+]
+
+If you understand these instructions, reply exactly with: "Ready for your content or topic." and wait for my input.`;
 
         navigator.clipboard.writeText(promptText).then(() => {
           const btn = document.getElementById("copyPromptBtn");
@@ -733,20 +321,50 @@ Format each object exactly like this:
           const objStrings = raw.match(/\{[\s\S]*?\}/g) || [];
           objStrings.forEach((objStr) => {
             try {
-              // Fix common AI trailing comma errors
               let cleanStr = objStr.replace(/,\s*\}/g, "}");
-              // Attempt to wrap unquoted keys (Name/link) if AI forgot them
               cleanStr = cleanStr.replace(/([{,]\s*)([a-zA-Z0-9_]+)\s*:/g, '$1"$2":');
               extractedItems.push(JSON.parse(cleanStr));
-            } catch (err) {
-              console.warn("Skipping completely broken item:", objStr);
-            }
+            } catch (err) { }
           });
           return extractedItems;
         }
       }
 
-      // ── LOCAL STORAGE ──
+      // ── SMART IMAGE FALLBACK SYSTEM (STRICTLY ENGLISH SEARCH) ──
+      async function handleImageFallback(img, itemName) {
+        let loader = img.previousElementSibling;
+        
+        if (img.dataset.fallbackAttempted === "true") {
+            if (loader) loader.innerHTML = '❌ Error';
+            img.style.display = 'none';
+            return;
+        }
+        
+        img.dataset.fallbackAttempted = "true";
+        if (loader) {
+            loader.innerHTML = '🔄 Searching...';
+            loader.style.display = 'block';
+        }
+
+        try {
+            // ONLY searches Wikipedia using the English 'itemName'
+            const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(itemName)}`);
+            if (!response.ok) throw new Error('Wiki fetch failed');
+            
+            const data = await response.json();
+            
+            if (data.thumbnail && data.thumbnail.source) {
+                img.src = data.thumbnail.source;
+            } else {
+                throw new Error('No image found in fallback');
+            }
+        } catch (error) {
+            if (loader) loader.innerHTML = '❌ Error';
+            img.style.display = 'none';
+        }
+      }
+
+      // ── LOCAL STORAGE & RENDER LIST ──
       function saveQuizToStorage() {
         const txt = document.getElementById("quizInput").value.trim();
         if (!txt) return alert("Please paste the JSON data first.");
@@ -774,7 +392,6 @@ Format each object exactly like this:
         saved.forEach((item, idx) => {
           const div = document.createElement("div");
           div.className = "saved-item";
-          // यहाँ हमने Download (📥) बटन ऐड किया है
           div.innerHTML = `
             <div>
               <div class="si-name">${item.name}</div>
@@ -785,9 +402,7 @@ Format each object exactly like this:
               <button class="del-btn" title="Delete" onclick="deleteSavedQuiz(${idx}, event)">🗑</button>
             </div>
           `;
-          
           div.onclick = (e) => {
-            // अगर किसी बटन पर क्लिक किया गया है, तो क्विज़ लोड न करें
             if (e.target.closest('button')) return; 
             document.getElementById("quizInput").value = item.data;
             document.getElementById("quizName").value = item.name;
@@ -814,7 +429,8 @@ Format each object exactly like this:
         let extractedItems = safeParsePhotoData(txt);
         
         rawItems = extractedItems
-          .map(item => ({ Name: item.Name || item.name, link: item.link }))
+          // Parsing both English (Name) and Hindi names safely
+          .map(item => ({ Name: item.Name || item.name, Hindi: item.Hindi || item.hindi || "", link: item.link }))
           .filter(item => item.Name && item.link);
 
         if (rawItems.length < 4) {
@@ -827,10 +443,22 @@ Format each object exactly like this:
           let optionsSet = shuffleArray([correctItem, incorrectPool[0], incorrectPool[1], incorrectPool[2]]);
           let correctIndex = optionsSet.findIndex(item => item.Name === correctItem.Name);
 
+          // Direct English Name + Optional Hindi Name (No extra text)
+          let questionHTML = `<span class="text-blue-600">${correctItem.Name}</span>`;
+          if (correctItem.Hindi) {
+            questionHTML += `<span class="hi-text">${correctItem.Hindi}</span>`;
+          }
+
+          let speakText = correctItem.Name;
+          if (correctItem.Hindi) {
+            speakText += " . " + correctItem.Hindi;
+          }
+
           return {
-            q: `<span class="text-blue-600">${correctItem.Name}</span>`,
-            plainText: `${correctItem.Name}`, // For TTS
+            q: questionHTML,
+            plainText: speakText,
             o: optionsSet.map(opt => opt.link),
+            o_names: optionsSet.map(opt => opt.Name), // strictly english for fallback
             a: correctIndex,
             correctItemData: correctItem
           };
@@ -936,14 +564,20 @@ Format each object exactly like this:
         q.o.forEach((imgLink, index) => {
           const btn = document.createElement("div");
           btn.className = "option";
-          // ARIA Integration
           btn.setAttribute("role", "button");
           btn.setAttribute("aria-label", `Option ${labels[index]}`);
           btn.setAttribute("tabindex", "0");
           
+          const safeName = q.o_names[index].replace(/'/g, "\\'");
+
           btn.innerHTML = `
             <div class="option-label">${labels[index]}</div>
-            <img src="${imgLink}" alt="Option ${labels[index]}" loading="lazy" />
+            <div class="img-loader" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #64748b; font-size: 14px; font-weight: 600; z-index: 1;">
+              ⏳ Loading...
+            </div>
+            <img src="${imgLink}" alt="Option ${labels[index]}" style="position: relative; z-index: 2; width: 100%; height: 100%; object-fit: contain; border-radius: 12px; background: var(--option-bg);" loading="lazy" 
+              onload="if(this.previousElementSibling) this.previousElementSibling.style.display='none';" 
+              onerror="handleImageFallback(this, '${safeName}')" />
           `;
           btn.addEventListener("mouseenter", () => { if (!locked) playSound("hover"); });
           btn.onclick = () => checkAnswer(btn, index);
@@ -982,7 +616,7 @@ Format each object exactly like this:
         const sb = document.getElementById("scoreBox");
         sb.textContent = `Score: ${score}`;
         sb.classList.remove("pop");
-        void sb.offsetWidth; // Trigger reflow for animation
+        void sb.offsetWidth; 
         sb.classList.add("pop");
 
         setTimeout(() => goNext(), 1500);
@@ -1028,11 +662,24 @@ Format each object exactly like this:
           retryBtn.style.display = "inline-block";
           let html = '<h3 style="font-weight:700;margin-bottom:12px;">Wrong Answers Review:</h3>';
           wrongQuestions.forEach(q => {
+            let safeName = q.correctItemData.Name.replace(/'/g, "\\'");
+            let reviewNameHTML = q.correctItemData.Name;
+            if(q.correctItemData.Hindi) {
+                reviewNameHTML += ` <span style="color:#64748b; font-size:14px; margin-left:6px;">(${q.correctItemData.Hindi})</span>`;
+            }
+
             html += `
               <div class="review-item">
-                <img src="${q.correctItemData.link}" alt="Correct Option">
+                <div style="position: relative; width: 100px; height: 100px; flex-shrink: 0; border-radius: 8px; border: 2px solid #16a34a; overflow: hidden; background: #fff;">
+                  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 14px; color: #64748b; text-align: center; z-index: 1;">
+                    ⏳
+                  </div>
+                  <img src="${q.correctItemData.link}" alt="Correct Option" style="position: relative; z-index: 2; width: 100%; height: 100%; object-fit: cover;" 
+                    onload="if(this.previousElementSibling) this.previousElementSibling.style.display='none';" 
+                    onerror="handleImageFallback(this, '${safeName}')" />
+                </div>
                 <div>
-                  <div style="font-weight:700; color:var(--text); margin-bottom:4px;">${q.correctItemData.Name}</div>
+                  <div style="font-weight:700; color:var(--text); margin-bottom:4px;">${reviewNameHTML}</div>
                   <div style="font-size:13px; color:#16a34a; font-weight:600;">✅ This was the correct image</div>
                 </div>
               </div>`;
@@ -1076,6 +723,20 @@ Format each object exactly like this:
         document.getElementById("homePage").style.display = "flex";
       }
 
+      // ── FULLSCREEN LOGIC ──
+      function toggleFullscreen() {
+        const btn = document.getElementById("fullscreenBtn");
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(err => { console.log(err.message); });
+          btn.innerHTML = "✖";
+          btn.title = "Exit Fullscreen (F)";
+        } else {
+          if (document.exitFullscreen) { document.exitFullscreen(); }
+          btn.innerHTML = "⛶";
+          btn.title = "Toggle Fullscreen (F)";
+        }
+      }
+
       // ── AUDIO & SPEECH (TTS) ──
       if (speechSynthesis.onvoiceschanged !== undefined) { speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices(); }
 
@@ -1083,10 +744,14 @@ Format each object exactly like this:
         speechSynthesis.cancel();
         if (!activeQuiz[current]) return;
         const u = new SpeechSynthesisUtterance(activeQuiz[current].plainText);
-        u.rate = 0.9; u.pitch = 1;
-        // Prioritize English voices since scientific terms are in English
+        u.rate = 0.85; u.pitch = 1;
+        
         const voices = speechSynthesis.getVoices();
-        const best = voices.find(v => v.lang.startsWith("en") && v.name.includes("Google")) || voices.find(v => v.lang.startsWith("en")) || voices[0];
+        // Indian voices (English or Hindi) generally read both texts correctly without breaking
+        const best = voices.find(v => v.lang === "hi-IN" || v.lang === "hi")
+                  || voices.find(v => v.lang === "en-IN")
+                  || voices.find(v => v.lang.startsWith("en"))
+                  || voices[0];
         if (best) u.voice = best;
         speechSynthesis.speak(u);
       }
@@ -1125,6 +790,7 @@ Format each object exactly like this:
           if (document.getElementById("quizScreen").style.display !== "none" && !locked) speakQuestion();
           return;
         }
+        if (key === "f") { toggleFullscreen(); return; }
         if (!locked && ["1", "2", "3", "4"].includes(e.key)) {
           const opts = document.querySelectorAll(".option");
           const idx = parseInt(e.key) - 1;
@@ -1143,99 +809,60 @@ Format each object exactly like this:
           return;
         }
         if (key === "m") { speechSynthesis.cancel(); return; }
-        if (key === "f") { toggleFullscreen(); return; }
       });
 
-      renderSavedList();
-      // ── FULLSCREEN LOGIC ──
-      function toggleFullscreen() {
-        const btn = document.getElementById("fullscreenBtn");
-        if (!document.fullscreenElement) {
-          // फुलस्क्रीन ऑन करें
-          document.documentElement.requestFullscreen().catch(err => {
-            console.log(`Error: ${err.message}`);
-          });
-          btn.innerHTML = "✖"; // आइकन बदलें
-          btn.title = "Exit Fullscreen (F)";
-        } else {
-          // फुलस्क्रीन ऑफ करें
-          if (document.exitFullscreen) {
-            document.exitFullscreen();
-          }
-          btn.innerHTML = "⛶"; // वापस पुराना आइकन
-          btn.title = "Toggle Fullscreen (F)";
-        }
-      }
       // ── DRAG AND DROP FILE UPLOAD ──
       const quizInputArea = document.getElementById("quizInput");
 
-      // जब फाइल Textarea के ऊपर आए
       quizInputArea.addEventListener("dragover", (e) => {
-        e.preventDefault(); // ब्राउज़र को फाइल डाउनलोड करने से रोकना
+        e.preventDefault(); 
         quizInputArea.classList.add("drag-over");
       });
 
-      // जब फाइल Textarea से बाहर जाए
       quizInputArea.addEventListener("dragleave", (e) => {
         e.preventDefault();
         quizInputArea.classList.remove("drag-over");
       });
 
-      // जब फाइल ड्रॉप की जाए
       quizInputArea.addEventListener("drop", (e) => {
         e.preventDefault();
         quizInputArea.classList.remove("drag-over");
         
         if (e.dataTransfer.files.length > 0) {
           const file = e.dataTransfer.files[0];
-          
-          // सिर्फ .txt और .json फाइलें अलाउ करें
           if (file.name.endsWith(".json") || file.name.endsWith(".txt") || file.type.match("text.*")) {
             const reader = new FileReader();
-            
-            // फाइल रीड होने के बाद क्या हो
             reader.onload = (event) => {
-              // 1. Textarea में डेटा पेस्ट कर दें
               quizInputArea.value = event.target.result;
-              
-              // 2. ऑटोमैटिक फाइल का नाम 'Quiz Name' में सेट कर दें
               const fileNameWithoutExt = file.name.replace(/\.[^/.]+$/, "");
               document.getElementById("quizName").value = fileNameWithoutExt;
             };
-            
-            // फाइल को टेक्स्ट के रूप में पढ़ें
             reader.readAsText(file);
           } else {
             alert("Error: कृपया केवल .txt या .json फ़ाइलें ही ड्रॉप करें।");
           }
         }
       });
-      // ── EXPORT SPECIFIC SAVED QUIZ ──
+
+      // ── STANDALONE OFFLINE EXPORT ──
       function exportSavedQuiz(idx, e) {
-        e.stopPropagation(); // लिस्ट आइटम को क्लिक होने से रोकना
+        e.stopPropagation(); 
         
         const saved = JSON.parse(localStorage.getItem("savedVisualQuizzes") || "[]");
         const item = saved[idx];
-        
         if (!item) return;
 
         let safeName = item.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-
-        // 1. पेज की कॉपी बनाएँ
         let clone = document.documentElement.cloneNode(true);
 
-        // 2. सिलेक्ट की हुई क्विज़ का डेटा क्लोन में डालें
         clone.querySelector("#quizInput").textContent = item.data;
         clone.querySelector("#quizName").setAttribute("value", item.name);
 
-        // 3. सेव्ड लिस्ट को छिपा दें
         let savedSection = clone.querySelector("#savedSection");
         if(savedSection) savedSection.style.display = "none";
 
-        // 4. HTML तैयार करें
         let finalHTML = "<!doctype html>\n<html lang='en'>\n" + clone.innerHTML + "\n</html>";
 
-        // 5. डाउनलोड ट्रिगर करें
         const blob = new Blob([finalHTML], { type: "text/html" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -1246,9 +873,10 @@ Format each object exactly like this:
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         
-        // एक छोटा अलर्ट ताकि यूज़र को कन्फर्मेशन मिल जाए
         alert(`✅ Offline Quiz Exported: ${item.name}`);
       }
+
+      renderSavedList();
     </script>
   </body>
 </html>
