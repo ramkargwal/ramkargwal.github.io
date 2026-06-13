@@ -330,38 +330,33 @@ If you understand these instructions, reply exactly with: "Ready for your conten
         }
       }
 
-      // ── SMART IMAGE FALLBACK SYSTEM (STRICTLY ENGLISH SEARCH) ──
-      async function handleImageFallback(img, itemName) {
-        let loader = img.previousElementSibling;
-        
-        if (img.dataset.fallbackAttempted === "true") {
-            if (loader) loader.innerHTML = '❌ Error';
-            img.style.display = 'none';
-            return;
-        }
-        
-        img.dataset.fallbackAttempted = "true";
-        if (loader) {
-            loader.innerHTML = '🔄 Searching...';
-            loader.style.display = 'block';
-        }
+      // ── IMAGE PRELOADER (BACKGROUND CACHING) ──
+      function preloadQuizImages(items) {
+        items.forEach(item => {
+          if(item.link) {
+            const img = new Image();
+            img.src = item.link; 
+          }
+        });
+      }
 
-        try {
-            // ONLY searches Wikipedia using the English 'itemName'
-            const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(itemName)}`);
-            if (!response.ok) throw new Error('Wiki fetch failed');
-            
-            const data = await response.json();
-            
-            if (data.thumbnail && data.thumbnail.source) {
-                img.src = data.thumbnail.source;
-            } else {
-                throw new Error('No image found in fallback');
-            }
-        } catch (error) {
-            if (loader) loader.innerHTML = '❌ Error';
-            img.style.display = 'none';
+      // ── IMAGE VALIDATOR (NEW PRE-START CHECK) ──
+      function checkImage(url) {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve(true);
+          img.onerror = () => resolve(false);
+          img.src = url;
+        });
+      }
+
+      // ── BASIC ERROR HANDLER (Fallback for catastrophic failure) ──
+      function handleImageFallback(img) {
+        let loader = img.previousElementSibling;
+        if (loader) {
+            loader.innerHTML = '❌ Image Error';
         }
+        img.style.display = 'none';
       }
 
       // ── LOCAL STORAGE & RENDER LIST ──
@@ -419,8 +414,9 @@ If you understand these instructions, reply exactly with: "Ready for your conten
         renderSavedList();
       }
 
-      // ── BUILD QUIZ ──
-      function createQuizFromText() {
+      // ── BUILD QUIZ (WITH PRE-START OPTIMIZER & DEEP SEARCH) ──
+      // ── BUILD QUIZ (SUPER FAST PARALLEL OPTIMIZER) ──
+      async function createQuizFromText() {
         let txt = document.getElementById("quizInput").value.trim();
         if (!txt) return alert("Please paste the JSON data first.");
         if (!txt.startsWith("[")) txt = "[" + txt;
@@ -429,13 +425,60 @@ If you understand these instructions, reply exactly with: "Ready for your conten
         let extractedItems = safeParsePhotoData(txt);
         
         rawItems = extractedItems
-          // Parsing both English (Name) and Hindi names safely
-          .map(item => ({ Name: item.Name || item.name, Hindi: item.Hindi || item.hindi || "", link: item.link }))
+          .map(item => {
+            let fixedLink = item.link;
+            if (fixedLink && (fixedLink.includes("wikimedia.org") || fixedLink.includes("wikipedia.org"))) {
+              let filename = decodeURIComponent(fixedLink.substring(fixedLink.lastIndexOf('/') + 1));
+              filename = filename.replace("File:", "");
+              fixedLink = `https://commons.wikimedia.org/wiki/Special:FilePath/${filename}?width=600`;
+            }
+            return { Name: item.Name || item.name, Hindi: item.Hindi || item.hindi || "", link: fixedLink };
+          })
           .filter(item => item.Name && item.link);
 
         if (rawItems.length < 4) {
           return alert(`Error: Found ${rawItems.length} valid items, but at least 4 are needed to create multiple choices.`);
         }
+
+        const startBtn = document.querySelector("button[onclick='createQuizFromText()']");
+        const origText = startBtn.innerHTML;
+        startBtn.innerHTML = "⚡ Optimizing...";
+        startBtn.style.pointerEvents = "none";
+        startBtn.style.opacity = "0.7";
+
+        // 👉 जादू यहाँ है: Promise.all की मदद से सारी फोटो एक ही साथ (Parallel) चेक और फिक्स होंगी
+        await Promise.all(rawItems.map(async (item) => {
+          let isOk = await checkImage(item.link);
+          
+          if (!isOk) {
+            try {
+              let res = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(item.Name)}`);
+              let data = await res.json();
+              if (data.thumbnail && data.thumbnail.source) {
+                item.link = data.thumbnail.source;
+                return; // अगर फोटो मिल गई तो आगे न बढ़ें
+              }
+            } catch(e) {}
+
+            try {
+              let res = await fetch(`https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(item.Name)}&gsrnamespace=6&gsrlimit=1&prop=imageinfo&iiprop=url&format=json&origin=*`);
+              let data = await res.json();
+              let pages = data.query.pages;
+              let pageId = Object.keys(pages)[0];
+              let url = pages[pageId].imageinfo[0].url;
+              let filename = url.substring(url.lastIndexOf('/') + 1);
+              item.link = `https://commons.wikimedia.org/wiki/Special:FilePath/${filename}?width=600`;
+            } catch(e) {}
+          }
+        }));
+
+        document.getElementById("quizInput").value = JSON.stringify(rawItems, null, 2);
+
+        // चूँकि Promise.all ने सारी इमेजेस बैकग्राउंड में डाउनलोड कर ली हैं, इसलिए अब अलग से Preload करने की ज़रूरत नहीं है
+        
+        startBtn.innerHTML = origText;
+        startBtn.style.pointerEvents = "auto";
+        startBtn.style.opacity = "1";
 
         quiz = rawItems.map(correctItem => {
           let incorrectPool = rawItems.filter(item => item.Name !== correctItem.Name);
@@ -443,7 +486,6 @@ If you understand these instructions, reply exactly with: "Ready for your conten
           let optionsSet = shuffleArray([correctItem, incorrectPool[0], incorrectPool[1], incorrectPool[2]]);
           let correctIndex = optionsSet.findIndex(item => item.Name === correctItem.Name);
 
-          // Direct English Name + Optional Hindi Name (No extra text)
           let questionHTML = `<span class="text-blue-600">${correctItem.Name}</span>`;
           if (correctItem.Hindi) {
             questionHTML += `<span class="hi-text">${correctItem.Hindi}</span>`;
@@ -458,7 +500,7 @@ If you understand these instructions, reply exactly with: "Ready for your conten
             q: questionHTML,
             plainText: speakText,
             o: optionsSet.map(opt => opt.link),
-            o_names: optionsSet.map(opt => opt.Name), // strictly english for fallback
+            o_names: optionsSet.map(opt => opt.Name),
             a: correctIndex,
             correctItemData: correctItem
           };
@@ -568,16 +610,15 @@ If you understand these instructions, reply exactly with: "Ready for your conten
           btn.setAttribute("aria-label", `Option ${labels[index]}`);
           btn.setAttribute("tabindex", "0");
           
-          const safeName = q.o_names[index].replace(/'/g, "\\'");
-
+          // loading="lazy" is removed here so preloaded images snap in instantly
           btn.innerHTML = `
             <div class="option-label">${labels[index]}</div>
             <div class="img-loader" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #64748b; font-size: 14px; font-weight: 600; z-index: 1;">
               ⏳ Loading...
             </div>
-            <img src="${imgLink}" alt="Option ${labels[index]}" style="position: relative; z-index: 2; width: 100%; height: 100%; object-fit: contain; border-radius: 12px; background: var(--option-bg);" loading="lazy" 
-              onload="if(this.previousElementSibling) this.previousElementSibling.style.display='none';" 
-              onerror="handleImageFallback(this, '${safeName}')" />
+            <img src="${imgLink}" alt="Option ${labels[index]}" style="position: relative; z-index: 2; width: 100%; height: 100%; object-fit: contain; border-radius: 12px; opacity: 0; transition: opacity 0.3s;" 
+              onload="if(this.previousElementSibling) this.previousElementSibling.style.display='none'; this.style.opacity='1';" 
+              onerror="handleImageFallback(this)" />
           `;
           btn.addEventListener("mouseenter", () => { if (!locked) playSound("hover"); });
           btn.onclick = () => checkAnswer(btn, index);
@@ -662,21 +703,21 @@ If you understand these instructions, reply exactly with: "Ready for your conten
           retryBtn.style.display = "inline-block";
           let html = '<h3 style="font-weight:700;margin-bottom:12px;">Wrong Answers Review:</h3>';
           wrongQuestions.forEach(q => {
-            let safeName = q.correctItemData.Name.replace(/'/g, "\\'");
             let reviewNameHTML = q.correctItemData.Name;
             if(q.correctItemData.Hindi) {
                 reviewNameHTML += ` <span style="color:#64748b; font-size:14px; margin-left:6px;">(${q.correctItemData.Hindi})</span>`;
             }
 
+            // loading="lazy" is removed here as well
             html += `
               <div class="review-item">
                 <div style="position: relative; width: 100px; height: 100px; flex-shrink: 0; border-radius: 8px; border: 2px solid #16a34a; overflow: hidden; background: #fff;">
-                  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 14px; color: #64748b; text-align: center; z-index: 1;">
-                    ⏳
+                  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 12px; font-weight: 600; color: #64748b; text-align: center; z-index: 1;">
+                    ⏳ Loading...
                   </div>
-                  <img src="${q.correctItemData.link}" alt="Correct Option" style="position: relative; z-index: 2; width: 100%; height: 100%; object-fit: cover;" 
-                    onload="if(this.previousElementSibling) this.previousElementSibling.style.display='none';" 
-                    onerror="handleImageFallback(this, '${safeName}')" />
+                  <img src="${q.correctItemData.link}" alt="Correct Option" style="position: relative; z-index: 2; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.3s;" 
+                    onload="if(this.previousElementSibling) this.previousElementSibling.style.display='none'; this.style.opacity='1';" 
+                    onerror="handleImageFallback(this)" />
                 </div>
                 <div>
                   <div style="font-weight:700; color:var(--text); margin-bottom:4px;">${reviewNameHTML}</div>
@@ -747,7 +788,6 @@ If you understand these instructions, reply exactly with: "Ready for your conten
         u.rate = 0.85; u.pitch = 1;
         
         const voices = speechSynthesis.getVoices();
-        // Indian voices (English or Hindi) generally read both texts correctly without breaking
         const best = voices.find(v => v.lang === "hi-IN" || v.lang === "hi")
                   || voices.find(v => v.lang === "en-IN")
                   || voices.find(v => v.lang.startsWith("en"))
