@@ -1,8 +1,0 @@
-Windows Registry Editor Version 5.00
-
-[HKEY_CLASSES_ROOT\Directory\shell\CopyFolderTree]
-@="Copy Folder Tree"
-"Icon"="imageres.dll,-5302"
-
-[HKEY_CLASSES_ROOT\Directory\shell\CopyFolderTree\command]
-@="\"C:\\Scripts\\CopyFolderTree.bat\" \"%1\""
