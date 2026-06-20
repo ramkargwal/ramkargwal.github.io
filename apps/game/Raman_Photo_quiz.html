@@ -111,7 +111,6 @@
         transform: scale(1.05);
       }
 
-      /* FIX: Dark mode toggle button */
       #darkModeBtn {
         padding: 5px 10px;
         border: none;
@@ -273,6 +272,7 @@
         color: var(--text);
         text-align: center;
         flex: 1;
+        transition: 0.2s;
       }
       .question .hi-text {
         font-size: 22px;
@@ -495,7 +495,6 @@
         color: var(--text);
       }
 
-      /* FIX: Session history stats */
       .session-history {
         background: var(--bg);
         border: 1px solid var(--border);
@@ -646,7 +645,6 @@
         line-height: 1;
       }
 
-      /* FIX: Progress bar during image optimization */
       #optimizeProgress {
         display: none;
         width: 100%;
@@ -673,7 +671,6 @@
         margin-top: 4px;
       }
 
-      /* Dark mode override class */
       body.force-dark {
         background: linear-gradient(
           135deg,
@@ -727,7 +724,6 @@
   </head>
 
   <body>
-    <!-- ═══════════════════════════════ HOME PAGE ═══════════════════════════════ -->
     <div
       id="homePage"
       class="min-h-screen p-4 sm:p-6 flex flex-col justify-center items-center"
@@ -764,11 +760,10 @@
           id="quizInput"
           wrap="off"
           rows="12"
-          placeholder='[&#10;  {&#10;    "Name": "English Name",&#10;    "Hindi": "हिंदी नाम",&#10;    "link": "https://..."&#10;  }&#10;]'
+          placeholder='[&#10;  {&#10;    "Name": "English Name",&#10;    "Hindi": "हिंदी नाम",&#10;    "Description": "यहाँ आइटम के बारे में जानकारी दें",&#10;    "link": "https://..."&#10;  }&#10;]'
           class="w-full p-4 border rounded-xl shadow-sm resize-none outline-none text-sm leading-relaxed overflow-x-auto"
         ></textarea>
 
-        <!-- FIX: Optimization progress bar -->
         <div id="optimizeProgress">
           <div id="optimizeProgressBar">
             <div id="optimizeProgressFill"></div>
@@ -818,7 +813,6 @@
             />
             <span>🔍 Enable Image Search (🌐)</span>
           </label>
-          <!-- FIX: Shuffle toggle -->
           <label
             class="flex items-center gap-2 cursor-pointer text-sm font-semibold text-purple-800 bg-purple-100 px-4 py-2 rounded-lg border border-purple-300 hover:bg-purple-200 transition"
           >
@@ -862,7 +856,6 @@
       </div>
     </div>
 
-    <!-- ═══════════════════════════════ QUIZ WRAPPER ═══════════════════════════════ -->
     <div
       id="mainQuizWrapper"
       class="w-full min-h-screen flex justify-center p-4 sm:p-8"
@@ -887,11 +880,10 @@
 
             <div style="display: flex; align-items: center; gap: 10px">
               <div class="score-box" id="scoreBox">Score: 0</div>
-              <!-- FIX: Dark mode toggle in header -->
               <button
                 id="darkModeBtn"
                 onclick="toggleDarkMode()"
-                title="Toggle Dark Mode (D)"
+                title="Toggle Dark Mode (L)"
               >
                 🌙
               </button>
@@ -906,7 +898,6 @@
           </div>
         </div>
 
-        <!-- ── QUIZ SCREEN ── -->
         <div id="quizScreen">
           <div class="progress-area">
             <div class="progress-info">
@@ -920,8 +911,7 @@
                   font-weight: 500;
                 "
               >
-                ⌨️ Space: Speak | G: Search | N: Skip | P: Pause | Q: Qty | S:
-                Restart | Esc: Home
+                ⌨️ Space: Speak | D: Desc | G: Search | N: Skip | P: Pause | Q: Qty | L: Dark/Light
               </span>
               <span id="remaining"></span>
             </div>
@@ -945,10 +935,7 @@
           </div>
 
           <div class="content">
-            <!-- FIX: Paused badge overlay -->
-
             <div class="question-wrapper">
-              <!-- FIX: search-btn is display:none by default via CSS class -->
               <button
                 id="searchBtn"
                 class="speak-btn search-btn"
@@ -971,7 +958,6 @@
           </div>
         </div>
 
-        <!-- ── RESULT SCREEN ── -->
         <div class="result" id="result">
           <div class="result-score-ring" id="scoreRing">
             <div id="finalScore"></div>
@@ -993,7 +979,6 @@
             <div class="stat-pill">Skipped<span id="statSkipped">—</span></div>
           </div>
 
-          <!-- FIX: Session cumulative stats -->
           <div class="session-history" id="sessionHistory"></div>
 
           <div class="result-actions">
@@ -1044,14 +1029,12 @@
       let locked = false;
       let timerInterval = null;
       let timerPaused = false;
-      // FIX: Use named constant everywhere
       const TIMER_SECONDS = 30;
       let timeLeft = TIMER_SECONDS;
 
       let searchWindowRef = null;
       let isSearchEnabled = false;
 
-      // FIX: Single shared AudioContext (no re-creation on hover)
       let sharedAC = null;
       function getAC() {
         if (!sharedAC)
@@ -1059,16 +1042,14 @@
         return sharedAC;
       }
 
-      // FIX: Session history tracking
       let sessionHistory = JSON.parse(
         sessionStorage.getItem("quizSessionHistory") || "[]",
       );
 
-      // FIX: skipLock prevents double-fire when pressing N rapidly
       let skipLock = false;
 
       /* ═══════════════════════════════════════════════════════════
-       DARK MODE TOGGLE (FIX)
+       DARK MODE TOGGLE
     ═══════════════════════════════════════════════════════════ */
       let darkModeOverride = localStorage.getItem("darkModeOverride") || "auto";
       applyDarkMode();
@@ -1102,27 +1083,35 @@
        COPY PROMPT
     ═══════════════════════════════════════════════════════════ */
       function copyQuizPrompt() {
-        const promptText = `Act as an Expert Educational Content Creator. I want you to help me generate datasets for a "Visual Identification Quiz".
+        const promptText = `Act as an Expert Educational Content Creator for a Visual Identification Quiz.
 
-I will provide a specific topic in my NEXT message. Please DO NOT generate the JSON yet.
+I will provide a topic in my next message. Do NOT generate JSON until the topic is given.
 
-When I give you the topic, you must generate a JSON array of 15 items following these CRITICAL RULES:
-1. LANGUAGE (STRICT): All scientific and technical terminology MUST remain in English. Do NOT translate technical terms into Hindi. Provide the common Hindi translation in the "Hindi" field ONLY if applicable, otherwise leave it blank or repeat the English term.
-2. IMAGES: Provide direct, working, and publicly accessible image links.
-3. FAST LOADING: Always use thumbnail URLs. If using Wikimedia Commons, use the exact API format like this: https://commons.wikimedia.org/wiki/Special:FilePath/Filename.jpg?width=600
-4. CLEAN OUTPUT: Output ONLY the raw JSON array. NO markdown formatting, NO \`\`\`json tags, NO introductory text, and NO trailing commas.
-5. FORMATTING: The JSON MUST be pretty-printed with proper indentation and line breaks.
+When a topic is provided, generate a valid JSON array of exactly 50 unique items using this format:
 
-Data Format Example:
 [
-  {
-    "Name": "English Name",
-    "Hindi": "हिंदी नाम",
-    "link": "https://direct-image-url-1.jpg"
-  }
+{
+"Name": "English Name",
+"Hindi": "हिंदी नाम",
+"Description": "हिंदी विवरण",
+"link": "Direct image URL"
+}
 ]
 
-If you understand these instructions, reply exactly with: "Ready for your content or topic." and wait for my input.`;
+Rules:
+
+* Keep all scientific, technical, brand, product, software, hardware, and industry-standard terms in English.
+* Use common Hindi names only in the "Hindi" field. If unavailable, repeat the English term.
+* "Description" must be in Hindi (1–2 informative sentences) while preserving all technical terms in English.
+* Every item must include a direct, publicly accessible image URL suitable for visual identification.
+* Prefer fast-loading thumbnail images. For Wikimedia Commons use:
+  https://commons.wikimedia.org/wiki/Special:FilePath/Filename.jpg?width=600
+* Generate exactly 50 unique, topic-relevant items with accurate names, descriptions, and images.
+* Output ONLY the raw pretty-printed JSON array.
+* No markdown, code blocks, explanations, comments, or extra text.
+
+If you understand, reply exactly:
+Ready for your content or topic.`;
 
         navigator.clipboard
           .writeText(promptText)
@@ -1277,7 +1266,7 @@ If you understand these instructions, reply exactly with: "Ready for your conten
       }
 
       /* ═══════════════════════════════════════════════════════════
-       BUILD QUIZ — FIX: Progress bar during optimization
+       BUILD QUIZ
     ═══════════════════════════════════════════════════════════ */
       async function createQuizFromText() {
         let txt = document.getElementById("quizInput").value.trim();
@@ -1289,7 +1278,12 @@ If you understand these instructions, reply exactly with: "Ready for your conten
 
         rawItems = extractedItems
           .map((item) => {
-            let fixedLink = item.link;
+            // Support Case-Insensitive Keys!
+            let fixedLink = item.link || item.Link || item.LINK || "";
+            let parsedName = item.Name || item.name || item.NAME || "";
+            let parsedHindi = item.Hindi || item.hindi || item.HINDI || "";
+            let parsedDesc = item.Description || item.description || item.DESCRIPTION || item.desc || "";
+
             if (
               fixedLink &&
               (fixedLink.includes("wikimedia.org") ||
@@ -1302,8 +1296,9 @@ If you understand these instructions, reply exactly with: "Ready for your conten
               fixedLink = `https://commons.wikimedia.org/wiki/Special:FilePath/${filename}?width=600`;
             }
             return {
-              Name: item.Name || item.name,
-              Hindi: item.Hindi || item.hindi || "",
+              Name: parsedName,
+              Hindi: parsedHindi,
+              Description: parsedDesc,
               link: fixedLink,
             };
           })
@@ -1322,7 +1317,6 @@ If you understand these instructions, reply exactly with: "Ready for your conten
         startBtn.style.pointerEvents = "none";
         startBtn.style.opacity = "0.7";
 
-        // FIX: Show progress bar
         const progressWrap = document.getElementById("optimizeProgress");
         const progressFill = document.getElementById("optimizeProgressFill");
         const progressText = document.getElementById("optimizeProgressText");
@@ -1336,13 +1330,11 @@ If you understand these instructions, reply exactly with: "Ready for your conten
           progressText.textContent = `Checking images... ${doneCount} / ${rawItems.length}`;
         }
 
-        // FIX: Parallel image check with Promise.any for faster Wikipedia fallback
         await Promise.all(
           rawItems.map(async (item) => {
             const isOk = await checkImage(item.link);
             if (!isOk) {
               try {
-                // FIX: Race Wikipedia summary and Commons search simultaneously
                 const result = await Promise.any([
                   fetch(
                     `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(item.Name)}`,
@@ -1365,9 +1357,7 @@ If you understand these instructions, reply exactly with: "Ready for your conten
                     }),
                 ]);
                 item.link = result;
-              } catch (e) {
-                // Keep original link — onerror handler on img will show fallback
-              }
+              } catch (e) {}
             }
             updateOptimizeProgress();
           }),
@@ -1388,7 +1378,6 @@ If you understand these instructions, reply exactly with: "Ready for your conten
 
         document.getElementById("homePage").style.display = "none";
         document.getElementById("mainQuizWrapper").style.display = "flex";
-        // FIX: Set max attribute dynamically after data is loaded
         document.getElementById("numQuestions").value = rawItems.length;
         document.getElementById("numQuestions").max = rawItems.length;
 
@@ -1413,12 +1402,10 @@ If you understand these instructions, reply exactly with: "Ready for your conten
       function startQuiz() {
         wrongQuestions = [];
         isSearchEnabled = document.getElementById("enableSearchToggle").checked;
-        // FIX: Show/hide search button via display property (was hidden by CSS default)
         document.getElementById("searchBtn").style.display = isSearchEnabled
           ? "inline-flex"
           : "none";
 
-        // FIX: close any open search window on restart
         if (searchWindowRef && !searchWindowRef.closed) {
           searchWindowRef.close();
           searchWindowRef = null;
@@ -1436,7 +1423,6 @@ If you understand these instructions, reply exactly with: "Ready for your conten
           ? "Visual ID Challenge — " + qName
           : "Visual ID Challenge";
 
-        // FIX: Shuffle toggle (sequential vs random)
         const doShuffle = document.getElementById("shuffleToggle").checked;
 
         let selectedForRound = [];
@@ -1457,9 +1443,7 @@ If you understand these instructions, reply exactly with: "Ready for your conten
             );
           }
         } else {
-          // Sequential: take first n items in original order
           selectedForRound = rawItems.slice(0, n);
-          // Reset pool for next sequential run
           unplayedPool = [...rawItems];
         }
 
@@ -1468,7 +1452,6 @@ If you understand these instructions, reply exactly with: "Ready for your conten
         current = 0;
         score = 0;
         skipped = 0;
-        // FIX: Reset timer paused state when starting fresh
         timerPaused = false;
         document.getElementById("pauseTimerBtn").innerHTML = "⏸️";
         document.getElementById("timerBar").style.opacity = "1";
@@ -1481,7 +1464,7 @@ If you understand these instructions, reply exactly with: "Ready for your conten
       }
 
       /* ═══════════════════════════════════════════════════════════
-       IMAGE SEARCH — FIX: clear stale ref on new question
+       IMAGE SEARCH
     ═══════════════════════════════════════════════════════════ */
       function searchImage() {
         if (!activeQuiz[current]) return;
@@ -1510,7 +1493,6 @@ If you understand these instructions, reply exactly with: "Ready for your conten
     ═══════════════════════════════════════════════════════════ */
       function startTimer() {
         clearInterval(timerInterval);
-        // FIX: Clear stale search window ref on new question
         if (searchWindowRef && !searchWindowRef.closed) {
           searchWindowRef.close();
           searchWindowRef = null;
@@ -1531,7 +1513,6 @@ If you understand these instructions, reply exactly with: "Ready for your conten
       function toggleTimer() {
         timerPaused = !timerPaused;
         const btn = document.getElementById("pauseTimerBtn");
-        const badge = document.getElementById("pausedBadge");
         if (timerPaused) {
           btn.innerHTML = "▶️";
           btn.title = "Resume Timer (P / Right-Click)";
@@ -1546,7 +1527,6 @@ If you understand these instructions, reply exactly with: "Ready for your conten
       function updateTimerUI() {
         const bar = document.getElementById("timerBar");
         const count = document.getElementById("timerCount");
-        // FIX: Use TIMER_SECONDS constant (not magic number)
         bar.style.width = (timeLeft / TIMER_SECONDS) * 100 + "%";
         count.textContent = timeLeft;
         bar.className = "timer-bar";
@@ -1560,13 +1540,12 @@ If you understand these instructions, reply exactly with: "Ready for your conten
         }
       }
 
-      // FIX: skipLock prevents double-fire
       function timeUp() {
         if (skipLock) return;
         skipLock = true;
         locked = true;
         skipped++;
-        speechSynthesis.cancel();
+        stopTTS();
         const correct = activeQuiz[current].a;
         document.querySelectorAll(".option").forEach((o, i) => {
           o.classList.add("disabled");
@@ -1590,7 +1569,22 @@ If you understand these instructions, reply exactly with: "Ready for your conten
         skipLock = false;
         document.getElementById("feedback").textContent = "";
         const q = activeQuiz[current];
-        document.getElementById("question").innerHTML = q.q;
+        
+        const qElement = document.getElementById("question");
+        qElement.innerHTML = q.q;
+
+        // Apply Description hover Tooltip
+        if (q.correctItemData.Description) {
+            qElement.title = q.correctItemData.Description;
+            qElement.style.cursor = "help";
+            qElement.style.textDecoration = "underline dashed #94a3b8 1px" ;
+            qElement.style.textUnderlineOffset = "8px";
+        } else {
+            qElement.title = "";
+            qElement.style.cursor = "default";
+            qElement.style.textDecoration = "none";
+        }
+
         document.getElementById("questionNumber").textContent =
           `Question ${current + 1} / ${activeQuiz.length}`;
         document.getElementById("remaining").textContent =
@@ -1635,7 +1629,7 @@ If you understand these instructions, reply exactly with: "Ready for your conten
         if (locked) return;
         locked = true;
         clearInterval(timerInterval);
-        speechSynthesis.cancel();
+        stopTTS();
 
         const correct = activeQuiz[current].a;
         document.querySelectorAll(".option").forEach((o, i) => {
@@ -1671,7 +1665,7 @@ If you understand these instructions, reply exactly with: "Ready for your conten
       }
 
       /* ═══════════════════════════════════════════════════════════
-       RESULTS — FIX: Session cumulative stats
+       RESULTS
     ═══════════════════════════════════════════════════════════ */
       function showResult() {
         clearInterval(timerInterval);
@@ -1708,7 +1702,6 @@ If you understand these instructions, reply exactly with: "Ready for your conten
         document.getElementById("statSkipped").textContent =
           wrongQuestions.filter((q) => q._timedOut).length;
 
-        // FIX: Save and show session history
         sessionHistory.push({
           score,
           total,
@@ -1750,6 +1743,9 @@ If you understand these instructions, reply exactly with: "Ready for your conten
             let reviewNameHTML = q.correctItemData.Name;
             if (q.correctItemData.Hindi) {
               reviewNameHTML += ` <span style="color:#64748b;font-size:14px;margin-left:6px;">(${q.correctItemData.Hindi})</span>`;
+            }
+            if (q.correctItemData.Description) {
+              reviewNameHTML += `<p style="font-size:13px; font-weight:400; color:#475569; margin-top:4px;">${q.correctItemData.Description}</p>`;
             }
             html += `
             <div class="review-item">
@@ -1799,30 +1795,23 @@ If you understand these instructions, reply exactly with: "Ready for your conten
         }
       }
 
-      /* ─── FIX: retryWrongAnswers resets timer pause state & pool ─── */
       function retryWrongAnswers() {
         if (wrongQuestions.length === 0) return;
 
-        // Wrong items ki copy save karo PEHLE reset se
         const itemsToRetry = wrongQuestions.map((q) => q.correctItemData);
 
-        // Agar rawItems mein 4 se kam items hain to options nahi ban sakte
         if (rawItems.length < 4) {
           alert("Retry ke liye kam se kam 4 items hone chahiye dataset mein.");
           return;
         }
 
-        // Timer reset
         timerPaused = false;
         document.getElementById("pauseTimerBtn").innerHTML = "⏸️";
         document.getElementById("timerBar").style.opacity = "1";
         skipLock = false;
 
-        // Retry items se naya quiz banao
-        // rawItems temporarily expand karo agar itemsToRetry < 4
         let tempRaw = rawItems;
         if (itemsToRetry.length < 4) {
-          // Baaki items se fill karo taaki options generate ho sakein
           const extras = rawItems.filter(
             (r) => !itemsToRetry.some((i) => i.Name === r.Name),
           );
@@ -1832,18 +1821,15 @@ If you understand these instructions, reply exactly with: "Ready for your conten
           ];
         }
 
-        // rawItems backup karke temporarily replace karo
         const originalRaw = rawItems;
         rawItems = tempRaw;
         activeQuiz = prepareVisualQuiz(shuffleArray(itemsToRetry));
-        rawItems = originalRaw; // restore
+        rawItems = originalRaw; 
 
-        // Retry ke liye temporarily set karo, original restore hoga startQuiz mein
         document.getElementById("numQuestions").value = rawItems.length;
         document.getElementById("numQuestions").max = rawItems.length;
         document.getElementById("startBtn").innerHTML = "▶ Start Again (S)";
 
-        // Ab reset karo
         wrongQuestions = [];
         current = 0;
         score = 0;
@@ -1856,7 +1842,6 @@ If you understand these instructions, reply exactly with: "Ready for your conten
         loadQuestion();
       }
 
-      /* ─── FIX: goHome asks for confirmation during active quiz ─── */
       function goHome() {
         const quizActive =
           document.getElementById("quizScreen").style.display !== "none" &&
@@ -1871,7 +1856,7 @@ If you understand these instructions, reply exactly with: "Ready for your conten
             return;
         }
         clearInterval(timerInterval);
-        speechSynthesis.cancel();
+        stopTTS();
         if (searchWindowRef && !searchWindowRef.closed) {
           searchWindowRef.close();
           searchWindowRef = null;
@@ -1900,31 +1885,40 @@ If you understand these instructions, reply exactly with: "Ready for your conten
       }
 
       /* ═══════════════════════════════════════════════════════════
-       TTS / SPEECH
+       FREE GOOGLE TTS (NO API KEY REQUIRED)
     ═══════════════════════════════════════════════════════════ */
-      if (speechSynthesis.onvoiceschanged !== undefined) {
-        speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+      let currentFreeAudio = null;
+
+      function stopTTS() {
+        if (currentFreeAudio) {
+          currentFreeAudio.pause();
+          currentFreeAudio.currentTime = 0;
+        }
+      }
+
+      function playFreeGoogleTTS(text, lang = 'hi') {
+        stopTTS();
+        const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${lang}&q=${encodeURIComponent(text)}`;
+        currentFreeAudio = new Audio(url);
+        currentFreeAudio.playbackRate = 0.9;
+        currentFreeAudio.play().catch(e => console.warn("Audio play blocked by browser. Please interact with the page first.", e));
       }
 
       function speakQuestion() {
-        speechSynthesis.cancel();
         if (!activeQuiz[current]) return;
-        const u = new SpeechSynthesisUtterance(activeQuiz[current].plainText);
-        u.rate = 0.85;
-        u.pitch = 1;
-        const voices = speechSynthesis.getVoices();
-        const best =
-          voices.find((v) => v.lang === "hi-IN" || v.lang === "hi") ||
-          voices.find((v) => v.lang === "en-IN") ||
-          voices.find((v) => v.lang.startsWith("en")) ||
-          voices[0];
-        if (best) u.voice = best;
-        speechSynthesis.speak(u);
+        playFreeGoogleTTS(activeQuiz[current].plainText, 'hi');
       }
+
+      // Speak Description on 'D' press
+      function speakDescription() {
+        if (!activeQuiz[current] || !activeQuiz[current].correctItemData.Description) return;
+        playFreeGoogleTTS(activeQuiz[current].correctItemData.Description, 'hi');
+      }
+
       document.getElementById("speakBtn").onclick = speakQuestion;
 
       /* ═══════════════════════════════════════════════════════════
-       AUDIO — FIX: Shared AudioContext, no new instance per hover
+       AUDIO
     ═══════════════════════════════════════════════════════════ */
       function playSound(type) {
         try {
@@ -1992,7 +1986,6 @@ If you understand these instructions, reply exactly with: "Ready for your conten
         const homePageVisible =
           document.getElementById("homePage").style.display !== "none";
 
-        // Q: focus num questions input
         if (key === "q" && quizWrapperVisible) {
           const numInput = document.getElementById("numQuestions");
           if (numInput && document.activeElement !== numInput) {
@@ -2003,7 +1996,6 @@ If you understand these instructions, reply exactly with: "Ready for your conten
           }
         }
 
-        // Block shortcuts inside text fields
         if (e.target.tagName === "TEXTAREA" || e.target.tagName === "INPUT")
           return;
 
@@ -2013,7 +2005,6 @@ If you understand these instructions, reply exactly with: "Ready for your conten
           return;
         }
 
-        // FIX: N uses skipLock to prevent double-fire
         if (key === "n" && quizScreenVisible && !locked) {
           timeUp();
           return;
@@ -2029,7 +2020,12 @@ If you understand these instructions, reply exactly with: "Ready for your conten
           return;
         }
 
-        if (key === "d") {
+        if (key === "d" && quizScreenVisible) {
+          speakDescription();
+          return;
+        }
+
+        if (key === "l") {
           toggleDarkMode();
           return;
         }
@@ -2093,7 +2089,7 @@ If you understand these instructions, reply exactly with: "Ready for your conten
         }
 
         if (key === "m") {
-          speechSynthesis.cancel();
+          stopTTS();
           return;
         }
       });
@@ -2137,7 +2133,7 @@ If you understand these instructions, reply exactly with: "Ready for your conten
       });
 
       /* ═══════════════════════════════════════════════════════════
-       SWIPE GESTURES (FIX: mobile swipe support)
+       SWIPE GESTURES
     ═══════════════════════════════════════════════════════════ */
       let touchStartX = 0,
         touchStartY = 0;
@@ -2157,19 +2153,19 @@ If you understand these instructions, reply exactly with: "Ready for your conten
           const quizScreenVisible =
             document.getElementById("quizScreen").style.display !== "none";
           if (!quizScreenVisible) return;
-          if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return; // not a horizontal swipe
+          if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return; 
           if (dx < 0 && !locked) {
             timeUp();
-          } // swipe left  → skip
+          } 
           if (dx > 0) {
             speakQuestion();
-          } // swipe right → speak
+          } 
         },
         { passive: true },
       );
 
       /* ═══════════════════════════════════════════════════════════
-       OFFLINE EXPORT — FIX: Template string instead of DOM clone
+       OFFLINE EXPORT
     ═══════════════════════════════════════════════════════════ */
       function exportSavedQuiz(idx, e) {
         e.stopPropagation();
@@ -2179,7 +2175,6 @@ If you understand these instructions, reply exactly with: "Ready for your conten
         const item = saved[idx];
         if (!item) return;
 
-        // FIX: Inject only the data into a clean template (no live DOM clone)
         const escapedData = item.data
           .replace(/</g, "\\u003c")
           .replace(/>/g, "\\u003e");
@@ -2192,7 +2187,6 @@ If you understand these instructions, reply exactly with: "Ready for your conten
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${item.name} — Visual Quiz</title>
   <script>
-    // Auto-inject data on page load
     window.addEventListener('DOMContentLoaded', function() {
       var el = document.getElementById('quizInput');
       if (el) el.value = ${JSON.stringify(item.data)};
