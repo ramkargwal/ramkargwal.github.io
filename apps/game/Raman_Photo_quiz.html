@@ -926,7 +926,7 @@
               id="pauseTimerBtn"
               onclick="toggleTimer()"
               style="font-size: 20px; cursor: pointer; user-select: none"
-              title="Pause Timer (P / Right-Click)"
+              title="Pause Timer (P)"
               >⏸️</span
             >
             <div class="timer-bar-wrap">
@@ -1516,11 +1516,11 @@ Ready for your content or topic.`;
         const btn = document.getElementById("pauseTimerBtn");
         if (timerPaused) {
           btn.innerHTML = "▶️";
-          btn.title = "Resume Timer (P / Right-Click)";
+          btn.title = "Resume Timer (P)";
           document.getElementById("timerBar").style.opacity = "0.4";
         } else {
           btn.innerHTML = "⏸️";
-          btn.title = "Pause Timer (P / Right-Click)";
+          btn.title = "Pause Timer (P)";
           document.getElementById("timerBar").style.opacity = "1";
         }
       }
@@ -1967,15 +1967,7 @@ Ready for your content or topic.`;
       /* ═══════════════════════════════════════════════════════════
        KEYBOARD & MOUSE SHORTCUTS
     ═══════════════════════════════════════════════════════════ */
-      document.addEventListener("contextmenu", (e) => {
-        const quizScreenVisible =
-          document.getElementById("quizScreen").style.display !== "none";
-        if (quizScreenVisible) {
-          e.preventDefault();
-          toggleTimer();
-        }
-      });
-
+  
       document.addEventListener("keydown", (e) => {
         const key = e.key.toLowerCase();
         const quizWrapperVisible =
