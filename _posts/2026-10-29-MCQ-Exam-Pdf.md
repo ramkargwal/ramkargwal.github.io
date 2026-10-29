@@ -6,7 +6,7 @@ filename: "index.html"
 language: "React • TypeScript • Tailwind CSS • KaTeX"
 categories: [Education, Tools]
 subcategories: "OMR & Exam Paper Generator"
-external_url: "https://ramkargwal.github.io/ai_studio/"
+external_url: "https://ramkargwal.github.io/ai_studio/index.html"
 ---
 
 Raman MCQ & OMR Exam Paper Studio एक आधुनिक परीक्षा प्रश्न-पत्र और OMR शीट जनरेटर प्लेटफॉर्म है। इसमें AI Prompt या `.txt` फ़ाइल की मदद से LaTeX गणितीय सूत्रों (`$...$`) वाले बहुविकल्पीय प्रश्न-पत्र, 100 प्रश्नों की OMR Sheet और Answer Key आसानी से बनाई जा सकती है।
@@ -15,8 +15,8 @@ Raman MCQ & OMR Exam Paper Studio एक आधुनिक परीक्ष�
 
 ### Live Demo
 
-https://ramkargwal.github.io/ai_studio/
+https://ramkargwal.github.io/ai_studio/index.html
 
 ```html
-https://ramkargwal.github.io/ai_studio/
+https://ramkargwal.github.io/ai_studio/index.html
 ```
