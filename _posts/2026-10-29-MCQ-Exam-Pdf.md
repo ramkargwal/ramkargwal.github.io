@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Raman MCQ & OMR Exam Paper Studio"
+title: "Raman MCQ & OMR Studio"
 description: "Create, randomize, and print 100-question OMR sheets, LaTeX math question papers, and answer keys."
 filename: "index.html"
 language: "React • TypeScript • Tailwind CSS • KaTeX"
