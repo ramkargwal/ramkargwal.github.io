@@ -6,15 +6,15 @@ filename: "raman_quiz_challenge.html"
 language: "HTML • CSS • JavaScript"
 categories: [Games]
 subcategories: "Quiz Challenge"
-external_url: "/apps/game/raman_quiz_challenge.html"
+external_url: "https://ramkargwal.github.io/Raman-Quiz-Challenge/"
 ---
 
 Raman Quiz Challenge एक इंटरैक्टिव क्विज़ प्लेटफॉर्म है जहाँ आप क्विज़ बना सकते हैं और खेल सकते हैं।
 
 ### Live Demo
 
-https://ramkargwal.github.io/apps/raman_quiz_challenge.html
+https://ramkargwal.github.io/Raman-Quiz-Challenge/
 
 ```html
-https://ramkargwal.github.io/apps/raman_quiz_challenge.html
+https://ramkargwal.github.io/Raman-Quiz-Challenge/
 ```
